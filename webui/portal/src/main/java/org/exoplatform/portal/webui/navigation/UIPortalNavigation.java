@@ -19,6 +19,15 @@
 
 package org.exoplatform.portal.webui.navigation;
 
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.portlet.MimeResponse;
+import javax.portlet.ResourceURL;
+
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.Visibility;
 import org.exoplatform.portal.mop.navigation.NodeChange;
@@ -36,9 +45,6 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Created by The eXo Platform SARL Author : Dang Van Minh minhdv81@yahoo.com
@@ -309,7 +315,18 @@ public class UIPortalNavigation extends UIComponent
       }
       return null;
    }
-   
+
+   public String createServeResourceURL(String nodeUri) throws Exception
+   {
+      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+      MimeResponse response = context.getResponse();
+      ResourceURL resourceUrl = response.createResourceURL();
+      resourceUrl.setResourceID(nodeUri);
+      Writer w = new StringWriter();
+      resourceUrl.write(w, true);
+      return w.toString();
+   }
+
    public void setScope(Scope scope)
    {
       this.navigationScope = scope;

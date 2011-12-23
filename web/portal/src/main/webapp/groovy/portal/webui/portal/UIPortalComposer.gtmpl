@@ -7,7 +7,7 @@
 	rcontext.getJavascriptManager().addJavascript("eXo.webui.UIPopupWindow.show('$popupId');");
 	rcontext.getJavascriptManager().addJavascript("eXo.webui.UIPopup.setAlign('$popupId', 2, 5, 5);");
 %>
-<div class="UIPopupWindow UIDragObject UIPortalComposer" exo:minWidth="200" exo:minHeight="200" id="$uicomponent.id" style="width: 320px; display: block;">
+<div class="UIPopupWindow UIDragObject UIPortalComposer" id="$uicomponent.id" style="width: 320px; display: block;">
 	<div class="OverflowContainer ClearFix">
 		<span class="<%=uicomponent.isCollapsed ? "CollapseIcon" : "ExpandIcon"%>" onclick="eXo.portal.UIPortal.toggleComposer(this)"></span>
 			<% if(uicomponent.isShowControl) { %>
@@ -39,7 +39,7 @@
 	</div>
 	<span class="ResizeButton"></span>
 </div>
-<script language="javascript">
+<script type="text/javascript">
 	eXo.portal.portalMode = <%=uicomponent.getPortalMode();%>;
 	eXo.portal.hasEditted = <%=uicomponent.isEditted;%>;
 </script>
