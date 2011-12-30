@@ -30,7 +30,9 @@
 									<div class="UIAddressSearchForm ClearFix">
 										<% if(uicomponent.isShowSearchGroup()) { %>
 										<div class="AddressLabel">
-											<%=uiform.getLabel(uiform.FIELD_GROUP)%>
+											<label for="$uiform.FIELD_GROUP">
+												<%=uiform.getLabel(uiform.FIELD_GROUP)%>
+											</label>
 										</div>
 										<div class="GroupInput">
 											<%uiform.renderField(uiform.FIELD_GROUP)%>
@@ -41,7 +43,9 @@
 										<% if(uicomponent.isShowSearchUser()) { %>
 											<% if(!uicomponent.isShowSearchGroup()) {%>
 											<div class="AddressLabel">
-												<%=uiform.getLabel(uiform.getLabel('searchUser'))%>
+												<label for="$uiform.FIELD_KEYWORD">
+													<%=uiform.getLabel(uiform.getLabel('searchUser'))%>
+												</label>
 											</div>
 											<% } %>
 										<%uiform.renderField(uiform.FIELD_KEYWORD)%>
@@ -65,7 +69,7 @@
 						<thead>
 							<tr>
 								<% if(isMulti) {%>
-								<th style="width: 30px;"><input type="checkbox" class="checkbox" name="selectall"/></th>
+								<th style="width: 30px;"><input type="checkbox" class="checkbox" name="selectall" title="Select All"/></th>
 								<% } %>
 								<th>
 									<%=uiform.getLabel('userName')%>

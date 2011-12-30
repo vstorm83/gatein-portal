@@ -170,7 +170,6 @@ public class UIForm extends UIContainer
       beanMapping.mapBean(bean, this);
    }
 
-   @SuppressWarnings("unchecked")
    public void begin() throws Exception
    {
       WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
@@ -283,8 +282,6 @@ public class UIForm extends UIContainer
    public String event(String name, String componentId, String beanId) throws Exception
    {
       StringBuilder b = new StringBuilder();
-      //TODO: Tung.Pham modified
-      //------------------------
       b.append("javascript:");
       WebuiRequestContext rcontext = WebuiRequestContext.getCurrentInstance();
       UIComponent subComponent = findComponentById(componentId);
