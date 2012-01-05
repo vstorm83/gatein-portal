@@ -123,6 +123,7 @@
               <property name="mop" value="http://www.gatein.org/jcr/mop/1.0/"/>
               <property name="app" value="http://www.gatein.org/jcr/application-registry/1.0/"/>
               <property name="tkn" value="http://www.gatein.org/jcr/token/1.0/"/>
+              <property name="ost" value="http://www.gatein.org/jcr/oauthstore/1.0/" />
             </properties-param>
  		  </init-params>
  		</component-plugin>
@@ -140,6 +141,7 @@
  		      <value>jar:/conf/application-nodetypes.xml</value>
           <value>jar:/conf/content-nodetypes.xml</value>
           <value>jar:/conf/autologin-nodetypes.xml</value>
+          <value>jar:/conf/oauthstore-nodetypes.xml</value>
  		    </values-param>
  		  </init-params>
  		</component-plugin>
