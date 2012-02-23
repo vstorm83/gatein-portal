@@ -16,12 +16,13 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.exoplatform.portal.resource;
+package org.exoplatform.web.application.javascript;
 
 import java.io.IOException;
 import java.net.URL;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.resource.AbstractWebResourceTest;
 import org.exoplatform.test.mocks.servlet.MockServletContext;
 import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.web.application.RequireJS;

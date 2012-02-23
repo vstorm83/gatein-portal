@@ -20,6 +20,7 @@
 package org.exoplatform.portal.resource;
 
 import org.exoplatform.commons.utils.PropertyManager;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.resources.Orientation;
 import org.exoplatform.web.ControllerContext;
 import org.exoplatform.web.WebAppController;
@@ -129,7 +130,18 @@ class CompositeSkin implements Skin
                params.put(ResourceRequestHandler.COMPRESS_QN, compress ? "min" : "");
                params.put(WebAppController.HANDLER_PARAM, "skin");
                params.put(ResourceRequestHandler.RESOURCE_QN, resource);
-               StringBuilder url = new StringBuilder();
+
+               String contextPath;
+               if (service.portalContextPath != null)
+               {
+                  contextPath = service.portalContextPath;
+               }
+               else
+               {
+                  contextPath = PortalContainer.getInstance().getPortalContext().getContextPath();
+               }
+               StringBuilder url = new StringBuilder(contextPath);
+
                context.renderURL(params, new URIWriter(url, MimeType.PLAIN));
 
                //

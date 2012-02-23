@@ -20,15 +20,16 @@
 
 package org.exoplatform.portal.gadget.core;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.shindig.common.JsonSerializer;
 import org.apache.shindig.common.util.ResourceLoader;
 import org.apache.shindig.config.AbstractContainerConfig;
+import org.apache.shindig.config.ContainerConfig;
 import org.apache.shindig.config.ContainerConfigELResolver;
 import org.apache.shindig.config.ContainerConfigException;
 import org.apache.shindig.config.DynamicConfigProperty;
 import org.apache.shindig.expressions.Expressions;
+import org.exoplatform.container.RootContainer;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -43,7 +44,6 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -116,7 +116,15 @@ public class GateInJsonContainerConfig extends AbstractContainerConfig {
 
   @Override
   public Map<String, Object> getProperties(String container) {
-    return config.get(container);
+    Map<String, Object> pros = config.get(container);
+    if (pros == null)
+    {
+       if (RootContainer.getInstance().getPortalContainer(container) != null)
+       {
+          pros = config.get(ContainerConfig.DEFAULT_CONTAINER);          
+       }
+    }
+    return pros;
   }
 
   @Override
@@ -131,7 +139,7 @@ public class GateInJsonContainerConfig extends AbstractContainerConfig {
       }
     }
 
-    Map<String, Object> containerData = config.get(container);
+    Map<String, Object> containerData = getProperties(container);
     if (containerData == null) {
       return null;
     }
@@ -328,7 +336,7 @@ public class GateInJsonContainerConfig extends AbstractContainerConfig {
     try {
       JSONObject contents = new JSONObject(json);
       JSONArray containers = contents.getJSONArray(CONTAINER_KEY);
-
+      
       for (int i = 0, j = containers.length(); i < j; ++i) {
         // Copy the default object and produce a new one.
         String container = containers.getString(i);
@@ -404,5 +412,9 @@ public class GateInJsonContainerConfig extends AbstractContainerConfig {
     } else {
       return value;
     }
+  }
+  
+  public void addContainer(String container, Map<String, Object> properties) {
+     config.put(container, properties);
   }
 }

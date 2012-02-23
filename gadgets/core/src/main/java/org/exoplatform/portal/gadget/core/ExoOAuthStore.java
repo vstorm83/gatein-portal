@@ -14,7 +14,9 @@ import org.apache.shindig.gadgets.oauth.BasicOAuthStoreTokenIndex;
 import org.apache.shindig.gadgets.oauth.OAuthStore;
 import org.apache.shindig.gadgets.oauth.BasicOAuthStoreConsumerKeyAndSecret.KeyType;
 import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.RootContainer;
+import org.gatein.common.logging.Logger;
+import org.gatein.common.logging.LoggerFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -82,6 +84,8 @@ public class ExoOAuthStore implements OAuthStore {
 
   /** Number of times we removed an access token */
   private int accessTokenRemoveCount = 0;
+
+  private Logger log = LoggerFactory.getLogger(ExoOAuthStore.class);
 
   public ExoOAuthStore() {
     consumerInfos = Maps.newHashMap();
@@ -159,6 +163,7 @@ public class ExoOAuthStore implements OAuthStore {
   public ConsumerInfo getConsumerKeyAndSecret(
       SecurityToken securityToken, String serviceName, OAuthServiceProvider provider)
       throws GadgetException {
+     System.out.println("EXoOAuthStore: " + securityToken.getContainer());
     ++consumerKeyLookupCount;
     BasicOAuthStoreConsumerIndex pk = new BasicOAuthStoreConsumerIndex();
     pk.setGadgetUri(securityToken.getAppUrl());
@@ -207,7 +212,7 @@ public class ExoOAuthStore implements OAuthStore {
     BasicOAuthStoreTokenIndex tokenKey =
         makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
     
-    ExoContainer container = PortalContainer.getInstance();
+    ExoContainer container = RootContainer.getInstance().getPortalContainer(securityToken.getContainer());
     GadgetTokenInfoService tokenSer = (GadgetTokenInfoService)container.getComponentInstanceOfType(GadgetTokenInfoService.class);
     return tokenSer.getToken(tokenKey);
   }
@@ -217,7 +222,7 @@ public class ExoOAuthStore implements OAuthStore {
     ++accessTokenAddCount;
     BasicOAuthStoreTokenIndex tokenKey =
         makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
-    ExoContainer container = PortalContainer.getInstance();
+    ExoContainer container = RootContainer.getInstance().getPortalContainer(securityToken.getContainer());
     GadgetTokenInfoService tokenSer = (GadgetTokenInfoService)container.getComponentInstanceOfType(GadgetTokenInfoService.class);
     tokenSer.createToken(tokenKey, tokenInfo);
   }
@@ -227,7 +232,7 @@ public class ExoOAuthStore implements OAuthStore {
     ++accessTokenRemoveCount;
     BasicOAuthStoreTokenIndex tokenKey =
         makeBasicOAuthStoreTokenIndex(securityToken, serviceName, tokenName);
-    ExoContainer container = PortalContainer.getInstance();
+    ExoContainer container = RootContainer.getInstance().getPortalContainer(securityToken.getContainer());
     GadgetTokenInfoService tokenSer = (GadgetTokenInfoService)container.getComponentInstanceOfType(GadgetTokenInfoService.class);
     tokenSer.deleteToken(tokenKey);
   }

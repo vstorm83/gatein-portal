@@ -25,7 +25,9 @@ import org.exoplatform.commons.utils.BinaryOutput;
 import org.exoplatform.commons.utils.ByteArrayOutput;
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.commons.utils.Safe;
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.management.annotations.Impact;
 import org.exoplatform.management.annotations.ImpactType;
 import org.exoplatform.management.annotations.Managed;
@@ -129,6 +131,8 @@ public class SkinService extends AbstractResourceService implements Startable
    final String id = Long.toString(System.currentTimeMillis());
    
    private static final long MAX_AGE;
+
+   String portalContextPath;
    
    static 
    {
@@ -200,6 +204,11 @@ public class SkinService extends AbstractResourceService implements Startable
       rtCache = new FutureMap<String, CachedStylesheet, SkinContext>(loader);
       portletThemes_ = new HashMap<String, Set<String>>();
       portalContainerName = context.getPortalContainerName();
+      ExoContainer container = context.getContainer();
+      if (container instanceof PortalContainer)
+      {
+         portalContextPath = ((PortalContainer)container).getPortalContext().getContextPath();
+      }
       deployer = new GateInSkinConfigDeployer(portalContainerName, this);
       removal = new GateInSkinConfigRemoval(this);
 
@@ -914,7 +923,18 @@ public class SkinService extends AbstractResourceService implements Startable
                   params.put(ResourceRequestHandler.COMPRESS_QN, merge ? "min" : "");
                   params.put(WebAppController.HANDLER_PARAM, "skin");
                   params.put(ResourceRequestHandler.RESOURCE_QN, resource);
-                  StringBuilder embeddedPath = new StringBuilder();
+
+                  String contextPath;
+                  if (portalContextPath != null)
+                  {
+                     contextPath = portalContextPath;
+                  }
+                  else
+                  {
+                     contextPath = PortalContainer.getInstance().getPortalContext().getContextPath();
+                  }
+                  StringBuilder embeddedPath = new StringBuilder(contextPath);
+                  
                   context.renderURL(params, new URIWriter(embeddedPath, MimeType.PLAIN));
 
                   //

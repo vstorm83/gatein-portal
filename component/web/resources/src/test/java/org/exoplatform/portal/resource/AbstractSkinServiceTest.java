@@ -29,6 +29,7 @@ import org.exoplatform.component.test.web.WebAppImpl;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.resource.config.xml.SkinConfigParser;
 import org.exoplatform.services.resources.Orientation;
+import org.exoplatform.test.mocks.servlet.MockServletContext;
 import org.exoplatform.test.mocks.servlet.MockServletRequest;
 import org.exoplatform.web.ControllerContext;
 import org.exoplatform.web.controller.QualifiedName;
@@ -85,6 +86,7 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
          assertTrue(f.exists());
          assertTrue(f.isDirectory());
          mockServletContext = new ServletContextImpl(f, "/mockwebapp", "mockwebapp");
+         skinService.portalContextPath = "/portal";
          skinService.registerContext(new WebAppImpl(mockServletContext, Thread.currentThread().getContextClassLoader()));
 
          resResolver = new MockResourceResolver();
@@ -92,6 +94,7 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
 
          URL url = mockServletContext.getResource("/gatein-resources.xml");
          SkinConfigParser.processConfigResource(DocumentSource.create(url), skinService, mockServletContext);
+
          //
          touchSetUp();
       }
@@ -289,7 +292,7 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
          {
             parameters = matcher.next();
          }
-         return new ControllerContext(null, router, request, null, parameters);
+         return new ControllerContext(router, parameters);
       }
       catch (MalformedURLException e)
       {

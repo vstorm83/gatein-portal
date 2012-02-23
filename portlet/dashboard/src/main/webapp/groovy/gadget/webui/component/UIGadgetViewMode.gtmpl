@@ -4,6 +4,7 @@
 	import org.exoplatform.portal.webui.application.GadgetUtil;
 	import org.exoplatform.webui.application.portlet.PortletRequestContext;
 	import org.exoplatform.portal.webui.application.UIPortlet;
+   import org.exoplatform.container.PortalContainer;
 	
 	def hostName = GadgetUtil.getGadgetServerUrl();
 	def rcontext = _ctx.getRequestContext() ;
