@@ -179,19 +179,39 @@ public class RegisterController extends Controller
          validator = validators.get(name);
       }
 
-      if (validator == null)
-         return null;
-
       UIFormStringInput input = new UIFormStringInput(name, value);
       Map<String, String> result = new HashMap<String, String>();
-      result.put("msg", "");
+      result.put("msg", "Ok");
       result.put("return", "true");
+      
+      if(value.trim().isEmpty()) {
+         result.put("msg", "Please correct the error");
+         result.put("return", "false");
+      }
+      
+      if (validator == null) 
+      {
+         if (name.equals("captcha"))
+         {
+            if (value.equals(flash.getCaptcha()))
+            {
+               return createJSON(result);
+            }
+            else
+            {
+               result.put("msg", "captcha incorrect");
+               result.put("return", "false");
+               return createJSON(result);
+            }
+         }
+         return null;
+      }
 
       UserHandler userHandler = organizationService.getUserHandler();
 
       if (name.equals(FieldNameConstant.USER_NAME) && userHandler.findUserByName(value) != null)
       {
-         result.put("msg", "This username already exists, please enter another one");
+         result.put("msg", "This username already exists");
          result.put("return", "false");
       }
       else if (name.equals(FieldNameConstant.EMAIL_ADDRESS))
@@ -211,7 +231,7 @@ public class RegisterController extends Controller
       }
       catch (MessageException e)
       {
-         result.put("msg", e.getDetailMessage().getMessageKey());
+         result.put("msg", "Please correct the error");
          result.put("return", "false");
       }
       return createJSON(result);
@@ -222,14 +242,13 @@ public class RegisterController extends Controller
    public Response saveUser(String username, String password, String confirmPassword, String firstName,
       String lastName, String emailAddress, String captcha)
    {
-   	boolean useCaptcha = Boolean.parseBoolean(preferences.getValue("captcha", "true"));
+      boolean useCaptcha = Boolean.parseBoolean(preferences.getValue("captcha", "true"));
       try
       {
          if (!captcha.equals(flash.getCaptcha()) && useCaptcha)
          {
             return Response.ok("<strong>Captcha is incorrect</strong>");
          }
-
          UserHandler userHandler = organizationService.getUserHandler();
 
          User user = userHandler.createUserInstance(username);

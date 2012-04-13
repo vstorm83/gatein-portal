@@ -1,13 +1,95 @@
 #{param name=useCaptcha/}
 
-<div class="UIFormWithTitle">
-	<div class="TitleBar">Create a new account</div>
-	<div class="HorizontalLayout">
-		<div id="result">
+<div class="container-fluid">
+	<div class="row-fluid">
+		<div class="span12" id="result"></div>
+	</div>
+	<div class="row-fluid">
+		<div class="span2"><p></p></div>
+		<div class="span8">
+			<form id="form" class="form-horizontal"
+				action="@{RegisterController.saveUser()}" method="post">
+				<fieldset>
+					<legend>Create a new account</legend>
+				</fieldset>
+				
+				<div class="control-group">
+					<div class="controls">
+						<input class="required doCheck" type="text" id="username" name="username" placeholder="Username" />
+						<span class="help-inline help" style="display: none">Enter your identify name</span>
+						<span class="help-inline status" style="display: none"></span>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<div class="controls">
+						<input class="required doCheck" type="text" id="password" name="password" placeholder="Password" />
+						<span class="help-inline help" style="display: none">6 characters or more! Be tricky.</span>
+						<span class="help-inline status" style="display: none"></span>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<div class="controls">
+						<input class="required" type="text" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" />
+						<input type="hidden" class="equalTo" value="#password"/>
+						<span class="help-inline help" style="display: none">Repeat again same as above</span>
+						<span class="help-inline status" style="display: none"></span>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<div class="controls">
+						<input class="required doCheck" type="text" id="firstName" name="firstName" placeholder="First Name" />
+						<span class="help-inline help" style="display: none">Enter your first name</span>
+						<span class="help-inline status" style="display: none"></span>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<div class="controls">
+						<input class="required doCheck" type="text" id="lastName" name="lastName" placeholder="Last Name" />
+						<span class="help-inline help" style="display: none">Enter your last name</span>
+						<span class="help-inline status" style="display: none"></span>
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<div class="controls">
+						<input class="required doCheck" type="text" id="emailAddress" name="emailAddress" placeholder="Email" />
+						<span class="help-inline help" style="display: none">What’s your email address?</span>
+						<span class="help-inline status" style="display: none"></span>
+					</div>
+				</div>
+				
+				<%
+					if (useCaptcha)
+					{
+				%>
+				
+				<div class="control-group">
+					<div class="controls">
+						<img src="@{RegisterController.serveImage()}" />
+					</div>
+				</div>
+				
+				<div class="control-group">
+					<div class="controls">
+						<input class="required doCheck" type="text" id="captcha" name="captcha" placeholder="Text Validation"/>
+						<span class="help-inline help" style="display: none">What do you see?</span>
+						<span class="help-inline status" style="display: none"></span>
+					</div>
+				</div>
+				<%
+					}
+				%>
+				
+				<div class="form-actions">
+					<a class="btn btn-primary" id="subscribe">Subscribe</a>
+					<a class="btn" id="reset">Reset</a>
+				</div>
+			</form>
 		</div>
-		
-		<div class="FormContainer">
-		#{include path=form.gtmpl/}
-		</div>
+		<div class="span2"><p></p></div>
 	</div>
 </div>
