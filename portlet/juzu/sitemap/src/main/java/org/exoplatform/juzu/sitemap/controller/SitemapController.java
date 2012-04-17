@@ -167,7 +167,7 @@ public class SitemapController extends Controller
       {
          size++;
          UserNode node = child.getNode();
-         String id = node.getId();
+         String id = node.getId() + "-" + System.currentTimeMillis();
          String label = node.getEncodedResolvedLabel();
          String actionLink = null;
          if (node.getPageRef() != null)
@@ -181,8 +181,6 @@ public class SitemapController extends Controller
             b.append("<li")
                .append(" id='")
                .append(id)
-               .append("-")
-               .append(System.currentTimeMillis())
                .append("'")
                .append(size == children.size() ? " class='expandable lastExpandable'>" : " class='expandable'>")
                .append("<div")
@@ -207,6 +205,9 @@ public class SitemapController extends Controller
             travelNode(child, nodeURL, b);
             b.append("</ul>");
             b.append("</li>");
+            b.append("<script type='text/javascript'>");
+            b.append("$('#").append(id).append("').one('click', juzu.Sitemap.lazyLoad);");
+            b.append("</script>");
          }
          else
          {
