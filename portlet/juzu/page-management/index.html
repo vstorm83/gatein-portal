@@ -1,0 +1,32 @@
+<html>
+
+	<head>
+		<title>Registry</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<script type="text/javascript" src="http://localhost:8080/juzu-sitemap-gatein/public/javascripts/jquery-1.7.1.min.js"></script>	
+		<script type="text/javascript">
+			$(document).ready(function() {
+					$('#container').scroll(function() {
+						console.log("use scroll page");
+						var position = $('#more').offset().top;
+						console.log('position: ' + position);
+					
+						var scllwidth = $('#container').scrollTop() + $('#container').height();
+						console.log('scroll: ' + scllwidth);
+					
+						if(scllwidth > position){
+							console.log("Time to load content! Ajax requests goes here");
+							$('#container').append('<div style="height: 50px;">hehehe</div>');			
+						}
+					});
+			});
+		</script>
+	</head>
+
+	<body>
+		<div id="container" style="overflow: auto; height: 302px; width: 500px; border-style: solid;">
+			<div style="height: 310px;">home</div>
+			<div id="more">Data loading here</div>
+		</div>
+	</body>
+</html>

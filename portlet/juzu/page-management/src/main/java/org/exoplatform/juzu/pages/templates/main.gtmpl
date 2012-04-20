@@ -1,0 +1,38 @@
+#{param name=controller/}
+#{param name=listAccess/}
+<%
+	import java.util.List;
+	import org.exoplatform.portal.config.model.Page;
+	import org.exoplatform.portal.webui.page.PageQueryAccessList;
+
+%>
+<div class="container-fluid" style="height: 200px; overflow: auto;">
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th>Page Id</th>
+				<th>Title</th>
+				<th>Access Permission</th>
+				<th>Edit Permission</th>
+				<th>Action</th>
+			</tr>
+		</thead>
+		<tbody>
+		<%
+		int availablePage  = listAccess.getAvailablePage();
+		for(int i = 1; i <= availablePage; i++) {
+			List<Page> pages = listAccess.getPage(i);			   
+		%>
+		<% for(Page page : pages) { %>
+			<tr>
+				<td>${page.pageId}</td>
+				<td>${page.title}</td>
+				<td>${page.accessPermissions}</td>
+				<td>${page.editPermission}</td>
+				<td><a>edit</a> | <a>delete</a></td>
+			</tr>
+		<% } %>
+		<%} %>
+		</tbody>
+	</table>
+</div>
