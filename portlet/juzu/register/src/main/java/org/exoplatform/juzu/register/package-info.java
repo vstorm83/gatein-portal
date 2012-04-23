@@ -1,7 +1,6 @@
 @Application(defaultController = org.exoplatform.juzu.register.controllers.RegisterController.class)
 @Assets(scripts = {@org.juzu.plugin.asset.Script(src = "public/javascripts/jquery-1.7.1.min.js"),
    @Script(src = "public/javascripts/jquery.form.js"),
-   @Script(src = "public/javascripts/jquery.validate.min.js"),
    @Script(src = "public/javascripts/register.js")}, stylesheets = {
    @Stylesheet(src = "public/stylesheets/bootstrap.css"), 
    @Stylesheet(src = "public/stylesheets/bootstrap-responsive.css")})
