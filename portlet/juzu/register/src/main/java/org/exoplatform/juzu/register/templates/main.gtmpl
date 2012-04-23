@@ -23,7 +23,7 @@
 				
 				<div class="control-group">
 					<div class="controls">
-						<input class="required doCheck" type="text" id="password" name="password" placeholder="Password" />
+						<input class="required doCheck" type="password" id="password" name="password" placeholder="Password" />
 						<span class="help-inline help" style="display: none">6 characters or more! Be tricky.</span>
 						<span class="help-inline status" style="display: none"></span>
 					</div>
@@ -31,7 +31,7 @@
 				
 				<div class="control-group">
 					<div class="controls">
-						<input class="required" type="text" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" />
+						<input class="required" type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm password" />
 						<input type="hidden" class="equalTo" value="#password"/>
 						<span class="help-inline help" style="display: none">Repeat again same as above</span>
 						<span class="help-inline status" style="display: none"></span>
