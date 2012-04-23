@@ -18,14 +18,22 @@
  */
 package org.exoplatform.juzu.pages.controllers;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.inject.Inject;
 
+import org.exoplatform.juzu.pages.Session;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.webui.page.PageQueryAccessList;
 import org.juzu.Controller;
 import org.juzu.Path;
+import org.juzu.Resource;
+import org.juzu.Response;
 import org.juzu.View;
+import org.juzu.plugin.ajax.Ajax;
+import org.juzu.template.Template;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -35,32 +43,65 @@ import org.juzu.View;
 public class PageManagementController extends Controller
 {
    @Inject
-   @Path("main.gtmpl")
-   org.exoplatform.juzu.pages.templates.main main;
+   @Path("pages.gtmpl")
+   org.exoplatform.juzu.pages.templates.pages pages;
    
-   private Query<Page> query;
-   PageQueryAccessList listAccess;
+   @Inject
+   @Path("search.gtmpl")
+   Template search;
    
-   public PageManagementController() {
-      query = new Query<Page>(null, null, Page.class);
-      listAccess = new PageQueryAccessList(query, 10);
-   }
+   @Inject
+   Session session;
    
    @View
    public void index() 
    {
-      main.with().controller(this).listAccess(listAccess).render();
+      if(session.getQuery() == null)
+      {
+         Query<Page> query = new Query<Page>(null, null, Page.class);
+         session.setQuery(query);
+      }
+
+      PageQueryAccessList listAccess = new PageQueryAccessList(session.getQuery(), 10);
+      System.out.println("available page: " + listAccess.getAvailablePage());
+      pages.with().controller(this).render();
    }
    
-   public String say() {
+   @Ajax
+   @Resource
+   public Response search(String title, String name, String type) throws Exception {
+      Query<Page> query = session.getQuery();
+      if(!title.isEmpty()) 
+         query.setTitle(title);
+      else
+         query.setTitle(null);
+      
+      if(!name.isEmpty()) 
+         query.setOwnerId(name);
+      else 
+         query.setOwnerId(null);
+      
+      query.setOwnerType(type);
+      query.setName("");
+      session.setQuery(query);
+      return Response.ok(createResponseHtml());
+   }
+   
+   public String createResponseHtml() throws Exception {
       StringBuilder b = new StringBuilder();
-      b.append("Total size: ").append(listAccess.getAll().size()).append("<br/>");
-      b.append("Available: ").append(listAccess.getAvailable()).append("<br/>");
-      b.append("Avaliable page: ").append(listAccess.getAvailablePage()).append("<br/>");
-      return b.toString(); 
-   }
-   
-   public Page[] getCurrentPage() throws Exception {
-      return listAccess.getPage(listAccess.getCurrentPage()).toArray(new Page[] {});
+      PageQueryAccessList listAccess = new PageQueryAccessList(session.getQuery(), 10);
+      for(int i = 1; i <= listAccess.getAvailablePage(); i++) {
+         List<Page> pages = listAccess.getPage(i);          
+         for(Page page : pages) {
+            b.append("<tr>");
+            b.append("<td>").append(page.getPageId()).append("</td>");
+            b.append("<td>").append(page.getTitle()).append("</td>");
+            b.append("<td>").append(Arrays.toString(page.getAccessPermissions())).append("</td>");
+            b.append("<td>").append(page.getEditPermission()).append("</td>");
+            b.append("<td><a>edit</a> | <a>delete</a></td>");
+         b.append("</tr>");
+         }
+      }
+      return b.toString();
    }
 }
