@@ -1,21 +1,21 @@
 #{param name=controller/}
-<div class="container-fluid">#{include path=search.gtmpl/}</div>
-<div class="container-fluid" style="height: 200px; overflow: auto;">
-	
-	<table class="table table-striped">
-		<thead>
-			<tr>
-				<th>Page Id</th>
-				<th>Title</th>
-				<th>Access Permission</th>
-				<th>Edit Permission</th>
-				<th>Action</th>
-			</tr>
-		</thead>
-		<tbody id="pageList">
-			<% String html = controller.createResponseHtml(); %>
-			${html}
-		</tbody>
-	</table>
+<div class="container-fluid" id="PageManagementPortlet">
+	<div style="padding-top: 20px;">#{include path=search.gtmpl/}</div>
+	<div id="PageListContainer" style="overflow: auto;">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>Page Id</th>
+					<th>Title</th>
+					<th>Access Permission</th>
+					<th>Edit Permission</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody id="PageList">
+				<% String html = controller.createResponseHtml(); %>
+				${html}
+			</tbody>
+		</table>
+	</div>
 </div>
-<div id="result"></div>
