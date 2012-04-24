@@ -38,70 +38,106 @@ import org.juzu.template.Template;
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
  * @version $Id$
- *
+ * 
  */
 public class PageManagementController extends Controller
 {
    @Inject
    @Path("pages.gtmpl")
    org.exoplatform.juzu.pages.templates.pages pages;
-   
+
    @Inject
    @Path("search.gtmpl")
    Template search;
-   
+
    @Inject
    Session session;
-   
+
    @View
-   public void index() 
+   public void index()
    {
-      if(session.getQuery() == null)
+      if (session.getQuery() == null)
       {
-         Query<Page> query = new Query<Page>(null, null, Page.class);
+         Query<Page> query = new Query<Page>("portal", null, null, null, Page.class);
          session.setQuery(query);
       }
-
-      PageQueryAccessList listAccess = new PageQueryAccessList(session.getQuery(), 10);
-      System.out.println("available page: " + listAccess.getAvailablePage());
       pages.with().controller(this).render();
    }
-   
+
    @Ajax
    @Resource
-   public Response search(String title, String name, String type) throws Exception {
+   public Response search(String title, String name, String type) throws Exception
+   {
       Query<Page> query = session.getQuery();
-      if(!title.isEmpty()) 
+      if (!title.isEmpty())
          query.setTitle(title);
       else
          query.setTitle(null);
-      
-      if(!name.isEmpty()) 
+
+      if (!name.isEmpty())
          query.setOwnerId(name);
-      else 
+      else
          query.setOwnerId(null);
-      
+
       query.setOwnerType(type);
       query.setName("");
       session.setQuery(query);
-      return Response.ok(createResponseHtml());
-   }
-   
-   public String createResponseHtml() throws Exception {
-      StringBuilder b = new StringBuilder();
       PageQueryAccessList listAccess = new PageQueryAccessList(session.getQuery(), 10);
-      for(int i = 1; i <= listAccess.getAvailablePage(); i++) {
-         List<Page> pages = listAccess.getPage(i);          
-         for(Page page : pages) {
-            b.append("<tr>");
-            b.append("<td>").append(page.getPageId()).append("</td>");
-            b.append("<td>").append(page.getTitle()).append("</td>");
-            b.append("<td>").append(Arrays.toString(page.getAccessPermissions())).append("</td>");
-            b.append("<td>").append(page.getEditPermission()).append("</td>");
-            b.append("<td><a>edit</a> | <a>delete</a></td>");
-         b.append("</tr>");
-         }
+      session.setListAccess(listAccess);
+      return Response.ok(currentPageHtml());
+   }
+
+   public String currentPageHtml() throws Exception
+   {
+      StringBuilder b = new StringBuilder();
+      PageQueryAccessList listAccess = null;
+      if (session.getListAccess() == null)
+      {
+         listAccess = new PageQueryAccessList(session.getQuery(), 10);
+         session.setListAccess(listAccess);
       }
+      else
+      {
+         listAccess = session.getListAccess();
+      }
+      List<Page> pages = listAccess.currentPage();
+      for (Page page : pages)
+      {
+         b.append(toHtml(page));
+      }
+      return b.toString();
+   }
+
+   @Ajax
+   @Resource
+   public Response nextPage() throws Exception
+   {
+      PageQueryAccessList listAccess = session.getListAccess();
+      int nextPage = listAccess.getCurrentPage() + 1;
+      if (nextPage > listAccess.getAvailablePage())
+      {
+         return null;
+      }
+
+      StringBuilder b = new StringBuilder();
+      List<Page> pages = listAccess.getPage(nextPage);
+      for (Page page : pages)
+      {
+         b.append(toHtml(page));
+      }
+      return Response.ok(b.toString());
+   }
+
+   public String toHtml(Page page)
+   {
+      StringBuilder b = new StringBuilder();
+      b.append("<tr>");
+      b.append("<td>").append(page.getPageId()).append("</td>");
+      b.append("<td>").append(page.getTitle()).append("</td>");
+      b.append("<td>").append(Arrays.toString(page.getAccessPermissions())).append("</td>");
+      b.append("<td>").append(page.getEditPermission()).append("</td>");
+      b.append("<td class='span2'><a>edit</a> | <a>delete</a></td>");
+      b.append("</tr>");
       return b.toString();
    }
 }
