@@ -69,6 +69,8 @@ public class PageManagementController extends Controller
    public Response search(String title, String name, String type) throws Exception
    {
       Query<Page> query = session.getQuery();
+      if(query == null) return null;
+      
       if (!title.isEmpty())
          query.setTitle(title);
       else
