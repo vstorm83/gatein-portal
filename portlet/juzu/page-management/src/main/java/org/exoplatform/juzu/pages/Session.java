@@ -22,6 +22,7 @@ import javax.inject.Named;
 
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.model.Page;
+import org.exoplatform.portal.webui.page.PageQueryAccessList;
 import org.juzu.SessionScoped;
 
 /**
@@ -35,6 +36,8 @@ public class Session
 {
    private Query<Page> query;
    
+   private PageQueryAccessList listAccess;
+   
    public void setQuery(Query<Page> query)
    {
       this.query = query;
@@ -42,5 +45,13 @@ public class Session
    
    public Query<Page> getQuery() {
       return query;
+   }
+   
+   public void setListAccess(PageQueryAccessList listAccess) {
+      this.listAccess = listAccess;
+   }
+   
+   public PageQueryAccessList getListAccess() {
+      return listAccess;
    }
 }

@@ -13,7 +13,9 @@
 				</tr>
 			</thead>
 			<tbody id="PageList">
-				<% String html = controller.createResponseHtml(); %>
+				<% 
+				String html = controller.currentPageHtml(); 
+				%>
 				${html}
 			</tbody>
 		</table>
