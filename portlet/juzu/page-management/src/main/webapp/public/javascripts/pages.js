@@ -2,7 +2,7 @@ $(function() {
 	
 	var finished = false;
 	
-	$('#PageMamangementForm').submit(function() {
+	$('#PageManagementForm').submit(function() {
 		$(this).ajaxSubmit({
 			target: '#PageList',
 			success: function() {
@@ -47,6 +47,24 @@ $(function() {
 		var height = $(document).height() - pageList.height() - 20;
 		if(pageList.height() > height && eleHeight > height) pageList.height(height);
 	};
-	
 	autoAjust();
+	
+	var typingTimer;
+	var doneTypingInterval = 1000;
+	
+	$("#PageManagementForm").find('input[type=text]').each(function() {
+		console.log(this);
+		$(this).keyup(function(e) {
+			window.clearTimeout(typingTimer);
+			if(e.which != 9) {
+				typingTimer = setTimeout($.proxy(function() {
+					$("#PageManagementForm").submit();
+				}, this), doneTypingInterval);
+			}
+		});
+		
+		$(this).keydown(function() {
+			window.clearTimeout(typingTimer);
+		});
+	});
 });
