@@ -1,4 +1,4 @@
-<form id="PageMamangement" class="well form-inline" action="@{PageManagementController.search()}" method="post">
+<form id="PageMamangementForm" class="well form-inline" action="@{PageManagementController.search()}" method="get">
 	<input name="title" type="text" placeholder="Title" />
 	<input name="name" type="text" placeholder="Site name" />
 	<label>Type</label>
