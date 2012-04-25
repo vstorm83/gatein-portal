@@ -43,10 +43,22 @@ $(function() {
 		pageList.children().each(function() {
 			eleHeight += $(this).height();
 		});
-		
+
 		var height = $(document).height() - pageList.height() - 20;
-		if(pageList.height() > height && eleHeight > height) pageList.height(height);
+		if(pageList.height() > height && eleHeight > height) {
+			pageList.height(height);
+			
+			var space = 0;
+			$(document.body).children().each(function() {
+				if(this.tagName == 'SCRIPT') return;
+				space += $(this).height();
+			});
+			
+			var freeSpace = $(window).height() - space;
+			if(freeSpace > 0) pageList.height(height + freeSpace);
+		}
 	};
+	
 	autoAjust();
 	
 	var typingTimer;
