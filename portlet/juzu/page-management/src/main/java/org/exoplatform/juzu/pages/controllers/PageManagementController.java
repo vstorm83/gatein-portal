@@ -61,6 +61,7 @@ public class PageManagementController extends Controller
          Query<Page> query = new Query<Page>("portal", null, null, null, Page.class);
          session.setQuery(query);
       }
+      session.setListAccess(null);
       pages.with().controller(this).render();
    }
 
