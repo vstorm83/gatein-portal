@@ -23,10 +23,13 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.exoplatform.juzu.pages.Fork;
 import org.exoplatform.juzu.pages.Session;
+import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.webui.page.PageQueryAccessList;
+import org.juzu.Action;
 import org.juzu.Controller;
 import org.juzu.Path;
 import org.juzu.Resource;
@@ -52,6 +55,9 @@ public class PageManagementController extends Controller
 
    @Inject
    Session session;
+   
+   @Inject
+   DataStorage dataStorage;
 
    @View
    public void index()
@@ -90,7 +96,27 @@ public class PageManagementController extends Controller
       return Response.ok(currentPageHtml());
    }
 
-   public String currentPageHtml() throws Exception
+   @Ajax
+   @Resource
+   public Response nextPage() throws Exception
+   {
+      PageQueryAccessList listAccess = session.getListAccess();
+      int nextPage = listAccess.getCurrentPage() + 1;
+      if (nextPage > listAccess.getAvailablePage())
+      {
+         return null;
+      }
+
+      StringBuilder b = new StringBuilder();
+      List<Page> pages = listAccess.getPage(nextPage);
+      for (Page page : pages)
+      {
+         b.append(toHtml(page));
+      }
+      return Response.ok(b.toString());
+   }
+   
+   private String currentPageHtml() throws Exception
    {
       StringBuilder b = new StringBuilder();
       PageQueryAccessList listAccess = null;
@@ -111,27 +137,7 @@ public class PageManagementController extends Controller
       return b.toString();
    }
 
-   @Ajax
-   @Resource
-   public Response nextPage() throws Exception
-   {
-      PageQueryAccessList listAccess = session.getListAccess();
-      int nextPage = listAccess.getCurrentPage() + 1;
-      if (nextPage > listAccess.getAvailablePage())
-      {
-         return null;
-      }
-
-      StringBuilder b = new StringBuilder();
-      List<Page> pages = listAccess.getPage(nextPage);
-      for (Page page : pages)
-      {
-         b.append(toHtml(page));
-      }
-      return Response.ok(b.toString());
-   }
-
-   public String toHtml(Page page)
+   private String toHtml(Page page)
    {
       StringBuilder b = new StringBuilder();
       b.append("<tr>");

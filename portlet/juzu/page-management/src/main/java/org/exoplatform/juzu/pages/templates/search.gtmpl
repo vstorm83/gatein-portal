@@ -1,10 +1,15 @@
-<form id="PageManagementForm" class="well form-inline" action="@{PageManagementController.search()}" method="get">
-	<input name="title" type="text" placeholder="Title" />
-	<input name="name" type="text" placeholder="Site name" />
+<form id="PageManagementForm" class="well form-search" action="@{PageManagementController.search()}" method="get">
+	<input name="title" class="search-query" type="text" placeholder="Title" />
+	<input name="name" class="search-query" type="text" placeholder="Site name" />
 	<label>Type</label>
-	<select name="type" class="span2">
+	<select name="type" class="span1">
 		<option>portal</option>
 		<option>group</option>
 	</select>
 	<input type="submit" class="btn btn-primary" value="Search"/>
+	
+	<!-- start demo -->
+	  <a id="NewPageButton" data-toggle="modal" href="#NewPageModal" class="btn">Add new page</a>  
+	<!-- <a id="NewPageButton" href="#NewPageModal" class="btn">Add new page</a> -->
+	<!-- end demo -->
 </form>
