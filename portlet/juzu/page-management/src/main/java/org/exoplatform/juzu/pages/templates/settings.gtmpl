@@ -1,0 +1,54 @@
+<div class="row-fluid">
+	<div class="span12">
+		<form class="form-horizontal">
+			<fieldset>
+				<div class="control-group">
+					<label class="control-label">Page Id</label>
+					<div class="controls">
+						<input type="text" readonly="readonly" />
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Owner Type</label>
+					<div class="controls">
+						<select>
+							<option>portal</option>
+							<option>group</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Owner Id</label>
+					<div class="controls">
+						<% if(true) { %>
+						<input type="text" value="classic" readonly="readonly" />
+						<% } else { %>
+						<select>
+							<option>portal</option>
+							<option>group</option>
+						</select>
+						<% } %>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Page Name</label>
+					<div class="controls">
+						<input type="text"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Page Title</label>
+					<div class="controls">
+						<input type="text"/>
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label">Show Max Window</label>
+					<div class="controls">
+						<input type="checkbox"/>
+					</div>
+				</div>
+			</fieldset>
+		</form>
+     </div>
+</div>

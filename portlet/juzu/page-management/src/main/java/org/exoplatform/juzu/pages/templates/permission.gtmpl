@@ -1,0 +1,5 @@
+<div class="row-fluid">
+	<div class="span12">
+		<a id="show" class="btn btn-primary">show permission selector</a>
+	</div>
+</div>

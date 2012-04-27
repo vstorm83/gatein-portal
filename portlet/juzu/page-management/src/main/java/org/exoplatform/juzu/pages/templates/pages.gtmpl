@@ -1,6 +1,9 @@
 #{param name=controller/}
 <div class="container-fluid" id="PageManagementPortlet">
-	<div style="padding-top: 20px;">#{include path=search.gtmpl/}</div>
+	<div style="padding-top: 20px;">
+		<div id="alert-area"></div>
+		#{include path=search.gtmpl/}
+	</div>
 	<div id="PageListContainer" style="overflow: auto;">
 		<table class="table table-striped">
 			<thead>
@@ -21,3 +24,6 @@
 		</table>
 	</div>
 </div>
+
+<div>#{include path=modal.gtmpl/}</div>
+
