@@ -1,4 +1,5 @@
-#{param name=controller/}
+#{param name=defautController/}
+#{param name=settingController/}
 <div class="container-fluid" id="PageManagementPortlet">
 	<div style="padding-top: 20px;">
 		<div id="alert-area"></div>
@@ -17,7 +18,7 @@
 			</thead>
 			<tbody id="PageList">
 				<% 
-				String html = controller.currentPageHtml(); 
+				String html = defautController.currentPageHtml(); 
 				%>
 				${html}
 			</tbody>

@@ -23,13 +23,11 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.exoplatform.juzu.pages.Fork;
 import org.exoplatform.juzu.pages.Session;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.webui.page.PageQueryAccessList;
-import org.juzu.Action;
 import org.juzu.Controller;
 import org.juzu.Path;
 import org.juzu.Resource;
@@ -52,13 +50,13 @@ public class PageManagementController extends Controller
    @Inject
    @Path("search.gtmpl")
    Template search;
-
+   
+   @Inject
+   PageSettingsController settingController;
+   
    @Inject
    Session session;
    
-   @Inject
-   DataStorage dataStorage;
-
    @View
    public void index()
    {
@@ -68,7 +66,7 @@ public class PageManagementController extends Controller
          session.setQuery(query);
       }
       session.setListAccess(null);
-      pages.with().controller(this).render();
+      pages.with().defautController(this).settingController(settingController).render();
    }
 
    @Ajax

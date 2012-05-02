@@ -1,5 +1,38 @@
 <div class="row-fluid">
 	<div class="span12">
-		<a id="show" class="btn btn-primary">show permission selector</a>
+		<ul class="nav nav-pills">
+			<li class="active"><a href="#access" data-toggle="tab">Access
+					permission settings</a></li>
+			<li><a href="#edit" data-toggle="tab">Edit permission
+					settings</a></li>
+		</ul>
+		<div class="tab-content">
+			<div class="tab-pane active" id="access">
+				<div class="control-group">
+					<label class="checkbox inline"> Make it public (everyone
+						can access) <input type="checkbox" />
+					</label>
+				</div>
+				<div style="overflow: auto;">
+					<table class="table table-striped">
+						<thead>
+							<tr>
+								<th>Group Id</th>
+								<th>Membership Type</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody id="AccessPermissionList">
+						</tbody>
+					</table>
+				</div>
+				<div class="control-group">
+					<a id="show" class="btn">Add permission</a>
+				</div>
+			</div>
+			<div class="tab-pane" id="edit">
+				<p>Edit permission settings area</p>
+			</div>
+		</div>
 	</div>
 </div>
