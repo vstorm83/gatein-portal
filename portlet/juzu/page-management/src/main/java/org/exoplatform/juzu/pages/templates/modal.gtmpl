@@ -9,22 +9,22 @@
           <li class=""><a href="#layout" data-toggle="tab">Page Layout</a></li>
           <li><a href="#permission" data-toggle="tab">Permission Settings</a></li>
         </ul>
+        <form id="AddNewPageForm" class="form-horizontal">
         <div id="myTabContent" class="tab-content">
           <div class="tab-pane fade active in" id="settings">
             #{include path=settings.gtmpl/}
           </div>
           <div class="tab-pane fade" id="layout">
             <p>Page Layout</p>
-            <form class="form-horizontal">
             <fieldset>
             <input type="text" placeholder="In tab 2"/>
             </fieldset>
-            </form>
           </div>
           <div class="tab-pane fade" id="permission">
              #{include path=permission.gtmpl/}
           </div>
         </div>
+        </form>
 	</div>
 	<div class="modal-footer">
 		<a href="#" class="btn" data-dismiss="modal">Close</a><a id="SaveNewPage" href="#" class="btn btn-primary">Save</a>
