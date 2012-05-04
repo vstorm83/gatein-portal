@@ -1,0 +1,20 @@
+<div class="row-fluid">
+	<div class="span5">
+		<div style="height: 250px;">
+			<select id="LayoutCategories" name="category">
+				<%= layoutController.renderLayoutCategories() %>
+			</select>
+			<ul id="LayoutItems" class="nav nav-pills nav-stacked">
+				<!-- TODO: generate from controller  -->
+				<%= layoutController.renderLayouts("Page Configs") %>
+			</ul>
+		</div>
+	</div>
+	<div class="span7">
+		<div id="LayoutPreview" class="UIItemSelector"
+			style="border: 1px solid #DDD; border-radius: 6px; height: 240px;">
+			<!-- TODO: generate from controller  -->
+			<%= layoutController.renderLayoutPreview("Empty Layout", "empty", "EmptyLayout") %>
+		</div>
+	</div>
+</div>

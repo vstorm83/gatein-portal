@@ -7,19 +7,19 @@ $(function() {
 	
 	$('#NewPageModal').appendTo($(document.body));
 	$('#NewPageModal').on('hide', function() {
-		$('#MembershipSelectorModal').modal('hide');
+		$('#PermissionSelectorModal').modal('hide');
 	});
 	
 	//
-	$("#MembershipSelectorModal").modal({
+	$("#PermissionSelectorModal").modal({
 		backdrop: false,
 		show: false
 	});
 	
-	$("#MembershipSelectorModal").appendTo($(document.body));
+	$("#PermissionSelectorModal").appendTo($(document.body));
 	
 	$("#show").on('click', function() {
-		$("#MembershipSelectorModal").modal('show');
+		$("#PermissionSelectorModal").modal('show');
 	});
 	
 	//
@@ -31,7 +31,7 @@ $(function() {
 	$("#SaveNewPage").on('click', function() {
 		var savePageURL = null;
 		$('.jz').find('div').each(function() {
-			if($(this).attr('data-method-id') == 'PageSettingsController.saveNewPage')
+			if($(this).attr('data-method-id') == 'PageSettings.saveNewPage')
 				savePageURL = $(this).attr('data-url');
 		});
 		var ajaxGet = $.ajax({
@@ -46,6 +46,6 @@ $(function() {
 		    }
 		});
 		$("#NewPageModal").modal('hide');
-		$("#MembershipSelectorModal").modal('hide');
+		$("#PermissionSelectorModal").modal('hide');
 	});
 });
