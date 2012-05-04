@@ -1,1 +1,3 @@
-<p>grip</p>
+<ul class="treeview" id="GroupTree">
+  <div><%= permissionSelector.buildTree() %></div>
+</ul>

@@ -31,7 +31,6 @@ import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserACL.Permission;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.webui.util.Util;
-import org.juzu.Controller;
 import org.juzu.Resource;
 import org.juzu.Response;
 import org.juzu.plugin.ajax.Ajax;
@@ -41,7 +40,7 @@ import org.juzu.plugin.ajax.Ajax;
  * @version $Id$
  * 
  */
-public class PageSettings extends Controller
+public class PageSettings
 {
 
    private String ACCESS_AREA = "AccessPermissionList";
