@@ -7,7 +7,8 @@
    @Script(src = "public/javascripts/libs/bootstrap-alert.js"),
    @Script(src = "public/javascripts/pages.js"),
    @Script(src = "public/javascripts/modal.js"),
-   @Script(src = "public/javascripts/settings.js")}, stylesheets = {
+   @Script(src = "public/javascripts/settings.js"),
+   @Script(src = "public/javascripts/layout.js")}, stylesheets = {
    @Stylesheet(src = "public/stylesheets/bootstrap.css"), 
    @Stylesheet(src = "public/stylesheets/bootstrap-responsive.css")})
 @Bindings({

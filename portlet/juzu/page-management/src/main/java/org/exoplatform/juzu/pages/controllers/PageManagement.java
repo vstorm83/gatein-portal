@@ -41,7 +41,7 @@ import org.juzu.template.Template;
  * @version $Id$
  * 
  */
-public class PageManagementController extends Controller
+public class PageManagement extends Controller
 {
    @Inject
    @Path("pages.gtmpl")
@@ -52,7 +52,10 @@ public class PageManagementController extends Controller
    Template search;
    
    @Inject
-   PageSettingsController settingController;
+   PageSettings settingController;
+   
+   @Inject
+   PageLayout layoutController;
    
    @Inject
    Session session;
@@ -66,7 +69,7 @@ public class PageManagementController extends Controller
          session.setQuery(query);
       }
       session.setListAccess(null);
-      pages.with().defautController(this).settingController(settingController).render();
+      pages.with().defautController(this).settingController(settingController).layoutController(layoutController).render();
    }
 
    @Ajax

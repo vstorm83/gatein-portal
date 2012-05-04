@@ -1,4 +1,4 @@
-<form id="PageManagementForm" class="well form-search" action="@{PageManagementController.search()}" method="get">
+<form id="PageManagementForm" class="well form-search" action="@{PageManagement.search()}" method="get">
 	<input name="title" class="search-query" type="text" placeholder="Title" />
 	<input name="name" class="search-query" type="text" placeholder="Site name" />
 	<label>Type</label>

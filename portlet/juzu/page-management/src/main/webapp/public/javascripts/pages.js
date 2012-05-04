@@ -36,6 +36,12 @@ $(function() {
 		}
 	});
 	
+	$("#PageManagementForm").find("select").each(function() {
+		$(this).change(function() {
+			$("#PageManagementForm").submit();
+		});
+	})
+	
 	var autoAjust = function() {
 		var pageList =$("#PageListContainer");
 		pageList.height("auto");
@@ -56,6 +62,8 @@ $(function() {
 			
 			var freeSpace = $(window).height() - space;
 			if(freeSpace > 0) pageList.height(height + freeSpace);
+		} else if(eleHeight > 300) {
+			pageList.height(300);
 		}
 	};
 	
