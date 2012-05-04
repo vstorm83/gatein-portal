@@ -1,6 +1,7 @@
 #{param name=defautController/}
 #{param name=settingController/}
 #{param name=layoutController/}
+#{param name=permissionSelector/}
 <div class="container-fluid" id="PageManagementPortlet">
 	<div style="padding-top: 20px;">
 		<div id="alert-area"></div>

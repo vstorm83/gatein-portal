@@ -25,7 +25,6 @@ import java.util.Set;
 import org.exoplatform.juzu.pages.Layouts;
 import org.exoplatform.juzu.pages.Layouts.Layout;
 import org.exoplatform.juzu.pages.Utils;
-import org.juzu.Controller;
 import org.juzu.Resource;
 import org.juzu.Response;
 import org.juzu.plugin.ajax.Ajax;
@@ -35,7 +34,7 @@ import org.juzu.plugin.ajax.Ajax;
  * @version $Id$
  *
  */
-public class PageLayout extends Controller
+public class PageLayout
 {
    
    @Ajax

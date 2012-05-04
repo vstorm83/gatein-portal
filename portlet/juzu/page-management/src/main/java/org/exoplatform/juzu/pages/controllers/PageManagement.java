@@ -24,11 +24,9 @@ import java.util.List;
 import javax.inject.Inject;
 
 import org.exoplatform.juzu.pages.Session;
-import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.webui.page.PageQueryAccessList;
-import org.juzu.Controller;
 import org.juzu.Path;
 import org.juzu.Resource;
 import org.juzu.Response;
@@ -41,7 +39,7 @@ import org.juzu.template.Template;
  * @version $Id$
  * 
  */
-public class PageManagement extends Controller
+public class PageManagement
 {
    @Inject
    @Path("pages.gtmpl")
@@ -58,6 +56,9 @@ public class PageManagement extends Controller
    PageLayout layoutController;
    
    @Inject
+   PagePermissionSelector permissionSelector;
+   
+   @Inject
    Session session;
    
    @View
@@ -69,7 +70,11 @@ public class PageManagement extends Controller
          session.setQuery(query);
       }
       session.setListAccess(null);
-      pages.with().defautController(this).settingController(settingController).layoutController(layoutController).render();
+      pages.with().defautController(this)
+         .settingController(settingController)
+         .layoutController(layoutController)
+         .permissionSelector(permissionSelector)
+         .render();
    }
 
    @Ajax
