@@ -1,3 +1,12 @@
+var juzu = {
+	Modal: {},
+};
+
+juzu.Modal.alert = function(target, type, msg) {
+	$(target).append($("<div class='alert alert-message alert-" + type + " fade in'><a class='close' data-dismiss='alert' href='#'>×</a><p> " + msg + " </p></div>"));
+	window.setTimeout(function() { $(".alert-message").alert('close'); }, 2000);
+};
+
 $(function() {
 	//
 	$("#NewPageModal").modal({
@@ -18,17 +27,14 @@ $(function() {
 	
 	$("#PermissionSelectorModal").appendTo($(document.body));
 	
-	$("#show").on('click', function() {
+	$("#AccessPermissionSelectButton,#EditPermissionSelectButton").on('click', function() {
+		juzu.Modal.source = $(this).attr("id");
 		$("#PermissionSelectorModal").modal('show');
 	});
 	
 	//
-	var alert = function(type, msg) {
-		$("#alert-area").append($("<div class='alert alert-message alert-" + type + " fade in'><a class='close' data-dismiss='alert' href='#'>×</a><p> " + msg + " </p></div>"));
-		window.setTimeout(function() { $(".alert-message").alert('close'); }, 2000);
-	};
-	
 	$("#SaveNewPage").on('click', function() {
+		$("#AddNewPageForm").submit();
 		var savePageURL = null;
 		$('.jz').find('div').each(function() {
 			if($(this).attr('data-method-id') == 'PageSettings.saveNewPage')
@@ -39,10 +45,10 @@ $(function() {
 		    url: savePageURL,
 		    dataType: "html",
 		    success: function(data) {
-		    	alert("sucess", data);
+		    	juzu.Modal.alert("#alert-area", "sucess", data);
 		    },
 		    error: function(data) {
-		    	alert("error", data);
+		    	juzu.Modal.alert("#alert-area", "error", data);
 		    }
 		});
 		$("#NewPageModal").modal('hide');

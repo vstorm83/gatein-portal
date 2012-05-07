@@ -28,7 +28,7 @@
 						</tbody>
 					</table>
 					<div class="control-group">
-						<a id="show" class="btn">Add permission</a>
+						<a id="AccessPermissionSelectButton" class="btn">Add permission</a>
 					</div>
 				</div>
 			</div>
@@ -41,8 +41,8 @@
 						<%= settingController.renderEditPermission() %>
 						</div>
 						<div>
-							<a id="DeletePermission" class="btn btn-small">Delete Permission</a>
-							<a id="SelectPermission" class="btn btn-small">Select Permission</a>
+							<a id="EditPermissionDeleteButton" class="btn btn-small">Delete Permission</a>
+							<a id="EditPermissionSelectButton" class="btn btn-small">Select Permission</a>
 						</div>
 					</div>
 					<div class="span2"><p></p></div>

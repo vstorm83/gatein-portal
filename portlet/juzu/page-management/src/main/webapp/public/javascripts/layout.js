@@ -25,7 +25,7 @@ $(function() {
 	$("#LayoutItems").on("click", "li", function() {
 		$("#LayoutItems").find("li.active").each(function() {
 			$(this).removeClass("active");
-		})
+		});
 		$(this).addClass("active");
 		$(this).find("a").each(function() {
 			var name = $(this).text();
