@@ -1,3 +1,40 @@
-<ul class="treeview" id="GroupTree">
-  <div><%= permissionSelector.buildTree() %></div>
-</ul>
+<div class="row-fluid">
+	<div id="PermissionSelectorAlertArea" class="span12">
+	</div>
+</div>
+<div class="row-fluid">
+	<div class="span12">
+		<ul id="GroupSelectedBreadcrumb" class="breadcrumb">
+			<!-- TODO: generate from javascript -->
+			<li><span class="divider">/</span></li>
+		</ul>
+	</div>
+</div>
+<div class="row-fluid">
+	<div class="span6">
+		<div style="overflow: auto; height: 210px; border: 1px solid #DDD; border-radius: 6px;">
+			<div style="border-bottom: 1px solid #EEEEEE; text-align: center; padding: 5px;">
+				<h6>Browse and select a group</h6>
+			</div>
+			<div id="GroupTreeControlTrigger" style="display: none">
+				<a id="collapseAll" href="?#"></a>
+				<a id="expandAll" href="?#"></a>
+			</div>
+			<ul class="treeview" id="GroupTree">
+				<div><%=permissionSelector.buildGroupTree()%></div>
+			</ul>
+			<input type="hidden" id="GroupIdSelected" name="editGroupId"/>
+		</div>
+	</div>
+	<div class="span6">
+		<div style="height: 210px; border: 1px solid #DDD; border-radius: 6px;">
+			<div style="border-bottom: 1px solid #EEEEEE; text-align: center; padding: 5px;">
+				<h6>Select a membership</h6>
+			</div>
+			<ul class="nav nav-pills nav-stacked" id="MembershipList">
+				<%=permissionSelector.renderMembership() %>
+			</ul>
+			<input type="hidden" id="MembershipSelected" name="editMembership"/>
+		</div>
+	</div>
+</div>

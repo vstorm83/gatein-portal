@@ -9,7 +9,7 @@
           <li class=""><a href="#layout" data-toggle="tab">Page Layout</a></li>
           <li><a href="#permission" data-toggle="tab">Permission Settings</a></li>
         </ul>
-        <form id="AddNewPageForm" class="form-horizontal">
+        <form id="AddNewPageForm" class="form-horizontal" action="/" method="get">
         <div id="myTabContent" class="tab-content">
           <div class="tab-pane fade active in" id="settings">
             #{include path=settings.gtmpl/}
@@ -29,6 +29,7 @@
 </div>
 
 <div id="PermissionSelectorModal" class="modal hide fade" style="display: none;">
+	<input type="hidden" name="selectPermissionActionURL"/>
 	<div class="modal-header">
 		<a class="close" data-dismiss="modal">&times;</a>
 		<h3>Permission selector</h3>
@@ -38,5 +39,6 @@
 	</div>
 	<div class="modal-footer">
 		<a href="#" class="btn" data-dismiss="modal">Close</a>
+		<a id="DoneSelectPermissionButton" href="#" class="btn btn-primary">Done</a>
 	</div>
 </div>
