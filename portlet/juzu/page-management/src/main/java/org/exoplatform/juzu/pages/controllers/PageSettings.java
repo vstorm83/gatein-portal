@@ -27,12 +27,15 @@ import javax.inject.Inject;
 
 import org.exoplatform.juzu.pages.Utils;
 import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserACL.Permission;
 import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.webui.util.Util;
 import org.juzu.Resource;
 import org.juzu.Response;
+import org.juzu.impl.utils.Spliterator;
 import org.juzu.plugin.ajax.Ajax;
 
 /**
@@ -49,7 +52,10 @@ public class PageSettings
 
    @Inject
    UserPortalConfigService portalConfig;
-
+   
+   @Inject
+   DataStorage dataStorage;
+   
    @Inject
    UserACL userACL;
 
@@ -61,9 +67,32 @@ public class PageSettings
 
    @Ajax
    @Resource
-   public Response saveNewPage() throws Exception
+   public Response saveNewPage(
+      String ownerID, 
+      String ownerType, 
+      String pageName, 
+      String pageTitle, 
+      String layout, 
+      String accessPermission, 
+      String editPermission,
+      String publicMode,
+      String showMaxWindow) throws Exception
    {
-      return Response.ok("Success");
+      Page page = new Page();
+      page.setPageId(null);
+      page.setOwnerId(ownerID);
+      page.setOwnerType(ownerType);
+      page.setName(pageName);
+      page.setTitle(pageTitle);
+      page.setAccessPermissions(accessPermission.split(","));
+      page.setEditPermission(editPermission);
+      page.setShowMaxWindow("on".equals(showMaxWindow) ? true : false);
+      Page selectedPage = portalConfig.createPageTemplate(layout, ownerType, ownerID);
+      page.setChildren(selectedPage.getChildren());
+      page.setFactoryId(selectedPage.getFactoryId());
+      page.setModifiable(true);
+      dataStorage.save(page);
+      return Response.ok();
    }
 
    @Ajax
@@ -116,7 +145,9 @@ public class PageSettings
       return map;
    }
 
-   private String renderAccessPermission() throws Exception
+   @Ajax
+   @Resource
+   public String renderAccessPermission() throws Exception
    {
       return renderAccessPermission(Util.getUIPortal().getAccessPermissions());
    }
@@ -173,7 +204,9 @@ public class PageSettings
       return b.toString();
    }
 
-   private String renderEditPermission() throws Exception
+   @Ajax
+   @Resource
+   public String renderEditPermission() throws Exception
    {
       return renderEditPermission(Util.getUIPortal().getEditPermission());
    }
@@ -200,7 +233,7 @@ public class PageSettings
       if ("portal".equals(ownerType))
       {
          ownerID = "classic";
-         b.append("<input type='text' name='onwerID' value='").append(prContext.getPortalOwner())
+         b.append("<input type='text' name='ownerID' value='").append(prContext.getPortalOwner())
             .append("' readonly='readonly' />");
          return b.toString();
       }

@@ -20,7 +20,7 @@
 			</thead>
 			<tbody id="PageList">
 				<% 
-				String html = defautController.currentPageHtml(); 
+				String html = defautController.currentPageListHtml(); 
 				%>
 				${html}
 			</tbody>

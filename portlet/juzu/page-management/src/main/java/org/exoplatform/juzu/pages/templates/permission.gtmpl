@@ -27,6 +27,7 @@
 						<%= settingController.renderAccessPermission() %>
 						</tbody>
 					</table>
+					<input name="accessPermission" type="hidden" />
 					<div class="control-group">
 						<a id="AccessPermissionSelectButton" class="btn">Add permission</a>
 					</div>
@@ -37,9 +38,10 @@
 					<div class="span2"><p></p></div>
 					<div class="span8">
 						<p>Current permission:</p>
-						<div id="CurrentPermission">
+						<div id="CurrentEditPermission">
 						<%= settingController.renderEditPermission() %>
 						</div>
+						<input name="editPermission" type="hidden" />
 						<div>
 							<a id="EditPermissionDeleteButton" class="btn btn-small">Delete Permission</a>
 							<a id="EditPermissionSelectButton" class="btn btn-small">Select Permission</a>

@@ -99,7 +99,7 @@ public class PageManagement
       session.setQuery(query);
       PageQueryAccessList listAccess = new PageQueryAccessList(session.getQuery(), 10);
       session.setListAccess(listAccess);
-      return Response.ok(currentPageHtml());
+      return Response.ok(currentPageListHtml());
    }
 
    @Ajax
@@ -122,7 +122,7 @@ public class PageManagement
       return Response.ok(b.toString());
    }
    
-   private String currentPageHtml() throws Exception
+   private String currentPageListHtml() throws Exception
    {
       StringBuilder b = new StringBuilder();
       PageQueryAccessList listAccess = null;
