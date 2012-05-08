@@ -26,20 +26,20 @@
 				<div class="control-group">
 					<label class="control-label">Page Name</label>
 					<div class="controls">
-						<input type="text"/>
+						<input name="pageName" type="text"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<label class="control-label">Page Title</label>
 					<div class="controls">
-						<input type="text"/>
+						<input name="pageTitle" type="text"/>
 					</div>
 				</div>
 				<div class="control-group">
 					<div class="controls">
 						<label class="checkbox inline">
 							Show Max Window
-							<input type="checkbox"/>
+							<input name="showMaxWindow" type="checkbox"/>
 						</label>
 					</div>
 				</div>

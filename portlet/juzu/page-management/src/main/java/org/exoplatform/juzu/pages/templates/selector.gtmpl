@@ -23,7 +23,7 @@
 			<ul class="treeview" id="GroupTree">
 				<div><%=permissionSelector.buildGroupTree()%></div>
 			</ul>
-			<input type="hidden" id="GroupIdSelected" name="editGroupId"/>
+			<input type="hidden" id="GroupIdSelected"/>
 		</div>
 	</div>
 	<div class="span6">
@@ -34,7 +34,7 @@
 			<ul class="nav nav-pills nav-stacked" id="MembershipList">
 				<%=permissionSelector.renderMembership() %>
 			</ul>
-			<input type="hidden" id="MembershipSelected" name="editMembership"/>
+			<input type="hidden" id="MembershipSelected"/>
 		</div>
 	</div>
 </div>

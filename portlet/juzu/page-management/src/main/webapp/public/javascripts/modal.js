@@ -14,7 +14,6 @@ $(function() {
 		show: false
 	});
 	
-	$('#NewPageModal').appendTo($(document.body));
 	$('#NewPageModal').on('hide', function() {
 		$('#PermissionSelectorModal').modal('hide');
 	});
@@ -25,33 +24,31 @@ $(function() {
 		show: false
 	});
 	
-	$("#PermissionSelectorModal").appendTo($(document.body));
+	$("#AddNewPageForm").appendTo($(document.body));
 	
 	$("#AccessPermissionSelectButton,#EditPermissionSelectButton").on('click', function() {
 		juzu.Modal.source = $(this).attr("id");
 		$("#PermissionSelectorModal").modal('show');
 	});
 	
-	//
-	$("#SaveNewPage").on('click', function() {
-		$("#AddNewPageForm").submit();
-		var savePageURL = null;
-		$('.jz').find('div').each(function() {
-			if($(this).attr('data-method-id') == 'PageSettings.saveNewPage')
-				savePageURL = $(this).attr('data-url');
-		});
-		var ajaxGet = $.ajax({
-			type: "get",
-		    url: savePageURL,
-		    dataType: "html",
-		    success: function(data) {
-		    	juzu.Modal.alert("#alert-area", "sucess", data);
+	$('#AddNewPageForm').submit(function() {
+		$(this).ajaxSubmit({
+			target: '#alert-area',
+			success: function() {
+		    	juzu.Modal.alert("#alert-area", "sucess", "Create a new page successfully");
+		    	$('#AddNewPageForm').resetForm();
 		    },
-		    error: function(data) {
-		    	juzu.Modal.alert("#alert-area", "error", data);
+		    error: function() {
+		    	juzu.Modal.alert("#alert-area", "error", "A error when create a new page ");
 		    }
 		});
+		return false;
+	});
+	
+	//
+	$("#SaveNewPage").on('click', function() {
 		$("#NewPageModal").modal('hide');
 		$("#PermissionSelectorModal").modal('hide');
+		$("#AddNewPageForm").submit();
 	});
 });
