@@ -142,7 +142,7 @@ public class ResourceRequestFilter extends AbstractFilter
          //
          try
          {
-            skinService.renderCSS(renderer, uri);
+            skinService.renderCSS(renderer, uri, true);
             if (log.isDebugEnabled())
             {
                log.debug("Use a merged CSS: " + uri);

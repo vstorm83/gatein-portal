@@ -19,6 +19,25 @@
 
 package org.exoplatform.portal.resource;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.ServletContext;
+
 import org.exoplatform.commons.cache.future.FutureMap;
 import org.exoplatform.commons.cache.future.Loader;
 import org.exoplatform.commons.utils.BinaryOutput;
@@ -43,24 +62,9 @@ import org.gatein.wci.WebAppListener;
 import org.gatein.wci.impl.DefaultServletContainerFactory;
 import org.picocontainer.Startable;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.servlet.ServletContext;
+import com.asual.lesscss.LessEngine;
+import com.asual.lesscss.LessException;
+import com.asual.lesscss.LessOptions;
 
 @Managed
 @NameTemplate({@Property(key = "view", value = "portal"), @Property(key = "service", value = "management"),
@@ -154,9 +158,15 @@ public class SkinService extends AbstractResourceService implements Startable
       MAX_AGE = seconds;
    }
 
+   final private LessEngine engine;
    public SkinService(ExoContainerContext context, ResourceCompressor compressor)
    {
       super(compressor);
+//      For LESS 1.3.1-SNAPSHOT
+      LessOptions options = new LessOptions();
+      options.setCss(true);
+      engine = new LessEngine(options );
+//      engine = new LessEngine();
       Loader<String, CachedStylesheet, Orientation> loader = new Loader<String, CachedStylesheet, Orientation>()
       {
          public CachedStylesheet retrieve(Orientation context, String key) throws Exception
@@ -507,6 +517,10 @@ public class SkinService extends AbstractResourceService implements Startable
       }
    }
 
+   public boolean renderCSS(ResourceRenderer renderer, String path) throws RenderingException, IOException
+   {
+      return renderCSS(renderer, path, false);
+   }
    /**
     * Render css content of the file specified by the given URI
     * @param renderer
@@ -518,7 +532,7 @@ public class SkinService extends AbstractResourceService implements Startable
     * @return <code>true</code> if the <code>CSS resource </code>is found and rendered;
     *         <code>false</code> otherwise.
     */
-   public boolean renderCSS(ResourceRenderer renderer, String path) throws RenderingException, IOException
+   public boolean renderCSS(ResourceRenderer renderer, String path, boolean isLessCompile) throws RenderingException, IOException
    {
       Orientation orientation = Orientation.LT;
       if (path.endsWith("-lt.css"))
@@ -541,7 +555,23 @@ public class SkinService extends AbstractResourceService implements Startable
             return false;
          }
          processCSSRecursively(sb, false, skin, orientation);
-         byte[] bytes = sb.toString().getBytes("UTF-8");
+         String output = null;
+         if (isLessCompile)
+         {
+            try
+            {
+               output = engine.compile(sb.toString());
+            }
+            catch (LessException e)
+            {
+               e.printStackTrace();
+            }
+         }
+         else
+         {
+            output = sb.toString();
+         }
+         byte[] bytes = output.getBytes("UTF-8");
          renderer.getOutput().write(bytes);
       }
       else
