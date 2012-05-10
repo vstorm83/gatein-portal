@@ -564,7 +564,8 @@ public class SkinService extends AbstractResourceService implements Startable
             }
             catch (LessException e)
             {
-               e.printStackTrace();
+               log.error("Cannot compile the resource " + path, e);
+               output = sb.toString();
             }
          }
          else
