@@ -20,8 +20,10 @@
 package org.exoplatform.portal.resource;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -75,6 +77,8 @@ public class SkinService extends AbstractResourceService implements Startable
 {
 
    protected static Log log = ExoLogger.getLogger("portal.SkinService");
+   
+   private ServletContext servletContext;
 
    private static final Map<Orientation, String> suffixMap = new EnumMap<Orientation, String>(Orientation.class);
 
@@ -519,7 +523,7 @@ public class SkinService extends AbstractResourceService implements Startable
 
    public boolean renderCSS(ResourceRenderer renderer, String path) throws RenderingException, IOException
    {
-      return renderCSS(renderer, path, false);
+      return renderCSS(renderer, path, false, null);
    }
    /**
     * Render css content of the file specified by the given URI
@@ -532,7 +536,7 @@ public class SkinService extends AbstractResourceService implements Startable
     * @return <code>true</code> if the <code>CSS resource </code>is found and rendered;
     *         <code>false</code> otherwise.
     */
-   public boolean renderCSS(ResourceRenderer renderer, String path, boolean isLessCompile) throws RenderingException, IOException
+   public boolean renderCSS(ResourceRenderer renderer, String path, boolean isLessCompile, ServletContext servletContext) throws RenderingException, IOException
    {
       Orientation orientation = Orientation.LT;
       if (path.endsWith("-lt.css"))
@@ -548,6 +552,7 @@ public class SkinService extends AbstractResourceService implements Startable
       // Check if it is running under developing mode
       if (PropertyManager.isDevelopping())
       {
+         this.servletContext = servletContext;
          StringBuffer sb = new StringBuffer();
          Resource skin = getCSSResource(path, path);
          if (skin == null)
@@ -555,23 +560,7 @@ public class SkinService extends AbstractResourceService implements Startable
             return false;
          }
          processCSSRecursively(sb, false, skin, orientation);
-         String output = null;
-         if (isLessCompile)
-         {
-            try
-            {
-               output = engine.compile(sb.toString());
-            }
-            catch (LessException e)
-            {
-               log.error("Cannot compile the resource " + path, e);
-               output = sb.toString();
-            }
-         }
-         else
-         {
-            output = sb.toString();
-         }
+         String output = sb.toString();;
          byte[] bytes = output.getBytes("UTF-8");
          renderer.getOutput().write(bytes);
       }
@@ -892,11 +881,38 @@ public class SkinService extends AbstractResourceService implements Startable
       {
          return;
       }
+
+      Reader tmp = null;
       // The root URL for the entry
       String basePath = skin.getContextPath() + skin.getParentPath();
+      if (this.servletContext != null)
+      {
+         String resourcePath = skin.getPath().replaceFirst("^" + skin.getContextPath(), "");
+         try
+         {
+            File resourceFile = new File(servletContext.getRealPath(resourcePath));
+            String content = engine.compile(resourceFile);
+            tmp = new StringReader(content);
+         }
+         catch (Exception e)
+         {
+            if (e instanceof LessException)
+            {
+               log.error("Cannot process resource " + skin.getPath(), e);
+            }
+            else
+            {
+               log.error("Have any erorr in processing");
+            }
+            tmp = skin.read();
+         }
+      }
+      else
+      {
+         //
+         tmp = skin.read();
+      }
 
-      //
-      Reader tmp = skin.read();
       if (tmp == null)
       {
          throw new RenderingException("No skin resolved for path " + skin.getResourcePath());
