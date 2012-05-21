@@ -49,7 +49,7 @@ import org.juzu.Path;
 import org.juzu.Resource;
 import org.juzu.Response;
 import org.juzu.View;
-import org.juzu.io.CharStream;
+import org.juzu.io.Stream;
 import org.juzu.plugin.ajax.Ajax;
 import org.juzu.portlet.JuzuPortlet;
 import org.juzu.template.Template;
@@ -110,9 +110,9 @@ public class RegisterController extends Controller
    	return RegisterController_.index().setProperty(JuzuPortlet.PORTLET_MODE, PortletMode.VIEW);
    }
    
-   private Response.Resource<CharStream> createJSON(final Map<String, String> data)
+   private Response.Resource<Stream.Char> createJSON(final Map<String, String> data)
    {
-      Response.Resource<CharStream> json = new Response.Resource<CharStream>()
+      Response.Resource<Stream.Char> json = new Response.Resource<Stream.Char>(Stream.Char.class)
       {
 
          @Override
@@ -122,19 +122,13 @@ public class RegisterController extends Controller
          }
 
          @Override
-         public int getStatus()
+         public Integer getStatus()
          {
             return 200;
          }
 
          @Override
-         public Class<CharStream> getKind()
-         {
-            return CharStream.class;
-         }
-
-         @Override
-         public void send(CharStream stream) throws IOException
+         public void send(Stream.Char stream) throws IOException
          {
             stream.append("{");
             for (Map.Entry<String, String> entry : data.entrySet())

@@ -23,7 +23,7 @@ $(function() {
 		});
 		
 		if(($(this).scrollTop() + $(this).height()) > totalElementHeight) {
-			var nextPageUrl = this.PagesApplication().nextPage();
+			var nextPageUrl = $(this).jzURL("PageManagement.nextPage");
 			var ajaxGet = $.ajax({
 				type: "get",
 			    url: nextPageUrl,

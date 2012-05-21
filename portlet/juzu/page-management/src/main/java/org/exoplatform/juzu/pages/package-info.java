@@ -1,19 +1,21 @@
 @Application(defaultController = org.exoplatform.juzu.pages.controllers.PageManagement.class)
-@Assets(scripts = {@org.juzu.plugin.asset.Script(src = "public/javascripts/libs/jquery-1.7.1.min.js"),
-   @Script(src = "public/javascripts/libs/jquery.form.js"),
-   @Script(src = "public/javascripts/libs/jquery.treeview.js"),
-   @Script(src = "public/javascripts/libs/bootstrap-transition.js"),
-   @Script(src = "public/javascripts/libs/bootstrap-modal.js"),
-   @Script(src = "public/javascripts/libs/bootstrap-tab.js"),
-   @Script(src = "public/javascripts/libs/bootstrap-alert.js"),
-   @Script(src = "public/javascripts/pages.js"),
-   @Script(src = "public/javascripts/modal.js"),
-   @Script(src = "public/javascripts/settings.js"),
-   @Script(src = "public/javascripts/layout.js"),
-   @Script(src = "public/javascripts/selector.js")}, stylesheets = {
-   @Stylesheet(src = "public/stylesheets/bootstrap.css"), 
-   @Stylesheet(src = "public/stylesheets/bootstrap-responsive.css"),
-   @Stylesheet(src = "public/jquery.treeview.css")})
+@Assets(scripts = {
+   @Script(id = "jquery", src = "/public/javascripts/libs/jquery-1.7.1.min.js"),
+   @Script(src = "/public/javascripts/libs/jquery.form.js", depends="jquery"),
+   @Script(src = "/public/javascripts/libs/jquery.treeview.js", depends="jquery"),
+   @Script(src = "/public/javascripts/libs/bootstrap-transition.js", depends="jquery"),
+   @Script(src = "/public/javascripts/libs/bootstrap-modal.js", depends="jquery"),
+   @Script(src = "/public/javascripts/libs/bootstrap-tab.js", depends="jquery"),
+   @Script(src = "/public/javascripts/libs/bootstrap-alert.js", depends="jquery"),
+   @Script(src = "/public/javascripts/pages.js", depends="ajax.app"),
+   @Script(src = "/public/javascripts/modal.js", depends="ajax.app"),
+   @Script(src = "/public/javascripts/settings.js", depends="ajax.app"),
+   @Script(src = "/public/javascripts/layout.js", depends="ajax.app"),
+   @Script(src = "/public/javascripts/selector.js", depends="ajax.app")}, 
+   stylesheets = {
+   @Stylesheet(src = "/public/stylesheets/bootstrap.css"), 
+   @Stylesheet(src = "/public/stylesheets/bootstrap-responsive.css"),
+   @Stylesheet(src = "/public/jquery.treeview.css")})
 @Bindings({
    @Binding(value = org.exoplatform.portal.config.UserPortalConfigService.class, implementation = GateInMetaProvider.class),
    @Binding(value = org.exoplatform.portal.config.DataStorage.class, implementation = GateInMetaProvider.class),

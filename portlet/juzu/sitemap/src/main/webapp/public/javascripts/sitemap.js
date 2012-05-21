@@ -6,7 +6,7 @@ juzu.Sitemap.lazyLoad = function() {
 	var child = $(this).find("ul");
 	if(child.length == 1) {
 		if(!child[0].childElementCount) {
-			var loadAction = this.SitemapApplication().loadChild();
+			var loadAction = $(this).jzURL("SitemapApplication.loadChild");
 			var param = {};
 			var id = $(this).attr("id");
 			param["id"] = id.substr(0,id.indexOf("-"));

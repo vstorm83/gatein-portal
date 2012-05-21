@@ -1,10 +1,6 @@
 $(function() {
-	
-	var changeLayoutCateogryURL = null;
-	$('.jz').find('div').each(function() {
-		if($(this).attr('data-method-id') == 'PageLayout.changeLayoutCategory')
-			changeLayoutCateogryURL = $(this).attr('data-url');
-	});
+
+	var changeLayoutCateogryURL = $(".jz").jzURL("PageLayout.changeLayoutCategory");
 	
 	$("#LayoutCategories").change(function() {
 		var value = $(this).val();

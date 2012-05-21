@@ -5,11 +5,7 @@ $(function() {
 		control: "#GroupTreeControlTrigger",
 	});
 	
-	var breadcrumbURL = null;
-	$('.jz').find('div').each(function() {
-		if($(this).attr('data-method-id') == 'PagePermissionSelector.renderBreadcrumb')
-			breadcrumbURL = $(this).attr('data-url');
-	});
+	var breadcrumbURL = $('.jz').jzURL('PagePermissionSelector.renderBreadcrumb');
 	
 	$("#GroupTree").find("span").each(function() {
 		$(this).on('click', function() {
