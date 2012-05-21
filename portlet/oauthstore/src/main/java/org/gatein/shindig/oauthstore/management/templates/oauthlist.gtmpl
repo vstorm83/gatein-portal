@@ -2,12 +2,11 @@
 
 <div class="OAuthConsumer">
 	<div><h1>
-	Shindig OAuth Store: Manage mappings of gadget and OAuth key</h1></div>
+	OAuth Store: Manage OAuth key</h1></div>
 	<div>
 	<% if(allConsumers != null) { %>
-		<table border="1">
+		<table class="table table-striped table-bordered table-condensed">
 			<tr bgcolor="#99CCFF">
-				<td valign="top"><b>Gadget Uri</b></td>
 				<td valign="top"><b>Key Name</b></td>
 				<td valign="top"><b>Consumer Key</b></td>
 				<td valign="top"><b>Consumer Secret</b></td>
@@ -16,12 +15,6 @@
 			</tr>
 			 <% for (def consumer : allConsumers) { %>
 				<tr>
-					<td>
-					<% for (def uri : consumer.gadgetUris) {%>
-						  <div>${uri}\n</div>
-					<% } %>
-					
-					</td>
 					<td><a href="@{OAuthStore.showConsumerDetail(keyName =  consumer.keyName)}">${consumer.keyName}</a></td>
 					<td>${consumer.consumerKey}</td>
 					<td>${consumer.consumerSecret}</td>
@@ -37,8 +30,8 @@
 	<% } %>
 	<br />
 	    <p>
-    		<a class="OSummit" href="@{OAuthStore.showAddNewConsumer()}">Add Consumer</a>
-    		<a class="OSummit" href="@{OAuthStore.showAddMapping()}">Add Mapping</a>
+    		<a class="btn" href="@{OAuthStore.showAddNewConsumer()}">Add Consumer</a>
+    		<a class="btn" href="@{OAuthStore.showAddMapping()}">Add Mapping</a>
 		</p>
 	</div>
 </div>

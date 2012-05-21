@@ -3,10 +3,10 @@
 
 <div class="OAuthConsumer">
 	<div><h2>
-	Shindig OAuth Store: Manage mappings of consumer</h2></div>
+	OAuth Consumer Key</h2></div>
 	<div>
 	<% if(consumer != null) { %>
-		<table>
+		<table class="table">
 			<tr><td valign="top"><b>Key Name: </b></td>
 				<td>${consumer.keyName}</td>	
 			</tr>
@@ -21,9 +21,9 @@
 			</tr>
 		</table>
 		
-		<div><h3>List of gadget Uri mappings to this consumer</h3></div>
+		<div><h3>Gadget URI mappings</h3></div>
 		
-		<table border="1">
+		<table class="table table-striped table-bordered table-condensed">
 			<tr bgcolor="#99CCFF">
 				<td valign="top"><b>Gadget Uri</b></td>
 				<td valign="top"><b>Action</b></td>

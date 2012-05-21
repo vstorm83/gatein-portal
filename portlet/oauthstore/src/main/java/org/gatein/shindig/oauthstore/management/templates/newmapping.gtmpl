@@ -4,7 +4,7 @@
 
 <div class="AddEntry">
 	<form action="@{OAuthStore.submitNewMapping()}" method="post">
-		<div><h2>Add OAuth Store Consumer</h2></div>
+		<div><h2>Add Gadget URI mapping</h2></div>
 
 		<% if (message != null) { %>
 			<div class="OMessage">${message}</div>
@@ -28,7 +28,7 @@
 			</tr>
 		</table>
 
-		<input type="submit" value="Add" class="OSubmit" />
+		<input type="submit" value="Add" />
 		<br />
 	</form>
 </div>

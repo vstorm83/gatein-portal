@@ -4,6 +4,7 @@
       @Script(src = "js/oauthstore.js")
    },
    stylesheets = {
+      @Stylesheet(src = "skin/bootstrap.min.css"),
       @Stylesheet(src = "skin/stylesheet.css")
    }
 )
