@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.juzu.Response;
-import org.juzu.io.CharStream;
+import org.juzu.io.Stream;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -32,9 +32,9 @@ import org.juzu.io.CharStream;
 public class Utils
 {
    
-   public static Response.Resource<CharStream> createJSON(final Map<String, String> data)
+   public static Response.Resource<Stream.Char> createJSON(final Map<String, String> data)
    {
-      Response.Resource<CharStream> json = new Response.Resource<CharStream>()
+      Response.Resource<Stream.Char> json = new Response.Resource<Stream.Char>(Stream.Char.class)
       {
 
          @Override
@@ -44,19 +44,13 @@ public class Utils
          }
 
          @Override
-         public int getStatus()
+         public Integer getStatus()
          {
             return 200;
          }
 
          @Override
-         public Class<CharStream> getKind()
-         {
-            return CharStream.class;
-         }
-
-         @Override
-         public void send(CharStream stream) throws IOException
+         public void send(Stream.Char stream) throws IOException
          {
             stream.append("{");
             for (Map.Entry<String, String> entry : data.entrySet())

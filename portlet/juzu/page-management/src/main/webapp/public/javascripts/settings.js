@@ -1,14 +1,8 @@
 $(function() {
 	
 	//
-	var changeOwnerTypeURL = null;
-	var changeOwnerIdURL = null;
-	$('.jz').find('div').each(function() {
-		if($(this).attr('data-method-id') == 'PageSettings.changeOwnerType')
-			changeOwnerTypeURL = $(this).attr('data-url');
-		else if($(this).attr('data-method-id') == 'PageSettings.changeOwnerID')
-			changeOwnerIdURL =$(this).attr('data-url');
-	});
+	var changeOwnerTypeURL = $('.jz').jzURL('PageSettings.changeOwnerType');
+	var changeOwnerIdURL = $('.jz').jzURL('PageSettings.changeOwnerID');
 	
 	//
 	var doUpdate = function(data) {

@@ -39,10 +39,8 @@ $(function() {
 	}
 	
 	var doCheck = function(elt) {
-		var actionURL = elt.RegisterApplication().validate();
+		var actionURL = $(elt).jzURL("RegisterController.validate");
 		var param = {};
-		
-		//if($(elt).parents('.control-group').hasClass('success')) return;
 		
 		param["name"] = $(elt).attr("name");
 		param["value"] = $(elt).val();
