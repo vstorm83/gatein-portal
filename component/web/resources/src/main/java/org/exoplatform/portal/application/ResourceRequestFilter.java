@@ -87,7 +87,7 @@ public class ResourceRequestFilter extends AbstractFilter
       long ifModifiedSince = httpRequest.getDateHeader(IF_MODIFIED_SINCE);
 
       //
-      if (uri.endsWith(".css"))
+      if (uri.endsWith(".css") || uri.endsWith(".less"))
       {
 //     Check if cached resource has not been modifed, return 304 code      
          long cssLastModified = skinService.getLastModified(uri);
@@ -142,7 +142,14 @@ public class ResourceRequestFilter extends AbstractFilter
          //
          try
          {
-            skinService.renderCSS(renderer, uri, true, getServletContext());
+            if (uri.endsWith(".less"))
+            {
+               skinService.renderCSS(renderer, uri, true, getServletContext());
+            }
+            else
+            {
+               skinService.renderCSS(renderer, uri);
+            }
             if (log.isDebugEnabled())
             {
                log.debug("Use a merged CSS: " + uri);
