@@ -107,11 +107,16 @@
 }
 
 .UIHomePagePortlet .AdImageRight {
-	text-align: right; /* orientation=lt */
-	text-align: left; /* orientation=rt */
-	height: 255px; 
-	padding: 0px 10px 0px 200px; /* orientation=lt */
-	padding: 0px 200px 0px 10px; /* orientation=rt */
+   height: 255px;
+   .dir(@dir);
+   .dir(lt) {
+      text-align : right;
+      padding: 0px 10px 0px 200px;
+   }
+   .dir(rt) {
+      text-align : left;
+      padding: 0px 200px 0px 10px;
+   }
 }
 
 .UIHomePagePortlet .AdImageLeft .EmptyBlock {
