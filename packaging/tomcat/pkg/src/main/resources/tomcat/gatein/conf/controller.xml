@@ -73,7 +73,7 @@
       <value>staticResource</value>
     </route-param>
     <path-param qname="gtn:path" encoding="preserve-path">
-      <pattern>.*\.(jpg|png|gif|ico|css)</pattern>
+      <pattern>.*\.(jpg|png|gif|ico|css|less)</pattern>
     </path-param>
   </route>
 

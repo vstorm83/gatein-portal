@@ -26,9 +26,14 @@
     xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_2">
   <priority>1</priority>
   <page-nodes>
+     <node>
+	    <name>less_home</name>
+      <label xml:lang="en">Home Page LESS</label>
+	    <page-reference>portal::classic::lesshomepage</page-reference>
+	  </node>
 	  <node>
 	    <name>home</name>
-      <label xml:lang="en">Home</label>
+      <label xml:lang="en">Home Page CSS</label>
       <label xml:lang="cs">Domů</label>
       <label xml:lang="fr">Accueil</label>
       <label xml:lang="es">Inicio</label>
