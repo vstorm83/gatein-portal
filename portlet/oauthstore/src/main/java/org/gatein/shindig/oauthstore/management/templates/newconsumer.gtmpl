@@ -32,7 +32,7 @@
 			</tr>
 		</table>
 
-		<input type="submit" value="Add" class="OSubmit" />
+		<input type="submit" value="Add" class="btn btn-large" />
 		<br />
 	</form>
 </div>

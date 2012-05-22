@@ -26,10 +26,12 @@ import org.gatein.shindig.oauthstore.management.Session;
 import org.juzu.Action;
 import org.juzu.Controller;
 import org.juzu.Path;
+import org.juzu.Resource;
 import org.juzu.Response;
 import org.juzu.View;
 import org.juzu.impl.compiler.BaseProcessor;
 import org.juzu.impl.utils.Logger;
+import org.juzu.plugin.ajax.Ajax;
 
 import java.util.List;
 
@@ -42,38 +44,39 @@ import javax.inject.Inject;
 public class OAuthStore extends Controller
 {
    private final Logger log = BaseProcessor.getLogger(OAuthStore.class);
-   
+
    @Inject
    @Path("oauthlist.gtmpl")
    org.gatein.shindig.oauthstore.management.templates.oauthlist oauthList;
-   
+
    @Inject
    @Path("newconsumer.gtmpl")
    org.gatein.shindig.oauthstore.management.templates.newconsumer newConsumer;
-   
-   @Inject
-   @Path("newmapping.gtmpl")
-   org.gatein.shindig.oauthstore.management.templates.newmapping newMapping;
-   
+
    @Inject
    @Path("consumerdetail.gtmpl")
    org.gatein.shindig.oauthstore.management.templates.consumerdetail consumerDetail;
+
+   @Inject
+   @Path("mappings.gtmpl")
+   org.gatein.shindig.oauthstore.management.templates.mappings mappings;
    
    @Inject
    Session session;
-   
+
    //@Inject
    String message;
-   
+
    @View
    public void index()
    {
       OAuthStoreConsumerService store =
-         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(OAuthStoreConsumerService.class);
+         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(
+            OAuthStoreConsumerService.class);
       List<OAuthStoreConsumer> allConsumers = store.getAllConsumers();
       oauthList.with().allConsumers(allConsumers).render();
    }
-   
+
    @View
    public void addNewConsumer()
    {
@@ -81,60 +84,48 @@ public class OAuthStore extends Controller
    }
    
    @View
-   public void addMapping()
-   {
-      OAuthStoreConsumerService store =
-         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(OAuthStoreConsumerService.class);
-      List<OAuthStoreConsumer> allConsumers = store.getAllConsumers();
-      newMapping.with().allConsumers(allConsumers).render();
-   }
-   
-   @View
    public void consumerDetail()
    {
       consumerDetail.with().consumer(session.getConsumer()).render();
    }
-   
+
    @Action
    public Response deleteConsumer(String keyName)
    {
       OAuthStoreConsumerService dataService =
-         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(OAuthStoreConsumerService.class);
+         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(
+            OAuthStoreConsumerService.class);
       dataService.removeConsumer(keyName);
       return OAuthStore_.index();
    }
-   
+
    @Action
    public Response showAddNewConsumer()
    {
       return OAuthStore_.addNewConsumer();
    }
-   
-   @Action
-   public Response showAddMapping()
-   {
-      return OAuthStore_.addMapping();
-   }
-   
+
    @Action
    public Response showConsumerDetail(String keyName)
    {
       OAuthStoreConsumerService dataService =
-         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(OAuthStoreConsumerService.class);
+         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(
+            OAuthStoreConsumerService.class);
       session.setConsumer(dataService.getConsumer(keyName));
       return OAuthStore_.consumerDetail();
    }
-   
+
    @Action
    public Response deleteMapping(String keyName, String gadgetUri)
    {
       OAuthStoreConsumerService dataService =
-         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(OAuthStoreConsumerService.class);
+         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(
+            OAuthStoreConsumerService.class);
       dataService.removeMappingKeyAndGadget(keyName, gadgetUri);
       session.setConsumer(dataService.getConsumer(keyName));
       return OAuthStore_.consumerDetail();
    }
-   
+
    @Action
    public Response submitNewConsumer(String keyName, String consumerKey, String consumerSecret, String keyType)
    {
@@ -145,12 +136,14 @@ public class OAuthStore extends Controller
          return OAuthStore_.addNewConsumer();
       }
 
-      if (keyType.equals("RSA_PRIVATE")) {
-        consumerSecret.replaceAll("-----[A-Z ]*-----", "").replace("\n", "");
+      if (keyType.equals("RSA_PRIVATE"))
+      {
+         consumerSecret.replaceAll("-----[A-Z ]*-----", "").replace("\n", "");
       }
-      
+
       OAuthStoreConsumerService dataService =
-         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(OAuthStoreConsumerService.class);
+         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(
+            OAuthStoreConsumerService.class);
       OAuthStoreConsumer consumer = new OAuthStoreConsumer(keyName, consumerKey, consumerSecret, keyType, null);
       try
       {
@@ -160,31 +153,28 @@ public class OAuthStore extends Controller
       {
          log.log("Can not store consumer with key name: " + consumer.getKeyName() + e.getMessage());
       }
-      
+
       return OAuthStore_.index();
    }
-   
-   @Action
-   public Response submitNewMapping(String gadgetUri, String keyName)
+
+   @Ajax
+   @Resource
+   public void addGadgetURIToKey(String gadgetURI, String keyName)
    {
-      if (gadgetUri == "" || keyName == "")
+      if (gadgetURI != null && keyName != null)
       {
-         message = "Gadget Uri is not null";
-         return OAuthStore_.addMapping();
+         OAuthStoreConsumerService store =
+            (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(
+               OAuthStoreConsumerService.class);
+         try
+         {
+            store.addMappingKeyAndGadget(keyName, gadgetURI);
+         }
+         catch (Exception e)
+         {
+            log.log("Can not add map key:" + keyName + " and gadget uri:" + gadgetURI + e.getMessage());
+         }
+         mappings.with().consumer(store.getConsumer(keyName)).render();
       }
-      
-      //TODO: check if mapping is added before, show message
-      
-      OAuthStoreConsumerService store =
-         (OAuthStoreConsumerService)PortalContainer.getInstance().getComponentInstanceOfType(OAuthStoreConsumerService.class);
-      try
-      {
-         store.addMappingKeyAndGadget(keyName, gadgetUri);
-      }
-      catch (Exception e)
-      {
-         log.log("Can not add map key:" + keyName + " and gadget uri:" + gadgetUri + e.getMessage());
-      }
-      return OAuthStore_.index();
    }
 }

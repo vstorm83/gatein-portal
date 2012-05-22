@@ -1,11 +1,13 @@
 @Application
 @Assets(
    scripts = {
-      @Script(src = "js/oauthstore.js")
+      @Script(id = "jquery", src = "/js/jquery.js"),
+      @Script(src = "/js/bootstrap-modal.js"),
+      @Script(src = "/js/oauthstore.js", depends = "ajax.app")
    },
    stylesheets = {
-      @Stylesheet(src = "skin/bootstrap.min.css"),
-      @Stylesheet(src = "skin/stylesheet.css")
+      @Stylesheet(src = "/css/bootstrap.css"),
+      @Stylesheet(src = "/css/stylesheet.css")
    }
 )
 package org.gatein.shindig.oauthstore.management;

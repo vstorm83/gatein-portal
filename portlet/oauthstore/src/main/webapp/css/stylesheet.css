@@ -27,3 +27,8 @@
 	text-align: center;
 	font-size: 14px;
 }
+
+.modal-backdrop {
+  position: relative;
+	background: none;
+}

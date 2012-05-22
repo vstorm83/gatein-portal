@@ -1,5 +1,5 @@
 <div class="ShindigOAuth">
-	<div class="ONavigation"><a href="@{OAuthStore.index()}"><<< Back to List</a></div>
+	<div class="ONavigation"><a href="@{OAuthStore.index()}"><i class="icon-home"></i>List</a></div>
 	<br />
 
 	#{insert/}

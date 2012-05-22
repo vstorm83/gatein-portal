@@ -1,0 +1,24 @@
+#{param name=consumer/}
+
+<% if(consumer != null) { %>   
+   <table class="table table-striped table-bordered table-condensed">
+      <tr bgcolor="#99CCFF">
+         <td valign="top"><b>Gadget URI</b></td>
+         <td valign="top"><b>Action</b></td>
+      </tr>
+       <% for (def uri : consumer.gadgetUris) {%>
+         <tr>
+            <td>           
+               <div>${uri}\n</div>              
+            </td>
+            <td>
+                <p>
+                  <a href="@{OAuthStore.deleteMapping(keyName = consumer.keyName, gadgetUri = uri)}" title="Delete this mapping">Delete</a>
+               </p>
+            </td>
+         </tr>
+      <% } %>
+   </table>
+<% } else { %>
+   No gadget URI
+<% } %>
