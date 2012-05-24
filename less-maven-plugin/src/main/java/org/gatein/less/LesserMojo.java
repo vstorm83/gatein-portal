@@ -16,16 +16,12 @@ package org.gatein.less;
  * limitations under the License.
  */
 
+import com.asual.lesscss.LessEngine;
+import org.apache.maven.plugin.AbstractMojo;
+import org.apache.maven.plugin.MojoExecutionException;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
-
-import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.juzu.plugin.less.impl.lesser.Compilation;
-import org.juzu.plugin.less.impl.lesser.JSR223Context;
-import org.juzu.plugin.less.impl.lesser.Lesser;
-import org.juzu.plugin.less.impl.lesser.URLLessContext;
 
 /**
  * Says "Hi" to the user.
@@ -35,27 +31,27 @@ import org.juzu.plugin.less.impl.lesser.URLLessContext;
  */
 public class LesserMojo extends AbstractMojo
 {
-   
+
    /**
     * @parameter
     * @required
     */
    private Module[] modules;
-   
+
    public void execute() throws MojoExecutionException
    {
       try
       {
-         Lesser lesser = new Lesser(new JSR223Context());
-         for(Module module : modules)
+         LessEngine engine = new LessEngine();
+         for (Module module : modules)
          {
             getLog().info(module.getName());
             getLog().info(module.getHomeDirectory());
             getLog().info(module.getOutput());
-            Compilation result = (Compilation)lesser.parse(new URLLessContext(new File(module.getHomeDirectory()).toURI().toURL()), module.getName());
+            String result = engine.compile(new File(module.getHomeDirectory() + "/" + module.getName()));
             BufferedWriter writer = new BufferedWriter(new FileWriter(module.getOutput()));
-            getLog().info(result.getValue());
-            writer.write(result.getValue());
+            getLog().info("The RESULT: \n" + result);
+            writer.write(result);
             writer.close();
          }
       }
@@ -64,20 +60,4 @@ public class LesserMojo extends AbstractMojo
          throw new MojoExecutionException(e.getMessage());
       }
    }
-   
-//   private void collect(File file, final List<File> holder) 
-//   {
-//      if(file.isDirectory()) 
-//      {
-//         Collections.addAll(holder, file.listFiles(new FileFilter()
-//         {
-//            @Override
-//            public boolean accept(File file)
-//            {
-//               if(file.isDirectory()) collect(file, holder);
-//               return file.getName().endsWith(".less");
-//            }
-//         }));
-//      }
-//   }
 }
