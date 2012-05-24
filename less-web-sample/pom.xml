@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>exo.portal.parent</artifactId>
+    <groupId>org.exoplatform.portal</groupId>
+    <version>3.3.0-CR01-SNAPSHOT</version>
+  </parent>
+  <groupId>org.example</groupId>
+  <artifactId>less-web-sample</artifactId>
+  <version>1.0</version>
+  <packaging>war</packaging>
+  <name>webapp Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+
+  <build>
+		<finalName>less-web-sample</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.10</version>
+				<configuration>
+					<stopPort>9966</stopPort>
+					<stopKey>foo</stopKey>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.gatein.less</groupId>
+				<artifactId>less-maven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<modules>
+						<!--
+						<module>
+							<name>bootstrap.less</name>
+							<input>src/main/webapp/public/less/bootstrap</input>
+							<output>src/main/webapp/public/css/bootstrap.css</output>
+						</module>
+						-->
+						<module>
+							<name>entry-lt.less</name>
+							<home>src/main/webapp/public/less/gatein</home>
+							<output>src/main/webapp/public/css/gatein-lt.css</output>
+						</module>
+						<module>
+							<name>entry-rt.less</name>
+							<home>src/main/webapp/public/less/gatein</home>
+							<output>src/main/webapp/public/css/gatein-rt.css</output>
+						</module>
+					</modules>
+				</configuration>
+			</plugin>
+		</plugins>
+  </build>
+</project>

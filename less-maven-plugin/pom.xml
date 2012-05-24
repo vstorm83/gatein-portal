@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>exo.portal.parent</artifactId>
+    <groupId>org.exoplatform.portal</groupId>
+    <version>3.3.0-CR01-SNAPSHOT</version>
+  </parent>
+  <groupId>org.gatein.less</groupId>
+  <artifactId>less-maven-plugin</artifactId>
+  <version>1.0</version>
+  <packaging>maven-plugin</packaging>
+  <name>Lesser Maven Plugin</name>
+	<url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.maven</groupId>
+      <artifactId>maven-plugin-api</artifactId>
+      <version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.juzu</groupId>
+			<artifactId>juzu-plugins-less</artifactId>
+			<version>0.4.5-SNAPSHOT</version>
+		</dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
