@@ -59,4 +59,7 @@
    <import>war:/conf/portal/controller-configuration.xml</import>
    <import>war:/conf/portal/web-configuration.xml</import>
    <import>war:/conf/portal/gadget-configuration.xml</import>
+
+   <!-- API -->
+   <import>war:/conf/api/api-configuration.xml</import>
 </configuration>

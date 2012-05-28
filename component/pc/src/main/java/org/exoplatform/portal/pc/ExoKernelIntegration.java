@@ -23,6 +23,7 @@ import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.resources.ResourceBundleService;
+import org.gatein.api.GateIn;
 import org.gatein.common.logging.Logger;
 import org.gatein.common.logging.LoggerFactory;
 import org.gatein.pc.api.PortletInvoker;
@@ -91,6 +92,10 @@ public class ExoKernelIntegration implements Startable
       // The portlet application deployer
       portletApplicationRegistry = new ExoPortletApplicationDeployer();
       portletApplicationRegistry.setContainerPortletInvoker(containerPortletInvoker);
+
+      // API
+      GateIn gateIn = (GateIn)container.getComponentInstanceOfType(GateIn.class);
+      ((ExoPortletApplicationDeployer)portletApplicationRegistry).setAPIInstance(gateIn);
 
       // activate schema validation for portlet.xml if needed
       String validation = PropertyManager.getProperty("gatein.portlet.validation");

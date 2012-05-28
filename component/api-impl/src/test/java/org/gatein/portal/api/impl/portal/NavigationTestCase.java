@@ -11,6 +11,7 @@ import org.gatein.portal.api.impl.AbstractAPITestCase;
 
 import java.net.URI;
 import java.util.Iterator;
+import java.util.List;
 
 /** @author <a href="mailto:julien.viet@exoplatform.com">Julien Viet</a> */
 public class NavigationTestCase extends AbstractAPITestCase
@@ -32,6 +33,18 @@ public class NavigationTestCase extends AbstractAPITestCase
       assertNotNull(rootNav);
       Iterator<? extends Navigation> i = rootNav.getChildren().iterator();
       assertFalse(i.hasNext());
+   }
+
+   public void testGetSites()
+   {
+      createSite(SiteType.PORTAL, "classic");
+
+      List<Site> sites = gatein.getSites();
+
+      assertNotNull(sites);
+      assertEquals(1, sites.size());
+      assertEquals("classic", sites.get(0).getName());
+
    }
 
    public void testSingleNavigation()
@@ -80,7 +93,7 @@ public class NavigationTestCase extends AbstractAPITestCase
    public void testGroupSite()
    {
       createSite(SiteType.GROUP, "/platform/users");
-      Space site = gatein.getSpaceByGroup("platform", "users[p");
+      Space site = gatein.getSpaceByGroup("platform", "users");
       assertNotNull(site);
    }
 

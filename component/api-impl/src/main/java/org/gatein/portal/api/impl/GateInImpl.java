@@ -72,6 +72,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -197,8 +198,30 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
    @Override
    public List<Site> getSites()
    {
-      //TODO:
-      throw new NotYetImplemented();
+      try
+      {
+         begin();
+         List<PortalData> portals = dataStorage.find(PORTALS).getAll();
+
+         List<Site> sites = new LinkedList<Site>();
+
+         for (PortalData portalData : portals)
+         {
+            PortalKey key = portalData.getKey();
+            sites.add(new SiteImpl(key.getType() + "::" + key.getId(), portalData.getName(), this));
+         }
+
+         return sites;
+
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException(e);
+      }
+      finally
+      {
+         end();
+      }
    }
 
    @Override
@@ -275,8 +298,32 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
    @Override
    public List<Space> getSpaces(Range range)
    {
-      //TODO:
-      throw new NotYetImplemented();
+      try
+      {
+         begin();
+
+         //TODO: must be better way
+         final GroupHandler groupHandler = getOrganizationService().getGroupHandler();
+         Collection<Group> groups = groupHandler.getAllGroups();
+
+         List<Space> spaces = new LinkedList<Space>();
+
+
+         for (Group group : groups)
+         {
+            spaces.add(getSpaceByGroup(group.getId()));
+         }
+
+         return spaces;
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException(e);
+      }
+      finally
+      {
+         end();
+      }
    }
 
    @Override
