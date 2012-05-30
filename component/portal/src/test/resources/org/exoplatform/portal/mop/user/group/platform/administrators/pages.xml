@@ -30,11 +30,14 @@
     <title>New Account</title>
     <access-permissions>MembershipType_1:/Group1</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
-    <application>
-      <instance-id>group#platform/administrators:/exoadmin/AccountPortlet/Account</instance-id>
+    <portlet-application>
+      <portlet>
+        <application-ref>exoadmin</application-ref>
+        <portlet-ref>AccountPortlet</portlet-ref>
+      </portlet>
       <title>New Account</title>
       <show-info-bar>false</show-info-bar>
-    </application>  
+    </portlet-application>
   </page>           
   
   <page>
@@ -45,11 +48,14 @@
     <title>Community Management</title>
     <access-permissions>manager:/platform/administrators</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
-    <application>
-      <instance-id>group#platform/administrators:/exoadmin/OrganizationPortlet/Organization</instance-id>
+    <portlet-application>
+      <portlet>
+        <application-ref>exoadmin</application-ref>
+        <portlet-ref>OrganizationPortlet</portlet-ref>
+      </portlet>
       <title>Community Management</title>
       <show-info-bar>false</show-info-bar>      
-    </application>     
+    </portlet-application>
   </page>
   
   <page>
@@ -60,11 +66,14 @@
     <title>Registry</title>
     <access-permissions>manager:/platform/administrators</access-permissions>
     <edit-permission>manager:/platform/administrators</edit-permission>
-    <application>
-      <instance-id>group#platform/administrators:/exoadmin/ApplicationRegistryPortlet/ApplicationRegistry</instance-id>
+    <portlet-application>
+      <portlet>
+        <application-ref>exoadmin</application-ref>
+        <portlet-ref>ApplicationRegistryPortlet</portlet-ref>
+      </portlet>
       <title>Application Registry</title>
       <show-info-bar>false</show-info-bar>
-    </application>   
+    </portlet-application>
   </page>
   
   <page>
@@ -75,12 +84,15 @@
     <title>Page Management</title>
 	  <access-permissions>manager:/platform/administrators</access-permissions>
 	  <edit-permission>manager:/platform/administrators</edit-permission>    
-    <application>
-      <instance-id>group#platform/administrators:/exoadmin/PageManagementPortlet/PageManagement</instance-id>
+    <portlet-application>
+      <portlet>
+        <application-ref>exoadmin</application-ref>
+        <portlet-ref>PageManagementPortlet</portlet-ref>
+      </portlet>
       <title>Page Management</title>
       <access-permissions>Everyone</access-permissions>
       <show-info-bar>false</show-info-bar>
-    </application>  
+    </portlet-application>
   </page>
   
 </page-set>

@@ -284,17 +284,6 @@ public class NewPortalConfigListener extends BaseComponentPlugin
                   log.error("NewPortalConfig error: " + e.getMessage(), e);
                }
             }
-            for (NewPortalConfig ele : configs)
-            {
-               try
-               {
-                  initPortletPreferencesDB(ele);
-               }
-               catch (Exception e)
-               {
-                  log.error("NewPortalConfig error: " + e.getMessage(), e);
-               }
-            }
          }
          finally
          {
@@ -350,10 +339,6 @@ public class NewPortalConfigListener extends BaseComponentPlugin
             for (NewPortalConfig ele : configs)
             {
                initPortalConfigDB(ele);
-            }
-            for (NewPortalConfig ele : configs)
-            {
-               initPortletPreferencesDB(ele);
             }
          }
          finally
@@ -573,17 +558,6 @@ public class NewPortalConfigListener extends BaseComponentPlugin
       }
    }
 
-   public void initPortletPreferencesDB(NewPortalConfig config) throws Exception
-   {
-      for (String owner : config.getPredefinedOwner())
-      {
-         if (!config.getOwnerType().equals(PortalConfig.USER_TYPE))
-         {
-            createPortletPreferences(config, owner);
-         }
-      }
-   }
-
    public boolean createPortalConfig(NewPortalConfig config, String owner) throws Exception
    {
       String type = config.getOwnerType();
@@ -678,21 +652,6 @@ public class NewPortalConfigListener extends BaseComponentPlugin
 
       //
       merge.perform();
-   }
-
-   public void createPortletPreferences(NewPortalConfig config, String owner) throws Exception
-   {
-      UnmarshalledObject<PortletPreferencesSet> obj = getConfig(config, owner, "portlet-preferences", PortletPreferencesSet.class);
-      if (obj == null)
-      {
-         return;
-      }
-      PortletPreferencesSet portletSet = obj.getObject();
-      ArrayList<PortletPreferences> list = portletSet.getPortlets();
-      for (PortletPreferences portlet : list)
-      {
-         dataStorage_.save(portlet);
-      }
    }
 
    private final Pattern OWNER_PATTERN = Pattern.compile("@owner@");

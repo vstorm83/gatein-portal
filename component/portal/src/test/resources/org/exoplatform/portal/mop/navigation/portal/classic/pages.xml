@@ -28,8 +28,11 @@
     <title>Home Page</title>
 	  <access-permissions>Everyone</access-permissions>
 	  <edit-permission>*:/platform/administrators</edit-permission>
-    <application>
-      <instance-id>portal#classic:/web/HomePagePortlet/homepageportlet</instance-id>
+    <portlet-application>
+      <portlet>
+        <application-ref>web</application-ref>
+        <portlet-ref>HomePagePortlet</portlet-ref>
+      </portlet>
       <title>Home Page portlet</title>
       <show-info-bar>false</show-info-bar>
       <show-application-state>false</show-application-state>
@@ -38,7 +41,7 @@
         <entry key="locationX">23432</entry>
         <entry key="locationY">343534</entry>
       </properties>
-    </application>
+    </portlet-application>
   </page>    
     
   <page>
@@ -49,11 +52,14 @@
     <title>Web Explorer</title>
 	  <access-permissions>*:/platform/users</access-permissions>
 	  <edit-permission>*:/platform/administrators</edit-permission>    
-    <application>
-      <instance-id>group#platform/users:/web/BrowserPortlet/WebExplorer</instance-id>
+    <portlet-application>
+      <portlet>
+        <application-ref>web</application-ref>
+        <portlet-ref>BrowserPortlet</portlet-ref>
+      </portlet>
       <title>Web Explorer</title>
       <show-info-bar>false</show-info-bar>
-    </application>  
+    </portlet-application>
   </page>  
 
 </page-set>

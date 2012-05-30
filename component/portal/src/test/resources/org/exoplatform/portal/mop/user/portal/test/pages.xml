@@ -44,9 +44,18 @@
       <factory-id>container_1_factory_id</factory-id>
       <description>container_1_description</description>
     </container>
-    <application>
-      <instance-id>portal#test:/web/BannerPortlet/banner</instance-id>
-      <application-type>application_1_type</application-type>
+    <portlet-application>
+      <portlet>
+        <application-ref>web</application-ref>
+        <portlet-ref>BannerPortlet</portlet-ref>
+        <preferences>
+          <preference>
+            <name>template</name>
+            <value>par:/groovy/groovy/webui/component/UIBannerPortlet.gtmpl</value>
+            <read-only>false</read-only>
+          </preference>
+        </preferences>
+      </portlet>
       <theme>application_1_theme</theme>
       <title>application_1_title</title>
       <access-permissions>application_1_access_permissions</access-permissions>
@@ -60,7 +69,7 @@
       <properties>
         <entry key="prop_key">application_1_prop_value</entry>
       </properties>
-    </application>
+    </portlet-application>
   </page>
     
   <page>
@@ -73,25 +82,58 @@
     <owner-type>portal</owner-type>
     <owner-id>test</owner-id>
     <name>test3</name>
-    <application>
-      <instance-id>portal#notexisting:/web/BannerPortlet/banner2</instance-id>
-    </application>
+    <portlet-application>
+      <portlet>
+        <application-ref>web</application-ref>
+        <portlet-ref>BannerPortlet</portlet-ref>
+      </portlet>
+    </portlet-application>
   </page>
 
   <page>
     <owner-type>portal</owner-type>
     <owner-id>test</owner-id>
     <name>test4</name>
-    <application>
-      <instance-id>portal#test:/web/BannerPortlet/banner</instance-id>
-    </application>
+    <portlet-application>
+      <portlet>
+        <application-ref>web</application-ref>
+        <portlet-ref>BannerPortlet</portlet-ref>
+        <preferences>
+          <preference>
+            <name>template</name>
+            <value>par:/groovy/groovy/webui/component/UIBannerPortlet.gtmpl</value>
+            <read-only>false</read-only>
+          </preference>
+        </preferences>
+      </portlet>
+    </portlet-application>
     <container>
-      <application>
-        <instance-id>portal#test:/web/BannerPortlet/banner</instance-id>
-      </application>
-      <application>
-        <instance-id>portal#test:/web/FooterPortlet/footer</instance-id>
-      </application>
+      <portlet-application>
+        <portlet>
+          <application-ref>web</application-ref>
+          <portlet-ref>BannerPortlet</portlet-ref>
+          <preferences>
+            <preference>
+              <name>template</name>
+              <value>par:/groovy/groovy/webui/component/UIBannerPortlet.gtmpl</value>
+              <read-only>false</read-only>
+            </preference>
+          </preferences>
+        </portlet>
+      </portlet-application>
+      <portlet-application>
+        <portlet>
+          <application-ref>web</application-ref>
+          <portlet-ref>FooterPortlet</portlet-ref>
+          <preferences>
+            <preference>
+              <name>template</name>
+              <value>par:/groovy/groovy/webui/component/UIFooterPortlet.gtmpl</value>
+              <read-only>false</read-only>
+            </preference>
+          </preferences>
+        </portlet>
+      </portlet-application>
     </container>
   </page>
 

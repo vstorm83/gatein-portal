@@ -25,27 +25,39 @@
   <edit-permission>*:/platform/administrators</edit-permission>
 
  	<portal-layout>
-		<application>
-	    <instance-id>portal#classic:/web/BannerPortlet/banner</instance-id>
+		<portlet-application>
+        <portlet>
+          <application-ref>web</application-ref>
+          <portlet-ref>BannerPortlet</portlet-ref>
+        </portlet>
 	    <show-info-bar>false</show-info-bar>
-	  </application>
+	  </portlet-application>
 
-	  <application>
-	  	<instance-id>portal#classic:/web/NavigationPortlet/toolbar</instance-id>
+	  <portlet-application>
+       <portlet>
+         <application-ref>web</application-ref>
+         <portlet-ref>NavigationPortlet</portlet-ref>
+       </portlet>
 	    <show-info-bar>false</show-info-bar>
-	  </application>
+	  </portlet-application>
 
-	  <application>
-	    <instance-id>portal#classic:/web/BreadcumbsPortlet/breadcumbs</instance-id>
+	  <portlet-application>
+       <portlet>
+         <application-ref>web</application-ref>
+         <portlet-ref>BreadcumbsPortlet</portlet-ref>
+       </portlet>
 	    <show-info-bar>false</show-info-bar>
-	  </application>
+	  </portlet-application>
 
 	  <page-body> </page-body>
 
-	  <application>
-	    <instance-id>portal#classic:/web/FooterPortlet/footer</instance-id>
+	  <portlet-application>
+       <portlet>
+         <application-ref>web</application-ref>
+         <portlet-ref>FooterPortlet</portlet-ref>
+       </portlet>
 	    <show-info-bar>false</show-info-bar>
-	  </application>
+	  </portlet-application>
   </portal-layout>
 
 </portal-config>

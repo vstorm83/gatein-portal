@@ -105,21 +105,6 @@ public class TestJIBXXmlMapping extends AbstractGateInTest
 */
    }
 
-   public void testPortletPreferencesMapping() throws Exception
-   {
-      IBindingFactory bfact = BindingDirectory.getFactory(PortalConfig.class);
-      IUnmarshallingContext uctx = bfact.createUnmarshallingContext();
-      Object obj =
-         uctx.unmarshalDocument(
-            new FileInputStream("src/test/resources/org/exoplatform/portal/config/conf/portal/classic/portlet-preferences.xml"), null);
-      assertEquals(PortletPreferencesSet.class, obj.getClass());
-
-      IMarshallingContext mctx = bfact.createMarshallingContext();
-      mctx.setIndent(2);
-      mctx.marshalDocument(obj, "UTF-8", null, new FileOutputStream("target/portlet-preferences.xml"));
-      assertEquals(PortletPreferencesSet.class, obj.getClass());
-   }
-
    public void testPortletApplicationMapping() throws Exception
    {
       IBindingFactory bfact = BindingDirectory.getFactory(PortalConfig.class);

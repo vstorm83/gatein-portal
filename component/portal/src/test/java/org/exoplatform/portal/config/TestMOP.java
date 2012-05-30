@@ -21,10 +21,13 @@ package org.exoplatform.portal.config;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortletPreferences;
+import org.exoplatform.portal.application.Preference;
 import org.exoplatform.portal.config.model.Application;
+import org.exoplatform.portal.config.model.ApplicationState;
 import org.exoplatform.portal.config.model.Container;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
+import org.exoplatform.portal.config.model.PersistentApplicationState;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.Described;
 import org.exoplatform.portal.mop.ProtectedResource;
@@ -115,12 +118,6 @@ public class TestMOP extends AbstractConfigTest
       assertNotNull(page);
       assertEquals("group::/test/legacy::register", page.getPageId());
       assertEquals("/test/legacy", page.getOwnerId());
-      Application app = (Application)page.getChildren().get(0);
-      //    assertEquals("group#/test/legacy:/web/IFramePortlet/blog", app.getInstanceState().getWeakReference());
-
-      PortletPreferences prefs = storage.getPortletPreferences("group#/test/legacy:/web/IFramePortlet/blog");
-      assertNotNull(prefs);
-      assertEquals("group#/test/legacy:/web/IFramePortlet/blog", prefs.getWindowId());
    }
 
    public void testLoadGroupWithNormalizedName() throws Exception
@@ -136,13 +133,6 @@ public class TestMOP extends AbstractConfigTest
       assertNotNull(page);
       assertEquals("group::/test/normalized::register", page.getPageId());
       assertEquals("/test/normalized", page.getOwnerId());
-      Application app = (Application)page.getChildren().get(0);
-      //    assertEquals("group#/test/normalized:/exoadmin/AccountPortlet/Account", app.getInstanceState().getWeakReference());
-
-      PortletPreferences prefs =
-         storage.getPortletPreferences("group#/test/normalized:/exoadmin/AccountPortlet/Account");
-      assertNotNull(prefs);
-      assertEquals("group#/test/normalized:/exoadmin/AccountPortlet/Account", prefs.getWindowId());
    }
 
    public void testLoadNavigation() throws Exception

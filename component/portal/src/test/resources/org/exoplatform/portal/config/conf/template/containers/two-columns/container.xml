@@ -21,16 +21,20 @@
 -->
 
 <container template="classpath:groovy/dashboard/webui/component/UIColumnContainer.gtmpl">
-  	<container template="classpath:groovy/dashboard/webui/component/UIContainer.gtmpl">
-			<application>
-	      <instance-id>/eXoGadgets/Calendar</instance-id>
-	      <application-type>eXoGadget</application-type>
-	    </application>  	
-  	</container>
- 		<container template="classpath:groovy/dashboard/webui/component/UIContainer.gtmpl">
-			<application>
-	      <instance-id>/eXoGadgets/Calculator</instance-id>
-	      <application-type>eXoGadget</application-type>
-	    </application> 		
- 		</container>
+
+  <container template="classpath:groovy/dashboard/webui/component/UIContainer.gtmpl">
+    <gadget-application>
+      <gadget>
+        <gadget-ref>Calendar</gadget-ref>
+      </gadget>
+    </gadget-application>
+  </container>
+
+  <container template="classpath:groovy/dashboard/webui/component/UIContainer.gtmpl">
+    <gadget-application>
+      <gadget>
+        <gadget-ref>Calculator</gadget-ref>
+      </gadget>
+    </gadget-application>
+  </container>
 </container>

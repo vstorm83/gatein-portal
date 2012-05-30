@@ -28,11 +28,21 @@
     <title>TestTitle</title>
 	  <access-permissions>*:/platform/normalized/legacy</access-permissions>
 	  <edit-permission>*:/platform/administrators</edit-permission>    
-    <application>
-      <instance-id>group#/test/normalized:/exoadmin/AccountPortlet/Account</instance-id>
+    <portlet-application>
+      <portlet>
+        <application-ref>exoadmin</application-ref>
+        <portlet-ref>AccountPortlet</portlet-ref>
+        <preferences>
+          <preference>
+            <name>url</name>
+            <value>http://blog.exoplatform.org</value>
+            <read-only>false</read-only>
+          </preference>
+        </preferences>
+      </portlet>
       <title>New Account</title>
       <show-info-bar>false</show-info-bar>      
-    </application>  
+    </portlet-application>
   </page>          
     
 </page-set>

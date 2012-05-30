@@ -28,11 +28,21 @@
     <title>TestTitle</title>
 	  <access-permissions>*:/test/legacy</access-permissions>
 	  <edit-permission>*:/platform/administrators</edit-permission>    
-    <application>
-      <instance-id>group#test/legacy:/web/IFramePortlet/blog</instance-id>
+    <portlet-application>
+      <portlet>
+        <application-ref>web</application-ref>
+        <portlet-ref>IFramePortlet</portlet-ref>
+        <preferences>
+          <preference>
+            <name>url</name>
+            <value>http://blog.exoplatform.org</value>
+            <read-only>false</read-only>
+          </preference>
+        </preferences>
+      </portlet>
       <title>New Account</title>
       <show-info-bar>false</show-info-bar>      
-    </application>  
+    </portlet-application>
   </page>          
     
 </page-set>

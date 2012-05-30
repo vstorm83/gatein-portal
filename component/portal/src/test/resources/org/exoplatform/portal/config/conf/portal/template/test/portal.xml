@@ -31,11 +31,24 @@
     <entry key="prop_key">test_prop_value</entry>
   </properties>
     
- 	<portal-layout> 		
-		<application>
-	    <instance-id>portal#@owner@:/web/BannerPortlet/banner</instance-id>
-	  </application>
-	  <page-body> </page-body>
+  <portal-layout>
+
+    <portlet-application>
+      <portlet>
+        <application-ref>web</application-ref>
+        <portlet-ref>BannerPortlet</portlet-ref>
+        <preferences>
+          <preference>
+            <name>template</name>
+            <value>par:/groovy/groovy/webui/component/UIBannerPortlet.gtmpl</value>
+            <read-only>false</read-only>
+          </preference>
+        </preferences>
+      </portlet>
+    </portlet-application>
+
+    <page-body> </page-body>
+
   </portal-layout>
   
 </portal-config>
