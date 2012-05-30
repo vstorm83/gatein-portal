@@ -511,9 +511,19 @@
             <artifactId>exo.portal.component.management</artifactId>
             <version>3.3.0-CR01-SNAPSHOT</version>
          </dependency>
-        <dependency>
+         <dependency>
             <groupId>org.exoplatform.portal</groupId>
             <artifactId>exo.portal.component.api</artifactId>
+            <version>3.3.0-CR01-SNAPSHOT</version>
+         </dependency>
+         <dependency>
+            <groupId>org.exoplatform.portal</groupId>
+            <artifactId>exo.portal.component.api.java</artifactId>
+            <version>3.3.0-CR01-SNAPSHOT</version>
+         </dependency>
+        <dependency>
+            <groupId>org.exoplatform.portal</groupId>
+            <artifactId>exo.portal.component.api.rest</artifactId>
             <version>3.3.0-CR01-SNAPSHOT</version>
          </dependency>
          <dependency>
