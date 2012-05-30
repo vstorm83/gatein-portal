@@ -32,6 +32,7 @@ import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.pom.data.OwnerKey;
 import org.exoplatform.portal.pom.data.PageData;
 import org.exoplatform.portal.pom.data.PageKey;
+import org.exoplatform.portal.pom.data.PortalKey;
 import org.gatein.api.portal.PortalObject;
 import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Page;
@@ -48,8 +49,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a> */
-/** @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a> */
+/**
+ * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
+ * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
+ */
 public abstract class PortalObjectImpl implements PortalObject
 {
 
@@ -84,7 +87,7 @@ public abstract class PortalObjectImpl implements PortalObject
    @Override
    public String toString()
    {
-      return getOwnerType() + "\n" + getRootNavigation().toString();
+      return getOwnerType() + "\n" + getNavigation().toString();
    }
 
    @Override
@@ -115,7 +118,7 @@ public abstract class PortalObjectImpl implements PortalObject
       throw new NotYetImplemented();
    }
 
-   public Navigation getRootNavigation()
+   public Navigation getNavigation()
    {
       GateInImpl gateIn = getGateInImpl();
       NavigationService service = gateIn.getNavigationService();
@@ -191,6 +194,20 @@ public abstract class PortalObjectImpl implements PortalObject
 
    abstract SiteKey getMOPSiteKey();
 
+   static PortalKey createPortalKey(PortalObject po)
+   {
+      switch (po.getType())
+      {
+         case SITE:
+            return new PortalKey(SiteImpl.OWNER_TYPE, po.getId());
+         case SPACE:
+            return new PortalKey(SpaceImpl.OWNER_TYPE, po.getId());
+         case DASHBOARD:
+            return new PortalKey(DashboardImpl.OWNER_TYPE, po.getId());
+      }
+      throw new RuntimeException("Not recognized type: " + po.getType());
+   }
+
    GateInImpl getGateInImpl()
    {
       return gateIn;
@@ -239,7 +256,7 @@ public abstract class PortalObjectImpl implements PortalObject
                PageData data = gateIn.getDataStorage().getPage(key);
                if (data != null)
                {
-                  page = new PageImpl(data, getId(), gateIn);
+                  page = new PageImpl(data, getId(), getType(), gateIn);
                   if (cache == EMPTY_CACHE)
                   {
                      cache = new HashMap<PageKey, PageImpl>();
@@ -259,4 +276,5 @@ public abstract class PortalObjectImpl implements PortalObject
          return page;
       }
    }
+
 }

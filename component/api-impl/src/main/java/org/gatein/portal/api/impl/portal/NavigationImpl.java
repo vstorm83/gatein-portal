@@ -58,7 +58,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-/** @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a> */
+/**
+ * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
+ * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
+ */
 public class NavigationImpl implements Navigation
 {
    private final NodeContext<NavigationImpl> context;
@@ -116,7 +119,7 @@ public class NavigationImpl implements Navigation
       {
          try
          {
-            PortalKey key = PortalKey.create(portalObject.getId());
+            PortalKey key = PortalObjectImpl.createPortalKey(portalObject);
             RequestContext requestContext = RequestContext.getCurrentInstance();
             SiteType siteType = SiteType.valueOf(key.getType().toUpperCase());
             String siteName = key.getId();
@@ -169,7 +172,7 @@ public class NavigationImpl implements Navigation
       if (target != null)
       {
          PortalObject po = target.getPortalObject();
-         PortalKey key = PortalKey.create(po.getId());
+         PortalKey key = PortalObjectImpl.createPortalKey(po);
          String ref = key.getType() + "::" + key.getId() + "::" + target.getName();
          context.setState(context.getState().builder().pageRef(ref).build());
       }

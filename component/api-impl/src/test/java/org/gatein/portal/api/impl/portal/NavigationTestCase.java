@@ -22,13 +22,13 @@ public class NavigationTestCase extends AbstractAPITestCase
       createSite(SiteType.PORTAL, "classic");
 
       //
-      Site site = gatein.getSite("portal::classic");
+      Site site = gatein.getSite("classic");
       assertNotNull(site);
-      assertEquals("portal::classic", site.getId());
+      assertEquals("classic", site.getId());
       assertEquals("classic", site.getName());
 
       //
-      Navigation rootNav = site.getRootNavigation();
+      Navigation rootNav = site.getNavigation();
       assertSame(site, rootNav.getPortalObject());
       assertNotNull(rootNav);
       Iterator<? extends Navigation> i = rootNav.getChildren().iterator();
@@ -54,8 +54,8 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       //
-      Site site = gatein.getSiteByName("classic");
-      Navigation rootNav = site.getRootNavigation();
+      Site site = gatein.getSite("classic");
+      Navigation rootNav = site.getNavigation();
       Iterator<? extends Navigation> i = rootNav.getChildren().iterator();
       assertTrue(i.hasNext());
       Navigation homeNav = i.next();
@@ -73,13 +73,13 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       //
-      Site site = gatein.getSiteByName("classic");
+      Site site = gatein.getSite("classic");
       Page homePage = site.getPage("homepage");
       assertNotNull(homePage);
       assertEquals("homepage", homePage.getName());
 
       //
-      Navigation rootNav = site.getRootNavigation();
+      Navigation rootNav = site.getNavigation();
       Navigation homeNav = rootNav.getChild("home");
       assertNull(homeNav.getTargetPage());
       homeNav.setTargetPage(homePage);
@@ -93,14 +93,14 @@ public class NavigationTestCase extends AbstractAPITestCase
    public void testGroupSite()
    {
       createSite(SiteType.GROUP, "/platform/users");
-      Space site = gatein.getSpaceByGroup("platform", "users");
+      Space site = gatein.getSpace("platform", "users");
       assertNotNull(site);
    }
 
    public void testDashboardSite()
    {
       createSite(SiteType.USER, "root");
-      Dashboard site = gatein.getDashboardByUser("root");
+      Dashboard site = gatein.getDashboard("root");
       assertNotNull(site);
    }
 }

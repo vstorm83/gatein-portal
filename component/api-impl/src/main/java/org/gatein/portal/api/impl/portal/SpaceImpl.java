@@ -23,29 +23,28 @@
 package org.gatein.portal.api.impl.portal;
 
 import org.exoplatform.portal.mop.SiteKey;
+import org.gatein.api.portal.PortalObjectType;
 import org.gatein.api.portal.Space;
 import org.gatein.common.NotYetImplemented;
 import org.gatein.portal.api.impl.GateInImpl;
 
-/** @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a> */
-/** @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a> */
+/**
+ * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
+ * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
+ */
 public class SpaceImpl extends PortalObjectImpl implements Space
 {
    public static String OWNER_TYPE = "group";
 
-   private final String groupId;
-
-   public SpaceImpl(String spaceId, String groupId, GateInImpl gateIn)
+   public SpaceImpl(String spaceId, GateInImpl gateIn)
    {
       super(spaceId, gateIn);
-      this.groupId = groupId;
    }
 
    @Override
    public String getGroupId()
    {
-      //TODO
-      throw new NotYetImplemented();
+      return getId();
    }
 
    @Override
@@ -57,5 +56,11 @@ public class SpaceImpl extends PortalObjectImpl implements Space
    public String getOwnerType()
    {
       return OWNER_TYPE;
+   }
+
+   @Override
+   public PortalObjectType getType()
+   {
+      return PortalObjectType.DASHBOARD;
    }
 }

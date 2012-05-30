@@ -89,16 +89,16 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
 
    public static String SITE_USER = "user";
 
-   private static final String GROUP_CHARS = "\\w|-|_";
+//   private static final String GROUP_CHARS = "\\w|-|_";
 
-   public static final String SITE_TYPE_COMPONENT = "type";
-   public static final String SITE_NAME_COMPONENT = "name";
-   public static final String APPLICATION_COMPONENT = "application";
-   public static final String PORTLET_COMPONENT = "portlet";
-   public static final String INVOKER_COMPONENT = "invoker";
-   public static final String CATEGORY_COMPONENT = "category";
+//   public static final String SITE_TYPE_COMPONENT = "type";
+//   public static final String SITE_NAME_COMPONENT = "name";
+//   public static final String APPLICATION_COMPONENT = "application";
+//   public static final String PORTLET_COMPONENT = "portlet";
+//   public static final String INVOKER_COMPONENT = "invoker";
+//   public static final String CATEGORY_COMPONENT = "category";
 
-   public static final Pattern INVOKER_COMPONENT_PATTERN = Pattern.compile("\\w+");
+//   public static final Pattern INVOKER_COMPONENT_PATTERN = Pattern.compile("\\w+");
 
 
 
@@ -142,60 +142,6 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
    }
 
    @Override
-   public List<PortalObject> getPortalObjects()
-   {
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public List<PortalObject> getPortalObjects(Range range)
-   {
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public PortalObjectQuery<PortalObject> createPortalObjectQuery()
-   {
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   public PortalObject getPortalObject(String portalObjectId)
-   {
-
-      PortalKey key = PortalKey.create(portalObjectId);
-
-//      Type<Site> siteType = siteId.getType();
-      PortalData data = getPortalDataFor(key);
-
-      if (key.getType().equalsIgnoreCase(SITE_PORTAL))
-      {
-         return new SiteImpl(portalObjectId, data.getKey().getId(), this);
-      }
-      else if (key.getType().equalsIgnoreCase(SITE_GROUP))
-      {
-         return new SpaceImpl(portalObjectId, data.getKey().getId(), this);
-      }
-      else if (key.getType().equalsIgnoreCase(SITE_USER))
-      {
-         return new DashboardImpl(portalObjectId, data.getKey().getId(), this);
-      }
-      else
-      {
-         throw new IllegalArgumentException("Unknown Site type: " + key.getType());
-      }
-   }
-
-   @Override
-   public void removePortalObject(String poId)
-   {
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
    public List<Site> getSites()
    {
       try
@@ -208,7 +154,7 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
          for (PortalData portalData : portals)
          {
             PortalKey key = portalData.getKey();
-            sites.add(new SiteImpl(key.getType() + "::" + key.getId(), portalData.getName(), this));
+            sites.add(new SiteImpl(portalData.getName(), this));
          }
 
          return sites;
@@ -234,32 +180,14 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
    @Override
    public Site getSite(String siteId)
    {
-      PortalKey key = PortalKey.create(siteId);
+      PortalKey key = new PortalKey(SITE_PORTAL, siteId);
 
 //      Type<Site> siteType = siteId.getType();
       PortalData data = getPortalDataFor(key);
 
       if (key.getType().equalsIgnoreCase(SITE_PORTAL))
       {
-         return new SiteImpl(siteId, data.getKey().getId(), this);
-      }
-      else
-      {
-         throw new IllegalArgumentException("Provided id doesn't contain proper type related to site: " + key.getType());
-      }
-   }
-
-   @Override
-   public Site getSiteByName(String name)
-   {
-      PortalKey key = new PortalKey(SITE_PORTAL, name);
-
-//      Type<Site> siteType = siteId.getType();
-      PortalData data = getPortalDataFor(key);
-
-      if (key.getType().equalsIgnoreCase(SITE_PORTAL))
-      {
-         return new SiteImpl(key.getType() + "::" + key.getId(), data.getKey().getId(), this);
+         return new SiteImpl(data.getKey().getId(), this);
       }
       else
       {
@@ -311,7 +239,7 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
 
          for (Group group : groups)
          {
-            spaces.add(getSpaceByGroup(group.getId()));
+            spaces.add(getSpace(group.getId()));
          }
 
          return spaces;
@@ -327,16 +255,16 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
    }
 
    @Override
-   public Space getSpaceByGroup(String groupId)
+   public Space getSpace(String spaceId)
    {
-      PortalKey key = new PortalKey(SITE_GROUP, groupId);
+      PortalKey key = new PortalKey(SITE_GROUP, spaceId);
 
 //      Type<Site> siteType = siteId.getType();
       PortalData data = getPortalDataFor(key);
 
       if (key.getType().equalsIgnoreCase(SITE_GROUP))
       {
-         return new SpaceImpl(key.getType() + "::" + key.getId(), data.getKey().getId(), this);
+         return new SpaceImpl(data.getKey().getId(), this);
       }
       else
       {
@@ -345,7 +273,7 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
    }
 
    @Override
-   public Space getSpaceByGroup(String... groupId)
+   public Space getSpace(String... groupId)
    {
       StringBuilder groupIdBuilder = new StringBuilder();
       for (String partId : groupId)
@@ -355,26 +283,8 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
 
       }
 
-      return getSpaceByGroup(groupIdBuilder.toString());
+      return getSpace(groupIdBuilder.toString());
 
-   }
-
-   @Override
-   public Space getSpace(String spaceId)
-   {
-      PortalKey key = PortalKey.create(spaceId);
-
-//      Type<Site> siteType = siteId.getType();
-      PortalData data = getPortalDataFor(key);
-
-      if (key.getType().equalsIgnoreCase(SITE_GROUP))
-      {
-         return new SpaceImpl(spaceId, data.getKey().getId(), this);
-      }
-      else
-      {
-         throw new IllegalArgumentException("Provided id doesn't contain proper type related to space: " + key.getType());
-      }
    }
 
    @Override
@@ -406,16 +316,16 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
    }
 
    @Override
-   public Dashboard getDashboardByUser(String userId)
+   public Dashboard getDashboard(String dashboardId)
    {
-      PortalKey key = new PortalKey(SITE_USER, userId);
+      PortalKey key = new PortalKey(SITE_USER, dashboardId);
 
 //      Type<Site> siteType = siteId.getType();
       PortalData data = getPortalDataFor(key);
 
       if (key.getType().equalsIgnoreCase(SITE_USER))
       {
-         return new DashboardImpl(key.getType() + "::" + key.getId(), data.getKey().getId(), this);
+         return new DashboardImpl(data.getKey().getId(), this);
       }
       else
       {
@@ -423,25 +333,6 @@ public class GateInImpl implements GateIn, Startable, LifecycleManager
       }
    }
 
-   @Override
-   public Dashboard getDashboardById(String dashboardId)
-   {
-
-      PortalKey key = PortalKey.create(dashboardId);
-
-//      Type<Site> siteType = siteId.getType();
-      PortalData data = getPortalDataFor(key);
-
-      if (key.getType().equalsIgnoreCase(SITE_USER))
-      {
-         return new DashboardImpl(dashboardId, data.getKey().getId(), this);
-      }
-      else
-      {
-         throw new IllegalArgumentException("Provided id doesn't contain proper type related to dashboard: " + key.getType());
-      }
-
-   }
 
    @Override
    public PortalObjectQuery<Dashboard> createDashboardQuery()

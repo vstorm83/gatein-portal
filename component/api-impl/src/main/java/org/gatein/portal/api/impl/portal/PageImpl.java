@@ -29,28 +29,47 @@ import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Page;
 import org.gatein.api.portal.PageType;
 import org.gatein.api.portal.PortalObject;
+import org.gatein.api.portal.PortalObjectType;
 import org.gatein.common.NotYetImplemented;
 import org.gatein.portal.api.impl.GateInImpl;
 
 import java.util.List;
 
-/** @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a> */
+/**
+ * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
+ * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
+ */
 public class PageImpl implements Page
 {
    private final String portalObjectId;
+   private final PortalObjectType portalObjectType;
    private PageData pageData;
    protected final GateInImpl gateIn;
 
-   public PageImpl(PageData pageData, String portalObjectId, GateInImpl gateIn)
+   public PageImpl(PageData pageData, String portalObjectId, PortalObjectType type, GateInImpl gateIn)
    {
       this.portalObjectId = portalObjectId;
+      this.portalObjectType = type;
       this.pageData = pageData;
       this.gateIn = gateIn;
    }
 
    public PortalObject getPortalObject()
    {
-      return getGateInImpl().getPortalObject(portalObjectId);
+
+      switch (portalObjectType)
+      {
+         case SITE:
+            return getGateInImpl().getSite(portalObjectId);
+
+         case SPACE:
+            return getGateInImpl().getSpace(portalObjectId);
+
+         case DASHBOARD:
+            return getGateInImpl().getDashboard(portalObjectId);
+      }
+
+      throw new RuntimeException("Not supported object type: " + portalObjectType);
    }
 
    public String getTitle()

@@ -24,27 +24,27 @@ package org.gatein.portal.api.impl.portal;
 
 import org.exoplatform.portal.mop.SiteKey;
 import org.gatein.api.portal.Dashboard;
+import org.gatein.api.portal.PortalObjectType;
 import org.gatein.api.portal.Site;
 import org.gatein.portal.api.impl.GateInImpl;
 
-/** @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a> */
-/** @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a> */
+/**
+ * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
+ * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
+ */
 public class DashboardImpl extends PortalObjectImpl implements Dashboard
 {
    public static String OWNER_TYPE = "user";
 
-   private final String userId;
-
-   public DashboardImpl(String dashboardId, String userId, GateInImpl gateIn)
+   public DashboardImpl(String dashboardId, GateInImpl gateIn)
    {
       super(dashboardId, gateIn);
-      this.userId = userId;
    }
 
    @Override
    public String getUserId()
    {
-      return userId;
+      return getId();
    }
 
    @Override
@@ -56,6 +56,12 @@ public class DashboardImpl extends PortalObjectImpl implements Dashboard
 
    protected SiteKey getMOPSiteKey()
    {
-      return SiteKey.user(userId);
+      return SiteKey.user(getId());
+   }
+
+   @Override
+   public PortalObjectType getType()
+   {
+      return PortalObjectType.DASHBOARD;
    }
 }

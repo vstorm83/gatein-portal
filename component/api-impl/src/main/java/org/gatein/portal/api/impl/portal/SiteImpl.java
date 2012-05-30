@@ -23,27 +23,27 @@
 package org.gatein.portal.api.impl.portal;
 
 import org.exoplatform.portal.mop.SiteKey;
+import org.gatein.api.portal.PortalObjectType;
 import org.gatein.api.portal.Site;
 import org.gatein.portal.api.impl.GateInImpl;
 
-/** @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a> */
-/** @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a> */
+/**
+ * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
+ * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
+ */
 public class SiteImpl extends PortalObjectImpl implements Site
 {
    public static String OWNER_TYPE = "portal";
 
-   private final String name;
-
-   public SiteImpl(String siteId, String name, GateInImpl gateIn)
+   public SiteImpl(String siteId, GateInImpl gateIn)
    {
       super(siteId, gateIn);
-      this.name = name;
    }
 
    @Override
    public String getName()
    {
-      return name;
+      return getId();
    }
 
    @Override
@@ -52,6 +52,11 @@ public class SiteImpl extends PortalObjectImpl implements Site
       return OWNER_TYPE;
    }
 
+   @Override
+   public PortalObjectType getType()
+   {
+      return PortalObjectType.SITE;
+   }
 
    protected SiteKey getMOPSiteKey()
    {
