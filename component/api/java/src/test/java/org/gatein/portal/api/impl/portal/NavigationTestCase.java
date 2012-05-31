@@ -2,11 +2,9 @@ package org.gatein.portal.api.impl.portal;
 
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.navigation.NodeContext;
-import org.gatein.api.portal.Dashboard;
 import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Page;
 import org.gatein.api.portal.Site;
-import org.gatein.api.portal.Space;
 import org.gatein.portal.api.impl.AbstractAPITestCase;
 
 import java.net.URI;
@@ -22,14 +20,13 @@ public class NavigationTestCase extends AbstractAPITestCase
       createSite(SiteType.PORTAL, "classic");
 
       //
-      Site site = gatein.getSite("classic");
+      Site site = gatein.getSite(Site.Id.site("classic"));
       assertNotNull(site);
-      assertEquals("classic", site.getId());
-      assertEquals("classic", site.getName());
+      assertEquals("classic", site.getId().getName());
 
       //
       Navigation rootNav = site.getNavigation();
-      assertSame(site, rootNav.getPortalObject());
+      assertSame(site, rootNav.getSite());
       assertNotNull(rootNav);
       Iterator<? extends Navigation> i = rootNav.getChildren().iterator();
       assertFalse(i.hasNext());
@@ -43,7 +40,7 @@ public class NavigationTestCase extends AbstractAPITestCase
 
       assertNotNull(sites);
       assertEquals(1, sites.size());
-      assertEquals("classic", sites.get(0).getName());
+      assertEquals("classic", sites.get(0).getId().getName());
 
    }
 
@@ -54,12 +51,12 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       //
-      Site site = gatein.getSite("classic");
+      Site site = gatein.getSite(Site.Type.SITE, "classic");
       Navigation rootNav = site.getNavigation();
       Iterator<? extends Navigation> i = rootNav.getChildren().iterator();
       assertTrue(i.hasNext());
       Navigation homeNav = i.next();
-      assertSame(site, homeNav.getPortalObject());
+      assertSame(site, homeNav.getSite());
       assertEquals("home", homeNav.getName());
       assertSame(homeNav, rootNav.getChild("home"));
       assertEquals(URI.create("/portal/classic/home"), homeNav.getURI());
@@ -73,7 +70,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       //
-      Site site = gatein.getSite("classic");
+      Site site = gatein.getSite(Site.Type.SITE, "classic");
       Page homePage = site.getPage("homepage");
       assertNotNull(homePage);
       assertEquals("homepage", homePage.getName());
@@ -93,14 +90,14 @@ public class NavigationTestCase extends AbstractAPITestCase
    public void testGroupSite()
    {
       createSite(SiteType.GROUP, "/platform/users");
-      Space site = gatein.getSpace("platform", "users");
-      assertNotNull(site);
+      Site space = gatein.getSite(Site.Id.space("platform", "users"));
+      assertNotNull(space);
    }
 
    public void testDashboardSite()
    {
       createSite(SiteType.USER, "root");
-      Dashboard site = gatein.getDashboard("root");
-      assertNotNull(site);
+      Site dashboard = gatein.getSite(Site.Id.dashboard("root"));
+      assertNotNull(dashboard);
    }
 }

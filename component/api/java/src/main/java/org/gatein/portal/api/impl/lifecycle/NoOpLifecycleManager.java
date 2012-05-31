@@ -22,10 +22,10 @@
 
 package org.gatein.portal.api.impl.lifecycle;
 
-import org.gatein.portal.api.impl.LifecycleManager;
+import org.gatein.api.GateIn;
 
 /** @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a> */
-public class NoOpLifecycleManager implements LifecycleManager
+public class NoOpLifecycleManager implements GateIn.LifecycleManager
 {
 
    public void begin()

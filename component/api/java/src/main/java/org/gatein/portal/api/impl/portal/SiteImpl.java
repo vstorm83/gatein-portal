@@ -22,44 +22,299 @@
 
 package org.gatein.portal.api.impl.portal;
 
+import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.mop.SiteKey;
-import org.gatein.api.portal.PortalObjectType;
+import org.exoplatform.portal.mop.navigation.NavigationContext;
+import org.exoplatform.portal.mop.navigation.NavigationService;
+import org.exoplatform.portal.mop.navigation.NavigationState;
+import org.exoplatform.portal.mop.navigation.NodeModel;
+import org.exoplatform.portal.mop.navigation.Scope;
+import org.exoplatform.portal.pom.data.PageData;
+import org.exoplatform.portal.pom.data.PageKey;
+import org.exoplatform.portal.pom.data.PortalKey;
+import org.gatein.api.portal.Navigation;
+import org.gatein.api.portal.Page;
 import org.gatein.api.portal.Site;
+import org.gatein.api.commons.PropertyType;
+import org.gatein.common.NotYetImplemented;
 import org.gatein.portal.api.impl.GateInImpl;
+
+
+import java.lang.reflect.UndeclaredThrowableException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
  * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
  */
-public class SiteImpl extends PortalObjectImpl implements Site
+public class SiteImpl implements Site
 {
-   public static String OWNER_TYPE = "portal";
 
-   public SiteImpl(String siteId, GateInImpl gateIn)
+   /** . */
+   private static final Map<PageKey, PageImpl> EMPTY_CACHE = Collections.emptyMap();
+
+   /** . */
+   private static final Pattern PAGE_REF_PATTERN = Pattern.compile("^([^:]+)::([^:]+)::([^:]+)$");
+
+   public static final Map<Type, String> OWNER_MAP;
+
+   static
    {
-      super(siteId, gateIn);
+      Map<Type, String> owners = new HashMap<Type, String>();
+      owners.put(Type.SITE, "portal");
+      owners.put(Type.SPACE, "group");
+      owners.put(Type.DASHBOARD, "user");
+      OWNER_MAP = Collections.unmodifiableMap(owners);
+   }
+
+   /** . */
+   protected final Id id;
+   protected final PageContainer pages;
+   protected final GateInImpl gateIn;
+
+
+   public SiteImpl(Id id, GateInImpl gateIn)
+   {
+      this.id = id;
+      this.gateIn = gateIn;
+
+      //
+      pages = new PageContainer();
+
+   }
+
+   public SiteImpl(Type type, String name, GateInImpl gatein)
+   {
+      this.id = Id.create(type, name);
+      this.gateIn = gatein;
+
+      //
+      pages = new PageContainer();
    }
 
    @Override
-   public String getName()
+   public Id getId()
    {
-      return getId();
+      return id;
    }
 
    @Override
-   String getOwnerType()
+   public String toString()
    {
-      return OWNER_TYPE;
+      return getId().getType() + "::" + getId().getName() + "\n" + getNavigation().toString();
    }
 
    @Override
-   public PortalObjectType getType()
+   public String getDisplayName()
    {
-      return PortalObjectType.SITE;
+      //TODO
+      return getId().getName();
    }
 
-   protected SiteKey getMOPSiteKey()
+   @Override
+   public void setDisplayName(String displayName)
    {
-      return SiteKey.portal(getName());
+      //TODO
+      throw new NotYetImplemented();
    }
+
+   @Override
+   public String getDescription()
+   {
+      //TODO
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public void setDescription(String description)
+   {
+      //TODO
+      throw new NotYetImplemented();
+   }
+
+   public Navigation getNavigation()
+   {
+      GateInImpl gateIn = getGateInImpl();
+      NavigationService service = gateIn.getNavigationService();
+
+      try
+      {
+         gateIn.begin();
+         NavigationContext navigation = service.loadNavigation(getMOPSiteKey());
+
+         if (navigation != null)
+         {
+            NodeModel<NavigationImpl> nodeModel = new NavigationImpl.NavigationNodeModel(this, gateIn);
+
+            return service.loadNode(nodeModel, navigation, Scope.CHILDREN, null).getNode();
+         }
+         else
+         {
+            return null;
+         }
+      }
+      finally
+      {
+         gateIn.end();
+      }
+   }
+
+   public int getPriority()
+   {
+      GateInImpl gateIn = getGateInImpl();
+      NavigationService service = gateIn.getNavigationService();
+
+      try
+      {
+         gateIn.begin();
+         NavigationContext navigation = service.loadNavigation(getMOPSiteKey());
+
+         NavigationState state = navigation.getState();
+         return state != null ? state.getPriority() : 1;
+      }
+      finally
+      {
+         gateIn.end();
+      }
+   }
+
+   @Override
+   public <T> T getProperty(PropertyType<T> property)
+   {
+      //TODO
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public <T> void setProperty(PropertyType<T> property, T value)
+   {
+      //TODO
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public void setPriority(int priority)
+   {
+      //TODO
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public Page getPage(String pageName)
+   {
+      return pages.getPageByName(pageName);
+   }
+
+   @Override
+   public Navigation getNavigation(String navigationId)
+   {
+      //TODO:
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public Navigation getNavigation(String... path)
+   {
+      //TODO:
+      throw new NotYetImplemented();
+   }
+
+   public SiteKey getMOPSiteKey()
+   {
+      switch (getId().getType())
+      {
+         case SITE:
+            return SiteKey.portal(getId().getName());
+         case SPACE:
+            return SiteKey.group(getId().getName());
+         case DASHBOARD:
+            return SiteKey.user(getId().getName());
+      }
+
+      throw new RuntimeException("Not recognized type: " + getId().getType());
+   }
+
+   public static PortalKey createPortalKey(Site.Id id)
+   {
+      return new PortalKey(OWNER_MAP.get(id.getType()), id.getName());
+   }
+
+   public PortalKey getPortalKey()
+   {
+      return createPortalKey(this.getId());
+   }
+
+   GateInImpl getGateInImpl()
+   {
+      return gateIn;
+   }
+
+
+
+   class PageContainer
+   {
+
+      /** . */
+      private final Query<PageData> pageDataQuery;
+
+      /** A local cache so we return the same pages. */
+      private Map<PageKey, PageImpl> cache;
+
+      private PageContainer()
+      {
+         this.pageDataQuery = new Query<PageData>(OWNER_MAP.get(getId().getType()), null, PageData.class);
+         this.cache = EMPTY_CACHE;
+      }
+
+      PageImpl getPageByRef(String pageRef)
+      {
+         Matcher m = PAGE_REF_PATTERN.matcher(pageRef);
+         m.matches();
+         PageKey key = new PageKey(m.group(1), m.group(2), m.group(3));
+         return getPageData(key);
+      }
+
+      PageImpl getPageByName(String name)
+      {
+         SiteKey siteKey = getMOPSiteKey();
+         PageKey key = new PageKey(siteKey.getTypeName(), siteKey.getName(), name);
+         return getPageData(key);
+      }
+
+      private PageImpl getPageData(PageKey key)
+      {
+         PageImpl page = cache.get(key);
+         if (page == null)
+         {
+            try
+            {
+               gateIn.begin();
+               PageData data = gateIn.getDataStorage().getPage(key);
+               if (data != null)
+               {
+                  page = new PageImpl(data, getId(), gateIn);
+                  if (cache == EMPTY_CACHE)
+                  {
+                     cache = new HashMap<PageKey, PageImpl>();
+                  }
+                  cache.put(key, page);
+               }
+            }
+            catch (Exception e)
+            {
+               throw new UndeclaredThrowableException(e);
+            }
+            finally
+            {
+               gateIn.end();
+            }
+         }
+         return page;
+      }
+   }
+
 }

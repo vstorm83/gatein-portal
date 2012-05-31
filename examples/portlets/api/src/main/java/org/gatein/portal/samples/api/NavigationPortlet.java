@@ -24,9 +24,7 @@ package org.gatein.portal.samples.api;
 
 import org.gatein.api.GateIn;
 import org.gatein.api.portal.Navigation;
-import org.gatein.api.portal.PortalObject;
 import org.gatein.api.portal.Site;
-import org.gatein.api.portal.Space;
 
 import javax.portlet.GenericPortlet;
 import javax.portlet.PortletConfig;
@@ -56,32 +54,30 @@ public class NavigationPortlet extends GenericPortlet
       PrintWriter writer = response.getWriter();
 
       writer.println("<h1>Sites</h1>");
-      //List<Site> sites = gateIn.getSites("root");
       List<Site> sites = gateIn.getSites();
       for (Site site : sites)
       {
-         outputPortalObject(site, writer);
+         outputSite(site, writer);
       }
 
       writer.println("<h1>Spaces</h1>");
-//      sites = gateIn.getGroupSites("root");
-      List<Space> spaces = gateIn.getSpaces();
-      for (Space space : spaces)
+      List<Site> spaces = gateIn.getSites(Site.Type.SPACE);
+      for (Site space : spaces)
       {
-         outputPortalObject(space, writer);
+         outputSite(space, writer);
       }
 
       writer.println("<h1>Dashboard</h1>");
-      outputPortalObject(gateIn.getDashboardByUser("root"), writer);
+      outputSite(gateIn.getSite(Site.Type.DASHBOARD, "root"), writer);
    }
 
-   private void outputPortalObject(PortalObject po, PrintWriter writer) throws IOException
+   private void outputSite(Site site, PrintWriter writer) throws IOException
    {
-      Navigation navigation = po.getRootNavigation();
+      Navigation navigation = site.getNavigation();
 
       Collection<? extends Navigation> adminNodes = navigation.getChildren();
 
-      writer.println("<h2>" + po.getDisplayName() + "</h2>");
+      writer.println("<h2>" + site.getDisplayName() + "</h2>");
       writer.println("<ul>");
 
       for (Navigation adminNode : adminNodes)

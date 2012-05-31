@@ -24,10 +24,10 @@ package org.gatein.portal.api.impl.lifecycle;
 
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
-import org.gatein.portal.api.impl.LifecycleManager;
+import org.gatein.api.GateIn;
 
 /** @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a> */
-public class RequestLifecycleManager implements LifecycleManager
+public class RequestLifecycleManager implements GateIn.LifecycleManager
 {
    private final ExoContainer container;
 

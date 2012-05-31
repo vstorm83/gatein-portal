@@ -28,8 +28,7 @@ import org.gatein.api.commons.PropertyType;
 import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Page;
 import org.gatein.api.portal.PageType;
-import org.gatein.api.portal.PortalObject;
-import org.gatein.api.portal.PortalObjectType;
+import org.gatein.api.portal.Site;
 import org.gatein.common.NotYetImplemented;
 import org.gatein.portal.api.impl.GateInImpl;
 
@@ -41,35 +40,20 @@ import java.util.List;
  */
 public class PageImpl implements Page
 {
-   private final String portalObjectId;
-   private final PortalObjectType portalObjectType;
+   private final Site.Id siteId;
    private PageData pageData;
    protected final GateInImpl gateIn;
 
-   public PageImpl(PageData pageData, String portalObjectId, PortalObjectType type, GateInImpl gateIn)
+   public PageImpl(PageData pageData, Site.Id siteId, GateInImpl gateIn)
    {
-      this.portalObjectId = portalObjectId;
-      this.portalObjectType = type;
+      this.siteId = siteId;
       this.pageData = pageData;
       this.gateIn = gateIn;
    }
 
-   public PortalObject getPortalObject()
+   public Site getSite()
    {
-
-      switch (portalObjectType)
-      {
-         case SITE:
-            return getGateInImpl().getSite(portalObjectId);
-
-         case SPACE:
-            return getGateInImpl().getSpace(portalObjectId);
-
-         case DASHBOARD:
-            return getGateInImpl().getDashboard(portalObjectId);
-      }
-
-      throw new RuntimeException("Not supported object type: " + portalObjectType);
+      return gateIn.getSite(siteId);
    }
 
    public String getTitle()

@@ -42,7 +42,6 @@ import org.gatein.api.commons.PropertyType;
 import org.gatein.api.commons.Range;
 import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Page;
-import org.gatein.api.portal.PortalObject;
 import org.gatein.api.portal.Site;
 import org.gatein.common.NotYetImplemented;
 import org.gatein.common.text.EntityEncoder;
@@ -51,7 +50,6 @@ import org.gatein.portal.api.impl.GateInImpl;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,17 +63,17 @@ import java.util.ResourceBundle;
 public class NavigationImpl implements Navigation
 {
    private final NodeContext<NavigationImpl> context;
-   private PortalObjectImpl portalObject;
+   private SiteImpl site;
    private String id;
    private final GateInImpl gateIn;
    private URI uri;
    private String displayName;
    private ResourceBundle bundle;
 
-   public NavigationImpl(PortalObjectImpl portalObject, NodeContext<NavigationImpl> context, GateInImpl gateIn)
+   public NavigationImpl(SiteImpl site, NodeContext<NavigationImpl> context, GateInImpl gateIn)
    {
       this.context = context;
-      this.portalObject = portalObject;
+      this.site = site;
       this.gateIn = gateIn;
    }
 
@@ -119,7 +117,7 @@ public class NavigationImpl implements Navigation
       {
          try
          {
-            PortalKey key = PortalObjectImpl.createPortalKey(portalObject);
+            PortalKey key = site.getPortalKey();
             RequestContext requestContext = RequestContext.getCurrentInstance();
             SiteType siteType = SiteType.valueOf(key.getType().toUpperCase());
             String siteName = key.getId();
@@ -159,7 +157,7 @@ public class NavigationImpl implements Navigation
       String pageRef = context.getState().getPageRef();
       if (pageRef != null)
       {
-         return portalObject.pages.getPageByRef(pageRef);
+         return site.pages.getPageByRef(pageRef);
       }
       else
       {
@@ -171,8 +169,8 @@ public class NavigationImpl implements Navigation
    {
       if (target != null)
       {
-         PortalObject po = target.getPortalObject();
-         PortalKey key = PortalObjectImpl.createPortalKey(po);
+         Site po = target.getSite();
+         PortalKey key = SiteImpl.createPortalKey(po.getId());
          String ref = key.getType() + "::" + key.getId() + "::" + target.getName();
          context.setState(context.getState().builder().pageRef(ref).build());
       }
@@ -197,9 +195,9 @@ public class NavigationImpl implements Navigation
       }
    }
 
-   public PortalObject getPortalObject()
+   public Site getSite()
    {
-      return portalObject;
+      return site;
    }
 
    public List<Navigation> getChildren()
@@ -383,7 +381,7 @@ public class NavigationImpl implements Navigation
    {
       if (bundle == null)
       {
-         PortalKey key = PortalKey.create(portalObject.getId());
+         PortalKey key = site.getPortalKey();
          ExoContainer container = ExoContainerContext.getCurrentContainer();
          ResourceBundleManager rbMgr = (ResourceBundleManager)container.getComponentInstanceOfType(ResourceBundleManager.class);
          Locale locale = gateIn.getUserLocale();
@@ -408,10 +406,10 @@ public class NavigationImpl implements Navigation
 
    static class NavigationNodeModel implements NodeModel<NavigationImpl>
    {
-      private final PortalObjectImpl site;
+      private final SiteImpl site;
       private final GateInImpl gateIn;
 
-      NavigationNodeModel(PortalObjectImpl site, GateInImpl gateIn)
+      NavigationNodeModel(SiteImpl site, GateInImpl gateIn)
       {
          this.site = site;
          this.gateIn = gateIn;
@@ -428,8 +426,4 @@ public class NavigationImpl implements Navigation
       }
    }
 
-   private String getPortalObjectOwnerType(PortalObject po)
-   {
-      return ((PortalObjectImpl)po).getOwnerType();
-   }
 }

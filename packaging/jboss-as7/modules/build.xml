@@ -128,6 +128,8 @@
            <maven-resource group="org.exoplatform.portal" artifact="exo.portal.component.web.resources" />
            <maven-resource group="org.exoplatform.portal" artifact="exo.portal.component.web.security" />
            <maven-resource group="org.exoplatform.portal" artifact="exo.portal.component.web.server" />
+           <maven-resource group="org.exoplatform.portal" artifact="exo.portal.component.api.java" />
+           <maven-resource group="org.gatein.api" artifact="gatein-java-api" />
            <maven-resource group="org.exoplatform.portal" artifact="exo.portal.gadgets-core" />
            <maven-resource group="org.exoplatform.portal" artifact="exo.portal.webui.core" />
            <maven-resource group="org.exoplatform.portal" artifact="exo.portal.webui.dashboard" />

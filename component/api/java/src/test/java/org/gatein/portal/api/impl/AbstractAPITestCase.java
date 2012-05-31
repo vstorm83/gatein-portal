@@ -6,6 +6,7 @@ import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.AbstractPortalTest;
+import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.SiteType;
@@ -20,6 +21,7 @@ import org.exoplatform.portal.pom.data.ModelDataStorage;
 import org.exoplatform.web.application.RequestContext;
 import org.gatein.api.GateIn;
 import org.gatein.pc.api.PortletInvoker;
+import org.gatein.portal.api.impl.lifecycle.NoOpLifecycleManager;
 
 import java.util.Locale;
 
@@ -61,7 +63,11 @@ public abstract class AbstractAPITestCase extends AbstractPortalTest
       PortalContainer container = getContainer();
       POMSessionManager mgr = (POMSessionManager)container.getComponentInstanceOfType(POMSessionManager.class);
       NavigationService navService = (NavigationService)container.getComponentInstanceOfType(NavigationService.class);
-      GateInImpl gatein = new GateInImpl(container.getContext(), null, null, null);
+      GateInImpl gatein = new GateInImpl(
+         container.getContext(),
+         (ModelDataStorage)container.getComponentInstanceOfType(ModelDataStorage.class),
+         (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class));
+      gatein.setProperty(GateInImpl.LIFECYCLE_MANAGER, new NoOpLifecycleManager());
 //      PortletRegistry invoker = (PortletRegistry)container.getComponentInstanceOfType(PortletInvoker.class);
 
       //
