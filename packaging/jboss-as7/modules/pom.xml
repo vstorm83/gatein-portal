@@ -898,7 +898,7 @@
      <dependency>
          <groupId>org.gatein.api</groupId>
          <artifactId>gatein-java-api</artifactId>
-      </dependency>
+     </dependency>
 
 
 

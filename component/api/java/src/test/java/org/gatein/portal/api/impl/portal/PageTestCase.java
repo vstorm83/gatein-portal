@@ -25,7 +25,7 @@ package org.gatein.portal.api.impl.portal;
 import org.gatein.portal.api.impl.AbstractAPITestCase;
 
 /** @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a> */
-public class SiteTestCase extends AbstractAPITestCase
+public class PageTestCase extends AbstractAPITestCase
 {
    public void testSimple()
    {

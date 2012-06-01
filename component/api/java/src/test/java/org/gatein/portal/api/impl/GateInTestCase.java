@@ -20,16 +20,42 @@
 * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
 */
 
-package org.gatein.portal.api.impl.portal;
+package org.gatein.portal.api.impl;
 
-import org.gatein.portal.api.impl.AbstractAPITestCase;
+import org.exoplatform.portal.mop.SiteType;
+import org.gatein.api.portal.Site;
+
+import java.util.List;
 
 /** @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a> */
-public class SiteTestCase extends AbstractAPITestCase
+public class GateInTestCase extends AbstractAPITestCase
 {
-   public void testSimple()
+   public void testGetSites()
    {
+      createSite(SiteType.PORTAL, "classic");
+
+      List<Site> sites = gatein.getSites();
+
+      assertNotNull(sites);
+      assertEquals(1, sites.size());
+      assertEquals("classic", sites.get(0).getId().getName());
 
    }
+
+   public void testSpace()
+   {
+      createSite(SiteType.GROUP, "/platform/users");
+
+      Site space = gatein.getSite(Site.Id.space("platform", "users"));
+      assertNotNull(space);
+   }
+
+   public void testDashboard()
+   {
+      createSite(SiteType.USER, "root");
+      Site dashboard = gatein.getSite(Site.Id.dashboard("root"));
+      assertNotNull(dashboard);
+   }
+
 
 }

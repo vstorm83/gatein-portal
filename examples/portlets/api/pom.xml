@@ -41,5 +41,10 @@
          <artifactId>gatein-java-api</artifactId>
          <scope>provided</scope>
       </dependency>
+      <dependency>
+         <groupId>org.exoplatform.kernel</groupId>
+         <artifactId>exo.kernel.container</artifactId>
+         <scope>provided</scope>
+      </dependency>
    </dependencies>
 </project>

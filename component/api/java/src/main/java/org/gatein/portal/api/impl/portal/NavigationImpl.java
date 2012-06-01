@@ -46,6 +46,7 @@ import org.gatein.api.portal.Site;
 import org.gatein.common.NotYetImplemented;
 import org.gatein.common.text.EntityEncoder;
 import org.gatein.common.util.EmptyResourceBundle;
+import org.gatein.common.util.ParameterValidation;
 import org.gatein.portal.api.impl.GateInImpl;
 
 import java.net.URI;
@@ -72,6 +73,11 @@ public class NavigationImpl implements Navigation
 
    public NavigationImpl(SiteImpl site, NodeContext<NavigationImpl> context, GateInImpl gateIn)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(site, "SiteImpl");
+      ParameterValidation.throwIllegalArgExceptionIfNull(context, "context");
+      ParameterValidation.throwIllegalArgExceptionIfNull(gateIn, "GateInImpl");
+
+
       this.context = context;
       this.site = site;
       this.gateIn = gateIn;
@@ -215,6 +221,9 @@ public class NavigationImpl implements Navigation
    @Override
    public List<Navigation> getChildren(Range range)
    {
+
+      ParameterValidation.throwIllegalArgExceptionIfNull(range, "Range");
+
       //TODO:
       throw new NotYetImplemented();
    }
@@ -222,6 +231,9 @@ public class NavigationImpl implements Navigation
    @Override
    public void removeChild(String name)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(name, "name");
+
+
       //TODO:
       throw new NotYetImplemented();
    }
@@ -229,6 +241,9 @@ public class NavigationImpl implements Navigation
    @Override
    public Navigation addChild(String name)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(name, "name");
+
+
       //TODO:
       throw new NotYetImplemented();
    }
@@ -332,6 +347,9 @@ public class NavigationImpl implements Navigation
    @Override
    public void setDisplayName(String displayName)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(displayName, "displayName");
+
+
       //TODO:
       throw new NotYetImplemented();
    }
@@ -340,6 +358,8 @@ public class NavigationImpl implements Navigation
    @Override
    public <T> void setProperty(PropertyType<T> property, T value)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(property, "property");
+
       //TODO:
       throw new NotYetImplemented();
    }
@@ -347,6 +367,10 @@ public class NavigationImpl implements Navigation
    @Override
    public <T> T getProperty(PropertyType<T> property)
    {
+      if (property == null)
+      {
+         return null;
+      }
       //TODO:
       throw new NotYetImplemented();
    }

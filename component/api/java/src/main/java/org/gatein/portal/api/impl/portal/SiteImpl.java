@@ -37,6 +37,7 @@ import org.gatein.api.portal.Page;
 import org.gatein.api.portal.Site;
 import org.gatein.api.commons.PropertyType;
 import org.gatein.common.NotYetImplemented;
+import org.gatein.common.util.ParameterValidation;
 import org.gatein.portal.api.impl.GateInImpl;
 
 
@@ -79,6 +80,9 @@ public class SiteImpl implements Site
 
    public SiteImpl(Id id, GateInImpl gateIn)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(id, "Site.Id");
+      ParameterValidation.throwIllegalArgExceptionIfNull(gateIn, "GateInImpl");
+
       this.id = id;
       this.gateIn = gateIn;
 
@@ -89,6 +93,10 @@ public class SiteImpl implements Site
 
    public SiteImpl(Type type, String name, GateInImpl gatein)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(type, "Site.Type");
+      ParameterValidation.throwIllegalArgExceptionIfNull(name, "name");
+      ParameterValidation.throwIllegalArgExceptionIfNull(gatein, "GateInImpl");
+
       this.id = Id.create(type, name);
       this.gateIn = gatein;
 
@@ -118,6 +126,8 @@ public class SiteImpl implements Site
    @Override
    public void setDisplayName(String displayName)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(displayName,  "displayName");
+
       //TODO
       throw new NotYetImplemented();
    }
@@ -132,6 +142,8 @@ public class SiteImpl implements Site
    @Override
    public void setDescription(String description)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(description,  "description");
+
       //TODO
       throw new NotYetImplemented();
    }
@@ -185,6 +197,12 @@ public class SiteImpl implements Site
    @Override
    public <T> T getProperty(PropertyType<T> property)
    {
+
+      if (property == null)
+      {
+         return null;
+      }
+
       //TODO
       throw new NotYetImplemented();
    }
@@ -192,6 +210,9 @@ public class SiteImpl implements Site
    @Override
    public <T> void setProperty(PropertyType<T> property, T value)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(property, "property");
+
+
       //TODO
       throw new NotYetImplemented();
    }
@@ -206,12 +227,16 @@ public class SiteImpl implements Site
    @Override
    public Page getPage(String pageName)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(pageName, "pageName");
+
       return pages.getPageByName(pageName);
    }
 
    @Override
    public Navigation getNavigation(String navigationId)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(navigationId, "navigationId");
+
       //TODO:
       throw new NotYetImplemented();
    }
@@ -219,6 +244,8 @@ public class SiteImpl implements Site
    @Override
    public Navigation getNavigation(String... path)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNullOrEmpty(path, "path");
+
       //TODO:
       throw new NotYetImplemented();
    }
@@ -240,6 +267,8 @@ public class SiteImpl implements Site
 
    public static PortalKey createPortalKey(Site.Id id)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(id, "id");
+
       return new PortalKey(OWNER_MAP.get(id.getType()), id.getName());
    }
 

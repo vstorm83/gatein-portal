@@ -32,17 +32,6 @@ public class NavigationTestCase extends AbstractAPITestCase
       assertFalse(i.hasNext());
    }
 
-   public void testGetSites()
-   {
-      createSite(SiteType.PORTAL, "classic");
-
-      List<Site> sites = gatein.getSites();
-
-      assertNotNull(sites);
-      assertEquals(1, sites.size());
-      assertEquals("classic", sites.get(0).getId().getName());
-
-   }
 
    public void testSingleNavigation()
    {
@@ -87,17 +76,5 @@ public class NavigationTestCase extends AbstractAPITestCase
       assertNull(null, homeNav.getTargetPage());
    }
 
-   public void testGroupSite()
-   {
-      createSite(SiteType.GROUP, "/platform/users");
-      Site space = gatein.getSite(Site.Id.space("platform", "users"));
-      assertNotNull(space);
-   }
 
-   public void testDashboardSite()
-   {
-      createSite(SiteType.USER, "root");
-      Site dashboard = gatein.getSite(Site.Id.dashboard("root"));
-      assertNotNull(dashboard);
-   }
 }

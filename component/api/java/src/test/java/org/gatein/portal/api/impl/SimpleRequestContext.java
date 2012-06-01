@@ -64,25 +64,6 @@ public class SimpleRequestContext extends RequestContext
          }
       );
       return ufs;
-
-
-//      return new URLFactory()
-//      {
-//         @Override
-//         public <R, U extends PortalURL<R, U>> U newURL(ResourceType<R, U> resourceType, URLContext context) throws NullPointerException
-//         {
-//            return ufs.newURL(resourceType, context);
-////            ResourceType rt = resourceType;
-////            if (rt == NodeURL.TYPE)
-////            {
-////               return (U)new NodeURL(context);
-////            }
-////            else
-////            {
-////               return null;
-////            }
-//         }
-//      };
    }
 
    @Override

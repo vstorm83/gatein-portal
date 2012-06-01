@@ -30,6 +30,7 @@ import org.gatein.api.portal.Page;
 import org.gatein.api.portal.PageType;
 import org.gatein.api.portal.Site;
 import org.gatein.common.NotYetImplemented;
+import org.gatein.common.util.ParameterValidation;
 import org.gatein.portal.api.impl.GateInImpl;
 
 import java.util.List;
@@ -46,6 +47,10 @@ public class PageImpl implements Page
 
    public PageImpl(PageData pageData, Site.Id siteId, GateInImpl gateIn)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(pageData, "PageData");
+      ParameterValidation.throwIllegalArgExceptionIfNull(siteId, "Site.Id");
+      ParameterValidation.throwIllegalArgExceptionIfNull(gateIn, "GateInImpl");
+
       this.siteId = siteId;
       this.pageData = pageData;
       this.gateIn = gateIn;
@@ -97,6 +102,11 @@ public class PageImpl implements Page
    @Override
    public <T> T getProperty(PropertyType<T> property)
    {
+      if (property == null)
+      {
+         return null;
+      }
+
       //TODO:
       throw new NotYetImplemented();
    }
@@ -116,6 +126,8 @@ public class PageImpl implements Page
 
    public void setTitle(String title)
    {
+
+      ParameterValidation.throwIllegalArgExceptionIfNull(title, "title");
       try
       {
          getGateInImpl().begin();

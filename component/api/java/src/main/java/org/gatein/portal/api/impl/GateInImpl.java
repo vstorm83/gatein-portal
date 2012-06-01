@@ -1,6 +1,6 @@
 /*
 * JBoss, a division of Red Hat
-* Copyright 2008, Red Hat Middleware, LLC, and individual contributors as indicated
+* Copyright 2012, Red Hat Middleware, LLC, and individual contributors as indicated
 * by the @authors tag. See the copyright.txt in the distribution for a
 * full listing of individual contributors.
 *
@@ -22,22 +22,15 @@
 
 package org.gatein.portal.api.impl;
 
-import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.configuration.ConfigurationManager;
-import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
-import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationService;
-import org.exoplatform.portal.pc.ExoKernelIntegration;
 import org.exoplatform.portal.pom.data.ModelDataStorage;
 import org.exoplatform.portal.pom.data.PortalData;
 import org.exoplatform.portal.pom.data.PortalKey;
-import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.web.application.RequestContext;
 import org.gatein.api.GateIn;
 import org.gatein.api.commons.PropertyType;
@@ -46,8 +39,6 @@ import org.gatein.api.portal.Site;
 import org.gatein.api.portal.SiteQuery;
 import org.gatein.common.NotYetImplemented;
 import org.gatein.common.util.ParameterValidation;
-import org.gatein.pc.api.PortletInvoker;
-import org.gatein.portal.api.impl.lifecycle.RequestLifecycleManager;
 import org.gatein.portal.api.impl.portal.SiteImpl;
 import org.picocontainer.Startable;
 
@@ -57,33 +48,22 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Pattern;
 
-/** @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a> */
+/**
+ * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
+ * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
+ */
 public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
 {
    private static final Query<PortalData> SITES = new Query<PortalData>(SiteType.PORTAL.getName(), null, PortalData.class);
    private static final Query<PortalData> SPACES = new Query<PortalData>(SiteType.GROUP.getName(), null, PortalData.class);
    private static final Query<PortalData> DASHBOARDS = new Query<PortalData>(SiteType.USER.getName(), null, PortalData.class);
 
-   public static String SITE_PORTAL = "portal";
-
-   public static String SITE_GROUP = "group";
-
-   public static String SITE_USER = "user";
-
-
-
    ExoContainerContext context;
-//   private ExoContainer container;
    private ModelDataStorage dataStorage;
-//   private ApplicationRegistryService registryService;
-//   private GadgetRegistryService gadgetService;
-//   private SourceStorage sourceStorage;
    private UserPortalConfigService configService;
    private Map<PropertyType, Object> properties = new HashMap<PropertyType, Object>(7);
    private LifecycleManager lcManager = GateIn.NO_OP_MANAGER;
-   //private PortletInvoker portletInvoker;
 
    public GateInImpl(ExoContainerContext context, ModelDataStorage dataStorage, UserPortalConfigService configService)
    {
@@ -162,6 +142,7 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
    @Override
    public List<Site> getSites(Site.Type siteType)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(siteType,  "Site.Type");
 
       try
       {
@@ -206,6 +187,13 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
    @Override
    public List<Site> getSites(Range range)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(range,  "Range");
+
+      if (range == null)
+      {
+         throw new IllegalArgumentException("Range cannot be null");
+      }
+
       //TODO:
       throw new NotYetImplemented();
    }
@@ -213,6 +201,8 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
    @Override
    public Site getSite(Site.Id siteId)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(siteId,  "Site.Id");
+
       try
       {
          PortalKey key = SiteImpl.createPortalKey(siteId);
@@ -239,15 +229,20 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
    @Override
    public Site getSite(Site.Type type, String name)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(type,  "Site.Type");
+      ParameterValidation.throwIllegalArgExceptionIfNull(name,  "name");
+
       return getSite(Site.Id.create(type, name));
    }
-
-
 
    @Override
    public List<Site> getSites(Site.Type siteType, Range range)
    {
-      return null;  //To change body of implemented methods use File | Settings | File Templates.
+      ParameterValidation.throwIllegalArgExceptionIfNull(siteType,  "Site.Type");
+      ParameterValidation.throwIllegalArgExceptionIfNull(range,  "range");
+
+      //TODO:
+      throw new NotYetImplemented();
    }
 
    @Override
@@ -267,6 +262,9 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
    @Override
    public Site addSite(Site.Type siteType, String name)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(siteType,  "Site.Type");
+      ParameterValidation.throwIllegalArgExceptionIfNull(name,  "name");
+
       //TODO:
       throw new NotYetImplemented();
    }
@@ -274,6 +272,8 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
    @Override
    public void removeSite(Site site)
    {
+      ParameterValidation.throwIllegalArgExceptionIfNull(site, "Site");
+
       //TODO:
       throw new NotYetImplemented();
    }
@@ -281,12 +281,7 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
 
    public void start()
    {
-      //dataStorage = (ModelDataStorage)container.getComponentInstanceOfType(ModelDataStorage.class);
-//      registryService = (ApplicationRegistryService)container.getComponentInstanceOfType(ApplicationRegistryService.class);
-//      gadgetService = (GadgetRegistryService)container.getComponentInstanceOfType(GadgetRegistryService.class);
-//      sourceStorage = (SourceStorage)container.getComponentInstanceOfType(SourceStorage.class);
-      //configService = (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class);
-      //portletInvoker = (PortletInvoker)container.getComponentInstanceOfType(PortletInvoker.class);
+      // nothing to do
    }
 
    public void stop()
@@ -296,32 +291,13 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
 
    public ModelDataStorage getDataStorage()
    {
-      //return (ModelDataStorage)context.getContainer().getComponentInstanceOfType(ModelDataStorage.class);
       return dataStorage;
    }
 
    public NavigationService getNavigationService()
    {
-//      UserPortalConfigService configService =
-//         (UserPortalConfigService)context.getContainer().getComponentInstanceOfType(UserPortalConfigService.class);
-//      return configService.getNavigationService();
       return configService.getNavigationService();
    }
-
-//   public ApplicationRegistryService getRegistryService()
-//   {
-//      return registryService;
-//   }
-//
-//   public SourceStorage getSourceStorage()
-//   {
-//      return sourceStorage;
-//   }
-
-//   public PortletInvoker getPortletInvoker()
-//   {
-//      return portletInvoker;
-//   }
 
    private PortalData getPortalDataFor(PortalKey key)
    {
@@ -357,21 +333,6 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
       return RequestContext.getCurrentInstance().getLocale();
    }
 
-//   public GadgetRegistryService getGadgetService()
-//   {
-//      return gadgetService;
-//   }
-
-//   public OrganizationService getOrganizationService()
-//   {
-//      return configService.getOrganizationService();
-//   }
-//
-//   public UserACL getUserACL()
-//   {
-//      return configService.getUserACL();
-//   }
-//
    public DescriptionService getDescriptionService()
    {
       return configService.getDescriptionService();

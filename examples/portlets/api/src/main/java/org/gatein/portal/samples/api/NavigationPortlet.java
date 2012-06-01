@@ -22,6 +22,7 @@
 
 package org.gatein.portal.samples.api;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.gatein.api.GateIn;
 import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Site;
@@ -39,13 +40,12 @@ import java.util.List;
 /** @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a> */
 public class NavigationPortlet extends GenericPortlet
 {
-   private GateIn gateIn;
+   //private GateIn gateIn;
 
    @Override
    public void init(PortletConfig config) throws PortletException
    {
       super.init(config);
-      gateIn = (GateIn)config.getPortletContext().getAttribute(GateIn.GATEIN_API);
    }
 
    @Override
@@ -54,37 +54,45 @@ public class NavigationPortlet extends GenericPortlet
       PrintWriter writer = response.getWriter();
 
       writer.println("<h1>Sites</h1>");
-      List<Site> sites = gateIn.getSites();
+      List<Site> sites = getGateIn().getSites(Site.Type.SITE);
       for (Site site : sites)
       {
          outputSite(site, writer);
       }
 
       writer.println("<h1>Spaces</h1>");
-      List<Site> spaces = gateIn.getSites(Site.Type.SPACE);
+      List<Site> spaces = getGateIn().getSites(Site.Type.SPACE);
       for (Site space : spaces)
       {
          outputSite(space, writer);
       }
 
       writer.println("<h1>Dashboard</h1>");
-      outputSite(gateIn.getSite(Site.Type.DASHBOARD, "root"), writer);
+      outputSite(getGateIn().getSite(Site.Type.DASHBOARD, "root"), writer);
    }
 
    private void outputSite(Site site, PrintWriter writer) throws IOException
    {
-      Navigation navigation = site.getNavigation();
-
-      Collection<? extends Navigation> adminNodes = navigation.getChildren();
 
       writer.println("<h2>" + site.getDisplayName() + "</h2>");
       writer.println("<ul>");
 
-      for (Navigation adminNode : adminNodes)
-      {
-         outputNode(adminNode, writer);
-      }
+      Navigation navigation = site.getNavigation();
 
+      if (navigation != null)
+      {
+
+         Collection<? extends Navigation> adminNodes = navigation.getChildren();
+
+         for (Navigation adminNode : adminNodes)
+         {
+            outputNode(adminNode, writer);
+         }
+      }
+      else
+      {
+         writer.println("<h3>NULL Navigation</h3>");
+      }
       writer.println("</ul><br/>");
    }
 
@@ -107,5 +115,10 @@ public class NavigationPortlet extends GenericPortlet
          }
          writer.println("</ul>");
       }
+   }
+
+   GateIn getGateIn()
+   {
+      return (GateIn)ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(GateIn.class);
    }
 }
