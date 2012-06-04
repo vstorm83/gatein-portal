@@ -20,30 +20,38 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.gatein.common.xml.stax.writer.formatting;
+package org.gatein.api.rest;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
+import org.gatein.api.GateIn;
+import org.gatein.api.portal.Site;
+import org.gatein.management.api.annotations.Managed;
+import org.gatein.management.api.annotations.ManagedModel;
+import org.gatein.management.api.annotations.MappedPath;
+
+import java.util.List;
 
 /**
  * @author <a href="mailto:nscavell@redhat.com">Nick Scavelli</a>
- * @version $Revision$
  */
-public class NoOpFormatter implements XmlStreamingFormatter
+@Managed(value = "api", description = "GateIn REST API")
+public class GateInRestApiService
 {
-   public static XmlStreamingFormatter INSTANCE = new NoOpFormatter();
+   private final GateIn gatein;
 
-   private NoOpFormatter() {}
-
-   @Override
-   public void before(XMLStreamWriter writer, int event) throws XMLStreamException
+   public GateInRestApiService(GateIn gatein)
    {
-      // No-op
+      this.gatein = gatein;
    }
 
-   @Override
-   public void after(XMLStreamWriter writer, int event) throws XMLStreamException
+   @Managed("/sites")
+   public @ManagedModel("sites") List<Site> getSites()
    {
-      // No-op
+      return gatein.getSites(Site.Type.SITE);
+   }
+
+   @Managed("/sites/{site-name}")
+   public @ManagedModel("site") Site getSite(@MappedPath("site-name") String name)
+   {
+      return gatein.getSite(Site.Type.SITE, name);
    }
 }

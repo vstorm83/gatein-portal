@@ -20,30 +20,46 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.gatein.common.xml.stax.writer.formatting;
+package org.gatein.api.rest.mgmt;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
+import org.gatein.api.rest.GateInRestApiService;
+import org.gatein.api.rest.mgmt.binding.model.SiteModelMapper;
+import org.gatein.api.rest.mgmt.binding.model.SitesModelMapper;
+import org.gatein.management.api.ComponentRegistration;
+import org.gatein.management.api.binding.ModelProvider;
+import org.gatein.management.spi.ExtensionContext;
+import org.gatein.management.spi.ManagementExtension;
 
 /**
  * @author <a href="mailto:nscavell@redhat.com">Nick Scavelli</a>
- * @version $Revision$
  */
-public class NoOpFormatter implements XmlStreamingFormatter
+public class RestApiManagementExtension implements ManagementExtension
 {
-   public static XmlStreamingFormatter INSTANCE = new NoOpFormatter();
-
-   private NoOpFormatter() {}
-
    @Override
-   public void before(XMLStreamWriter writer, int event) throws XMLStreamException
+   public void initialize(ExtensionContext context)
    {
-      // No-op
+      ComponentRegistration reg = context.registerManagedComponent(GateInRestApiService.class);
+      reg.registerModelProvider(new ModelProvider() {
+
+         @Override
+         public <T> ModelMapper<T> getModelMapper(Class<T> type)
+         {
+            return null;
+         }
+
+         @Override
+         public ModelMapper<?> getModelMapper(String modelName)
+         {
+            if ("sites".equals(modelName)) return SitesModelMapper.INSTANCE;
+            if ("site".equals(modelName)) return SiteModelMapper.INSTANCE;
+
+            return null;
+         }
+      });
    }
 
    @Override
-   public void after(XMLStreamWriter writer, int event) throws XMLStreamException
+   public void destroy()
    {
-      // No-op
    }
 }

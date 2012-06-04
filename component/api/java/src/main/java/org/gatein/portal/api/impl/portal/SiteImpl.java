@@ -42,8 +42,10 @@ import org.gatein.portal.api.impl.GateInImpl;
 
 
 import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -222,6 +224,31 @@ public class SiteImpl implements Site
    {
       //TODO
       throw new NotYetImplemented();
+   }
+
+   @Override
+   public List<Page> getPages()
+   {
+      SiteKey siteKey = getMOPSiteKey();
+      try
+      {
+         gateIn.begin();
+         List<PageData> pageDataList = gateIn.getDataStorage().find(new Query<PageData>(siteKey.getTypeName(), siteKey.getName(), PageData.class)).getAll();
+         List<Page> pages = new ArrayList<Page>(pageDataList.size());
+         for (PageData page : pageDataList)
+         {
+            pages.add(new PageImpl(page, id, gateIn));
+         }
+         return pages;
+      }
+      catch (Exception e)
+      {
+         throw new RuntimeException(e);
+      }
+      finally
+      {
+         gateIn.end();
+      }
    }
 
    @Override

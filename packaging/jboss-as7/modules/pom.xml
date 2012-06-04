@@ -891,14 +891,18 @@
 
 
      <!-- API -->
-     <dependency>
+      <dependency>
          <groupId>org.exoplatform.portal</groupId>
          <artifactId>exo.portal.component.api.java</artifactId>
       </dependency>
-     <dependency>
+      <dependency>
+         <groupId>org.exoplatform.portal</groupId>
+         <artifactId>exo.portal.component.api.rest</artifactId>
+      </dependency>
+      <dependency>
          <groupId>org.gatein.api</groupId>
          <artifactId>gatein-java-api</artifactId>
-     </dependency>
+      </dependency>
 
 
 

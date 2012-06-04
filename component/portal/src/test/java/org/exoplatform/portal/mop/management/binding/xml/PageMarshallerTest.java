@@ -390,7 +390,7 @@ public class PageMarshallerTest extends AbstractMarshallerTest
       expectedPages.getPages().add(expected);
 
       PageMarshaller marshaller = new PageMarshaller();
-      marshaller.marshal(expectedPages, baos);
+      marshaller.marshal(expectedPages, baos, false);
 
       //System.out.println(baos.toString());
       
@@ -429,7 +429,7 @@ public class PageMarshallerTest extends AbstractMarshallerTest
       expectedPages.getPages().add(expected);
 
       PageMarshaller marshaller = new PageMarshaller();
-      marshaller.marshal(expectedPages, baos);
+      marshaller.marshal(expectedPages, baos, false);
 
       //System.out.println(baos.toString());
 
