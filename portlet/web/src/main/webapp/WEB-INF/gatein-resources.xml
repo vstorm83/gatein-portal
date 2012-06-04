@@ -50,7 +50,7 @@
 		<application-name>web</application-name>
 		<portlet-name>NavigationPortlet</portlet-name>
 		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UINavigationPortlet/DefaultStylesheet.css</css-path>
+		<css-path>/skin/portal/webui/LESS_component/UINavigationPortlet/DefaultStylesheet.less</css-path>
 	</portlet-skin>	
 		
 	<!-- SiteMapPortlet skins -->
@@ -59,7 +59,7 @@
 		<application-name>web</application-name>
 		<portlet-name>SiteMapPortlet</portlet-name>
 		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UISiteMap/DefaultStylesheet.css</css-path>
+		<css-path>/skin/portal/webui/LESS_component/UISiteMap/DefaultStylesheet.less</css-path>
 	</portlet-skin>
 	
 		
