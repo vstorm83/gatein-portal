@@ -41,7 +41,7 @@
 	height: 390px;
 	.FR;
 	.border(1px,solid,#C6C6C6);	
-	text-align: center;
+	.textalign .dir(ct);
 	background: url('@{pathBackground}/BgRightColumn.gif') repeat-x bottom center;
 	
 	.PortletDecoration {	
@@ -49,7 +49,7 @@
 	}
 	
 	.GuideText {
-		text-align: justify;
+		.textalign .dir(jt);
 		color: @baseColor * 7;
 	}
 	
@@ -113,7 +113,7 @@
 
 .UIHomePagePortlet .AdImageLeft .EmptyBlock {
 	height: 120px;
-	text-align: center;
+	.textalign .dir(ct);
 	font-family: @fontFamily;
 	.shortHand(21px,bold,24px,#616161);/*shortHand([font-size],[font-weight],[line-height],[color])*/
 	.FR;
@@ -125,7 +125,7 @@
 	
 	.ProductSlogan {
 		font-family: @fontFamily;
-		float: right;
+		.FL .dir(rt);
 		.shortHand(9px,normal,16px,@baseColor * 6);/*shortHand([font-size],[font-weight],[line-height],[color])*/
 		width: 500px;
 	}

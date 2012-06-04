@@ -1,0 +1,71 @@
+.ClearFix {
+  &:before,
+  &:after {
+    display: table;
+    content: "";
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+*+html .ClearFix {
+  zoom: 1;
+}
+
+.FL {
+	.dir(@dir);
+	.dir(lt){
+		float: left;
+	   
+	}
+	.dir(rt){
+		float:right;   
+	}
+	.dir(n) {
+          float:none;
+    }
+}
+
+.FR {
+	.dir(@dir);
+	.dir(lt){
+		float: right;
+	   
+	}
+	.dir(rt){
+		float:left;   
+	}
+	.dir(n) {
+          float:none;
+    }
+}
+
+.textalign() {
+	.dir(@dir);
+	.dir(lt)  {
+	  text-align: left;
+	}
+
+	.dir(rt) {
+	  text-align: right;
+	}
+	.dir(ct) {
+	  text-align: center;
+	}	
+	.dir(jt) {
+	  text-align: justify;
+	}		
+}
+
+.border(@px:1px,@style:solid,@color:@baseColor) {
+	border:@arguments ;
+}
+
+
+.shortHand(@size: @baseFontSize, @weight: @baseFontWeight, @lineHeight: @baseLineHeight,@color:@baseColor) {
+    font-size: @size;
+    font-weight: @weight;
+    line-height: @lineHeight;
+	color:@color;
+}
