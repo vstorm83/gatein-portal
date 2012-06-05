@@ -6,7 +6,7 @@
    stylesheets = {
    @Stylesheet(src = "/public/stylesheets/bootstrap.css"), 
    @Stylesheet(src = "/public/stylesheets/bootstrap-responsive.css")})
-@Bindings(@Binding(value = org.exoplatform.services.organization.OrganizationService.class, implementation = GateInMetaProvider.class))
+@Bindings(@Binding(value = org.exoplatform.services.organization.OrganizationService.class, implementation = GateProviderFactory.class))
 package org.exoplatform.juzu.register;
 import org.juzu.plugin.binding.Bindings;
 import org.juzu.plugin.binding.Binding;

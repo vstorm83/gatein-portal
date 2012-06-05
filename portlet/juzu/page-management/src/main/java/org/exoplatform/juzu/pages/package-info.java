@@ -17,10 +17,10 @@
    @Stylesheet(src = "/public/stylesheets/bootstrap-responsive.css"),
    @Stylesheet(src = "/public/jquery.treeview.css")})
 @Bindings({
-   @Binding(value = org.exoplatform.portal.config.UserPortalConfigService.class, implementation = GateInMetaProvider.class),
-   @Binding(value = org.exoplatform.portal.config.DataStorage.class, implementation = GateInMetaProvider.class),
-   @Binding(value = org.exoplatform.portal.config.UserACL.class, implementation = GateInMetaProvider.class),
-   @Binding(value = org.exoplatform.services.organization.OrganizationService.class, implementation = GateInMetaProvider.class)
+   @Binding(value = org.exoplatform.portal.config.UserPortalConfigService.class, implementation = GateProviderFactory.class),
+   @Binding(value = org.exoplatform.portal.config.DataStorage.class, implementation = GateProviderFactory.class),
+   @Binding(value = org.exoplatform.portal.config.UserACL.class, implementation = GateProviderFactory.class),
+   @Binding(value = org.exoplatform.services.organization.OrganizationService.class, implementation = GateProviderFactory.class)
 })
 package org.exoplatform.juzu.pages;
 import org.juzu.plugin.binding.Bindings;

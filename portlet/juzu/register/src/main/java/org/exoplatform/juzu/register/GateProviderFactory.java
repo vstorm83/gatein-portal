@@ -21,14 +21,14 @@ package org.exoplatform.juzu.register;
 import javax.inject.Provider;
 
 import org.exoplatform.container.PortalContainer;
-import org.juzu.impl.inject.MetaProvider;
+import org.juzu.inject.ProviderFactory;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
  * @version $Id$
  * 
  */
-public class GateInMetaProvider implements MetaProvider
+public class GateProviderFactory implements ProviderFactory
 {
 
    public <T> Provider<? extends T> getProvider(final Class<T> implementationType)
