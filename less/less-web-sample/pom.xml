@@ -4,14 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-    <artifactId>exo.portal.parent</artifactId>
     <groupId>org.exoplatform.portal</groupId>
-    <version>3.3.0-CR01-SNAPSHOT</version>
+    <artifactId>exo.portal.parent</artifactId>
+    <version>3.4.0-GA-SNAPSHOT</version>
 	</parent>
 
-  <groupId>org.gatein.less</groupId>
   <artifactId>less-web-sample</artifactId>
-  <version>1.0</version>
   <packaging>war</packaging>
 
   <build>
@@ -36,14 +34,14 @@
 					<modules>
 						<module>
 							<name>entry-lt.less</name>
-							<home>src/main/webapp/public/less/gatein</home>
-							<output>src/main/webapp/public/css/gatein-lt.css</output>
+							<home>${pom.basedir}/src/main/webapp/public/less/gatein</home>
+							<output>${pom.basedir}/src/main/webapp/public/css/gatein-lt.css</output>
 							<hasExternalImport>true</hasExternalImport>
 						</module>
 						<module>
 							<name>entry-rt.less</name>
-							<home>src/main/webapp/public/less/gatein</home>
-							<output>src/main/webapp/public/css/gatein-rt.css</output>
+							<home>${pom.basedir}/src/main/webapp/public/less/gatein</home>
+							<output>${pom.basedir}/src/main/webapp/public/css/gatein-rt.css</output>
 							<hasExternalImport>true</hasExternalImport>
 						</module>
 					</modules>

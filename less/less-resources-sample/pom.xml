@@ -4,9 +4,9 @@
   <modelVersion>4.0.0</modelVersion>
 	
 	<parent>
-    <artifactId>exo.portal.parent</artifactId>
     <groupId>org.exoplatform.portal</groupId>
-    <version>3.3.0-CR01-SNAPSHOT</version>
+    <artifactId>exo.portal.parent</artifactId>
+    <version>3.4.0-GA-SNAPSHOT</version>
 	</parent>
 
   <groupId>org.gatein.less</groupId>
