@@ -270,9 +270,19 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
    }
 
    @Override
-   public void removeSite(Site site)
+   public void removeSite(Site.Id siteId)
    {
-      ParameterValidation.throwIllegalArgExceptionIfNull(site, "Site");
+      ParameterValidation.throwIllegalArgExceptionIfNull(siteId, "Site.Id");
+
+      //TODO:
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public void removeSite(Site.Type siteType, String siteName)
+   {
+      ParameterValidation.throwIllegalArgExceptionIfNull(siteType, "Site.Type");
+      ParameterValidation.throwIllegalArgExceptionIfNull(siteName, "Site name");
 
       //TODO:
       throw new NotYetImplemented();

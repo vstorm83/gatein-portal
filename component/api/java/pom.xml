@@ -19,6 +19,10 @@
          <artifactId>gatein-java-api</artifactId>
       </dependency>
       <dependency>
+         <groupId>org.gatein.common</groupId>
+         <artifactId>common-common</artifactId>
+      </dependency>
+      <dependency>
          <groupId>org.exoplatform.kernel</groupId>
          <artifactId>exo.kernel.container</artifactId>
       </dependency>
