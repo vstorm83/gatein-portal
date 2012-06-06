@@ -35,6 +35,7 @@ import org.exoplatform.web.application.RequestContext;
 import org.gatein.api.GateIn;
 import org.gatein.api.commons.PropertyType;
 import org.gatein.api.commons.Range;
+import org.gatein.api.exception.EntityNotFoundException;
 import org.gatein.api.portal.Site;
 import org.gatein.api.portal.SiteQuery;
 import org.gatein.common.NotYetImplemented;
@@ -270,22 +271,19 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
    }
 
    @Override
-   public void removeSite(Site.Id siteId)
+   public void removeSite(Site.Id siteId) throws EntityNotFoundException
    {
       ParameterValidation.throwIllegalArgExceptionIfNull(siteId, "Site.Id");
-
-      //TODO:
-      throw new NotYetImplemented();
+      removePortalDataFor(siteId);
    }
 
    @Override
-   public void removeSite(Site.Type siteType, String siteName)
+   public void removeSite(Site.Type siteType, String siteName) throws EntityNotFoundException
    {
       ParameterValidation.throwIllegalArgExceptionIfNull(siteType, "Site.Type");
       ParameterValidation.throwIllegalArgExceptionIfNull(siteName, "Site name");
 
-      //TODO:
-      throw new NotYetImplemented();
+      removeSite(Site.Id.create(siteType, siteName));
    }
 
 
@@ -328,6 +326,34 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
       }
    }
 
+   private void removePortalDataFor(Site.Id siteId) throws EntityNotFoundException
+   {
+      PortalKey key = SiteImpl.createPortalKey(siteId);
+      try
+      {
+         begin();
+         ModelDataStorage mds = getDataStorage();
+         PortalData data = mds.getPortalConfig(key);
+         if (data == null)
+         {
+            throw new EntityNotFoundException("Site " + siteId + " does not exist.");
+         }
+         mds.remove(data);
+      }
+      catch (EntityNotFoundException e)
+      {
+         throw e;
+      }
+      catch (Exception e)
+      {
+         throw new UndeclaredThrowableException(e);
+      }
+      finally
+      {
+         end();
+      }
+   }
+
    public void begin()
    {
       lcManager.begin();
@@ -340,7 +366,11 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
 
    public Locale getUserLocale()
    {
-      return RequestContext.getCurrentInstance().getLocale();
+      //TODO: Workaround until RequestContext is sorted out in rest context
+      RequestContext rc = RequestContext.getCurrentInstance();
+      if (rc == null) return Locale.getDefault();
+
+      return rc.getLocale();
    }
 
    public DescriptionService getDescriptionService()
