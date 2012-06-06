@@ -22,6 +22,7 @@
 
 package org.gatein.api.rest.mgmt.binding.model;
 
+import org.gatein.api.portal.Page;
 import org.gatein.api.portal.Site;
 import org.gatein.management.api.PathAddress;
 import org.gatein.management.api.binding.ModelProvider;
@@ -35,31 +36,32 @@ import java.util.List;
 /**
  * @author <a href="mailto:nscavell@redhat.com">Nick Scavelli</a>
  */
-public class SitesModelMapper implements ModelProvider.ModelMapper<List<Site>>
+public class PagesModelMapper implements ModelProvider.ModelMapper<List<Page>>
 {
-   public static final SitesModelMapper INSTANCE = new SitesModelMapper();
+   public static final PagesModelMapper INSTANCE = new PagesModelMapper();
 
-   private SitesModelMapper(){}
+   private PagesModelMapper(){}
 
    @Override
-   public List<Site> from(ModelValue value)
+   public List<Page> from(ModelValue value)
    {
       throw new UnsupportedOperationException();
    }
 
    @Override
-   public ModelValue to(Model model, List<Site> sites)
+   public ModelValue to(Model model, List<Page> pages)
    {
-      ModelList list = model.asValue(ModelList.class);
-      for (Site site : sites)
+      ModelList modelPages = model.setEmptyList();
+      for (Page page : pages)
       {
-         ModelReference siteRef = list.add().asValue(ModelReference.class);
-         siteRef.set("name", site.getId().getName());
-         siteRef.set("type", site.getId().getType().name().toLowerCase());
-         //TODO: Create a better way to create address references.
-         siteRef.set(PathAddress.pathAddress("api", SiteModelMapper.getSiteTypeRef(site), site.getId().getName()));
+         ModelReference pageRef = modelPages.add().asValue(ModelReference.class);
+         pageRef.set("name", page.getName());
+         pageRef.set("id", page.getId());
+         Site site = page.getSite();
+         PathAddress pageAddress = PathAddress.pathAddress("api", SiteModelMapper.getSiteTypeRef(site), page.getSite().getId().getName(), "pages", page.getName());
+         pageRef.set(pageAddress);
       }
 
-      return list;
+      return modelPages;
    }
 }

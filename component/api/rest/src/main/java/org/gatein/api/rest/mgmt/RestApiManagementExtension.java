@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2011, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -23,6 +23,8 @@
 package org.gatein.api.rest.mgmt;
 
 import org.gatein.api.rest.GateInRestApiService;
+import org.gatein.api.rest.mgmt.binding.model.PageModelMapper;
+import org.gatein.api.rest.mgmt.binding.model.PagesModelMapper;
 import org.gatein.api.rest.mgmt.binding.model.SiteModelMapper;
 import org.gatein.api.rest.mgmt.binding.model.SitesModelMapper;
 import org.gatein.management.api.ComponentRegistration;
@@ -52,6 +54,8 @@ public class RestApiManagementExtension implements ManagementExtension
          {
             if ("sites".equals(modelName)) return SitesModelMapper.INSTANCE;
             if ("site".equals(modelName)) return SiteModelMapper.INSTANCE;
+            if ("pages".equals(modelName)) return PagesModelMapper.INSTANCE;
+            if ("page".equals(modelName)) return PageModelMapper.INSTANCE;
 
             return null;
          }

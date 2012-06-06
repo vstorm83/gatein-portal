@@ -22,44 +22,37 @@
 
 package org.gatein.api.rest.mgmt.binding.model;
 
-import org.gatein.api.portal.Site;
-import org.gatein.management.api.PathAddress;
+import org.gatein.api.portal.Page;
+import org.gatein.common.NotYetImplemented;
 import org.gatein.management.api.binding.ModelProvider;
 import org.gatein.management.api.model.Model;
-import org.gatein.management.api.model.ModelList;
-import org.gatein.management.api.model.ModelReference;
+import org.gatein.management.api.model.ModelObject;
 import org.gatein.management.api.model.ModelValue;
-
-import java.util.List;
 
 /**
  * @author <a href="mailto:nscavell@redhat.com">Nick Scavelli</a>
  */
-public class SitesModelMapper implements ModelProvider.ModelMapper<List<Site>>
+public class PageModelMapper implements ModelProvider.ModelMapper<Page>
 {
-   public static final SitesModelMapper INSTANCE = new SitesModelMapper();
+   public static final PageModelMapper INSTANCE = new PageModelMapper();
 
-   private SitesModelMapper(){}
+   private PageModelMapper(){}
 
    @Override
-   public List<Site> from(ModelValue value)
+   public Page from(ModelValue value)
    {
-      throw new UnsupportedOperationException();
+      //TODO: Implement
+      throw new NotYetImplemented();
    }
 
    @Override
-   public ModelValue to(Model model, List<Site> sites)
+   public ModelValue to(Model model, Page page)
    {
-      ModelList list = model.asValue(ModelList.class);
-      for (Site site : sites)
-      {
-         ModelReference siteRef = list.add().asValue(ModelReference.class);
-         siteRef.set("name", site.getId().getName());
-         siteRef.set("type", site.getId().getType().name().toLowerCase());
-         //TODO: Create a better way to create address references.
-         siteRef.set(PathAddress.pathAddress("api", SiteModelMapper.getSiteTypeRef(site), site.getId().getName()));
-      }
+      ModelObject modelPage = model.setEmptyObject();
+      modelPage.set("id", page.getId());
+      modelPage.set("name", page.getName());
+      modelPage.set("title", page.getTitle());
 
-      return list;
+      return modelPage;
    }
 }

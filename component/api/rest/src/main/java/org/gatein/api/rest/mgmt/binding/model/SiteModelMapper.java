@@ -1,6 +1,6 @@
 /*
  * JBoss, Home of Professional Open Source.
- * Copyright 2011, Red Hat, Inc., and individual contributors
+ * Copyright 2012, Red Hat, Inc., and individual contributors
  * as indicated by the @author tags. See the copyright.txt file in the
  * distribution for a full listing of individual contributors.
  *
@@ -67,7 +67,7 @@ public class SiteModelMapper implements ModelProvider.ModelMapper<Site>
          ModelReference pageRef = pagesList.add().asValue(ModelReference.class);
          pageRef.set("name", page.getName());
          pageRef.set("title", page.getTitle());
-         pageRef.set(PathAddress.pathAddress("api", "sites", site.getId().getName(), "pages", page.getName()));
+         pageRef.set(PathAddress.pathAddress("api", getSiteTypeRef(site), site.getId().getName(), "pages", page.getName()));
       }
 
       // Navigation
@@ -78,9 +78,29 @@ public class SiteModelMapper implements ModelProvider.ModelMapper<Site>
          ModelReference navRef = navList.add().asValue(ModelReference.class);
          navRef.set("name", child.getName());
          navRef.set("displayName", child.getDisplayName());
-         navRef.set(PathAddress.pathAddress("api", "sites", site.getId().getName(), "navigation", child.getName()));
+         navRef.set(PathAddress.pathAddress("api", getSiteTypeRef(site), site.getId().getName(), "navigation", child.getName()));
       }
 
       return siteModel;
+   }
+
+   static String getSiteTypeRef(Site site)
+   {
+      String siteRef;
+      switch (site.getId().getType())
+      {
+         case SITE:
+            siteRef = "sites";
+            break;
+         case SPACE:
+            siteRef = "spaces";
+            break;
+         case DASHBOARD:
+            siteRef = "dashboards";
+            break;
+         default:
+            throw new IllegalArgumentException("Unknown site type " + site.getId().getType() + " for site " + site.getId().getName());
+      }
+      return siteRef;
    }
 }
