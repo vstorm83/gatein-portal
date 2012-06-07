@@ -1,0 +1,57 @@
+.gtnClearFix() {
+  &:before,
+  &:after {
+    display: table;
+    content: "";
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+
+.gtnFloatLeft() {
+	.dir(@dir);
+	.dir(lt){
+		float: left;
+	   
+	}
+	.dir(rt){
+		float: right;   
+	}
+	
+}
+
+.gtnFloatRight() {
+	.dir(@dir);
+	.dir(lt){
+		float: right;
+	   
+	}
+	.dir(rt){
+		float: left;   
+	}
+	
+}
+
+.gtnTextAlignLeft() {
+	.dir(@dir);
+	.dir(lt)  {
+	  text-align: left;
+	}
+
+	.dir(rt) {
+	  text-align: right;
+	}		
+}
+
+.gtnTextAlignRight() {
+	.dir(@dir);
+	.dir(lt)  {
+	  text-align: right;
+	}
+
+	.dir(rt) {
+	  text-align: left;
+	}		
+}

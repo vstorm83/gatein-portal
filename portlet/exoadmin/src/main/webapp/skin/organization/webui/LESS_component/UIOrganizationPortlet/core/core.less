@@ -1,0 +1,127 @@
+@import "variables.less";
+@import "mixins.less";
+
+.ClearFix {
+	.gtnClearFix();
+}
+
+
+*+html .ClearFix {
+  zoom: 1;
+}
+
+.FL {
+	.gtnFloatLeft();
+}
+
+.FR {
+	.gtnFloatRight();
+}
+
+.gtnFloat(@value) {
+	float: @value;
+}
+
+.gtnTextAlign(@value) {
+	text-align: @value;
+}
+
+.TextAlignLeft {
+	.gtnTextAlignLeft();
+}
+
+.TextAlignRight {
+	.gtnTextAlignRight();
+}
+
+.gtnBorder(@px:1px,@style:solid,@color:@gtnColor) {
+	border: @arguments ;
+}
+
+
+.gtnShortHand(@size: @gtnFontSize, @weight: @gtnFontWeight, @lineHeight: @gtnLineHeight,@color:@gtnColor) {
+    font-size: @size;
+    font-weight: @weight;
+    line-height: @lineHeight;
+	color: @color;
+}
+
+
+.gtnPadding(@top,@right,@bottom,@left) {
+ .dir(@dir);
+ .dir(lt){        
+	  padding-top: @top;
+	  padding-right: @right;
+	  padding-bottom: @bottom;
+	  padding-left: @left;
+    }
+ .dir(rt){
+	  padding-top: @top;
+	  padding-right: @left;
+	  padding-bottom: @bottom;
+	  padding-left: @right;
+	}
+}
+
+.gtnMargin(@top,@right,@bottom,@left) {
+ .dir(@dir);
+ .dir(lt){        
+	  margin-top: @top;
+	  margin-right: @right;
+	  margin-bottom: @bottom;
+	  margin-left: @left;
+    }
+ .dir(rt){
+	  margin-top: @top;
+	  margin-right: @left;
+	  margin-bottom: @bottom;
+	  margin-left: @right;
+	}
+}
+
+.gtnBoxWH(@width,@height){
+	width: @width;
+	height: @height;
+}
+
+
+.gtnBoxOverflow(@width,@height,@overflow) {
+	.gtnBoxWH(@width,@height);
+	overflow: @overflow;
+}
+
+.gtnBoxAlign(@width,@height,@margin) {
+	.gtnBoxWH(@width,@height);
+	margin: @margin;
+}
+
+.gtnLineHeightMiddle(@height,@lineheight) {
+	height: @height;
+	line-height: @lineheight;
+}
+
+.gtnPositionTop(@position,@left,@top,@zindex){	
+   position:@position;
+   top:@top;
+   z-index:@zindex;
+   .dir(@dir);	
+   .dir(lt){ 
+		left:@left;   
+	}
+	.dir(rt){ 
+		right:@left;  
+	}
+}
+
+.gtnPositionBottom(@position,@left,@bottom,@zindex){	
+   position:@position;
+   bottom:@bottom;
+   z-index:@zindex;
+   .dir(@dir);	
+   .dir(lt){ 
+		left:@left;   
+	}
+	.dir(rt){ 
+		right:@left;  
+	}
+}
