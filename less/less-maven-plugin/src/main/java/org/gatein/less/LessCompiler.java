@@ -41,6 +41,9 @@ import com.asual.lesscss.LessEngine;
 public class LessCompiler extends AbstractMojo
 {
 
+   /** @parameter default-value="${project.build.directory}/${project.build.finalName}" @required */
+   private File webappDirectory;
+   
    /**
     * @parameter
     * @required
@@ -54,12 +57,12 @@ public class LessCompiler extends AbstractMojo
          LessEngine engine = new LessEngine();
          for (Module module : modules)
          {
-            /*getLog().info(module.getName());
-            getLog().info(module.getHomeDirectory());
-            getLog().info(module.getOutput());*/
-            String result = engine.compile(new File(module.getHomeDirectory() + "/" + module.getName()));
-            BufferedWriter writer = new BufferedWriter(new FileWriter(module.getOutput()));
-            //getLog().info("The RESULT: \n" + result);
+            File input = new File(webappDirectory.getAbsoluteFile() + "/" + module.getInput());
+            String result = engine.compile(input);
+            BufferedWriter writer = new BufferedWriter(
+               new FileWriter(Utils.resolveResourcePath(webappDirectory.getAbsolutePath() + "/"+ module.getOutput())));
+            
+            getLog().info("The RESULT: \n" + result);
             writer.write(result);
             writer.close();
          }
