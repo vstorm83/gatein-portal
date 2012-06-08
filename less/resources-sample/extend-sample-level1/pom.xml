@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+	
+	<parent>
+    <groupId>org.exoplatform.portal</groupId>
+    <artifactId>exo.portal.parent</artifactId>
+    <version>3.4.0-GA-SNAPSHOT</version>
+	</parent>
+
+  <groupId>org.gatein.less.resources</groupId>
+  <artifactId>extend-sample-level1</artifactId>
+  <version>1.0</version>
+  <packaging>war</packaging>
+
+  <build>
+		<finalName>extend-sample-level1</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.gatein.less</groupId>
+				<artifactId>less-maven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>import</goal>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<artifactCoords>org.gatein.less.resources:core-sample:1.0:war</artifactCoords>
+					<modules>
+						<module>
+							<input>gatein/ext1/gatein-ext1.less</input>
+							<output>css/gatein-ext1.css</output>
+							<hasExternalImport>true</hasExternalImport>
+						</module>
+					</modules>
+				</configuration>          
+			</plugin>
+		</plugins>
+  </build>
+</project>

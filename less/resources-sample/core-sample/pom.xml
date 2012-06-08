@@ -9,12 +9,14 @@
     <version>3.4.0-GA-SNAPSHOT</version>
 	</parent>
 
-  <artifactId>less-web-sample</artifactId>
+  <groupId>org.gatein.less.resources</groupId>
+	<artifactId>core-sample</artifactId>
+  <version>1.0</version>
   <packaging>war</packaging>
 
   <build>
-		<finalName>less-web-sample</finalName>
-
+		<finalName>core-sample</finalName>
+		<!--
 		<plugins>
 			<plugin>
 				<groupId>org.gatein.less</groupId>
@@ -23,30 +25,20 @@
 				<executions>
 					<execution>
 						<goals>
-							<goal>import</goal>
 							<goal>compile</goal>
-							<goal>clean</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
-					<artifactCoords>org.gatein.less:less-resources-sample:1.0:war</artifactCoords>
 					<modules>
 						<module>
-							<name>entry-lt.less</name>
-							<home>${pom.basedir}/src/main/webapp/public/less/gatein</home>
-							<output>${pom.basedir}/src/main/webapp/public/css/gatein-lt.css</output>
-							<hasExternalImport>true</hasExternalImport>
-						</module>
-						<module>
-							<name>entry-rt.less</name>
-							<home>${pom.basedir}/src/main/webapp/public/less/gatein</home>
-							<output>${pom.basedir}/src/main/webapp/public/css/gatein-rt.css</output>
-							<hasExternalImport>true</hasExternalImport>
+							<input>gatein/core/gatein-core.less</input>
+							<output>css/gatein-core.css</output>
 						</module>
 					</modules>
-				</configuration>
+				</configuration>          
 			</plugin>
 		</plugins>
+		-->
   </build>
 </project>

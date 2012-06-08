@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
          xmlns="http://maven.apache.org/POM/4.0.0"
@@ -10,7 +11,7 @@
     <version>3.4.0-GA-SNAPSHOT</version>
 	</parent>
 
-  <groupId>org.gatein.less</groupId>
+  <groupId>org.gatein.less.resources</groupId>
   <artifactId>integration</artifactId>
   <packaging>pom</packaging>
   <name>GateIn - LESS Integration</name>
@@ -22,7 +23,8 @@
   <dependencies>
   </dependencies>
   <modules>
-    <module>less-maven-plugin</module>
-		<module>resources-sample</module>
+    <module>core-sample</module>
+		<module>extend-sample-level1</module>
+		<module>extend-sample-level2</module>
   </modules>
 </project>
