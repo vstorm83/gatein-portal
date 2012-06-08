@@ -18,30 +18,29 @@
  */
 package org.gatein.less;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.factory.ArtifactFactory;
 import org.apache.maven.artifact.repository.ArtifactRepository;
-import org.apache.maven.artifact.resolver.ArtifactNotFoundException;
-import org.apache.maven.artifact.resolver.ArtifactResolutionException;
 import org.apache.maven.artifact.resolver.ArtifactResolver;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.plugin.MojoFailureException;
 import org.gatein.less.model.ImportEntry;
 import org.gatein.less.model.Module;
 
@@ -50,11 +49,12 @@ import org.gatein.less.model.Module;
  * @version $Id$
  * 
  * @goal import
- * @phase validate
+ * @phase generate-resources
  * @requiresDependencyResolution
  */
 public class LessImporter extends AbstractMojo
 {
+
    /** @component */
    private ArtifactFactory artifactFactory;
 
@@ -65,77 +65,96 @@ public class LessImporter extends AbstractMojo
    private ArtifactRepository localRepository;
 
    /** @parameter default-value="${project.remoteArtifactRepositories}" */
-   private List remoteRepositories;
+   private List<?> remoteRepositories;
 
    /** @parameter default-value="${artifactCoords}" */
    private String artifactCoords;
 
+   /** @parameter default-value="${project.build.directory}/${project.build.finalName}" @required */
+   private File webappDirectory;
+
+   /** @parameter default-value="${basedir}/src/main/webapp" @required */
+   private File warSourceDirectory;
+
    /** @parameter @require */
    private Module[] modules;
 
-   private JarFile archFile;
+   private JarFile archive;
+
+   private Artifact importArtifact;
+
+   private Pattern gateinImportPattern = Pattern.compile("(.*)(gatein-)(.[^/]*)(\\.less)");
 
    @Override
-   public void execute() throws MojoExecutionException, MojoFailureException
+   public void execute() throws MojoExecutionException
    {
       if (!hasImported())
       {
          getLog().warn("No module has been used external importing");
          return;
       }
+      
+      importArtifact = buildArtifact(artifactCoords);
 
-      Artifact artifact = buildArtifact();
       try
       {
-         resolver.resolve(artifact, remoteRepositories, localRepository);
-         getLog().info("File: " + artifact.getFile().getAbsolutePath());
-         archFile = new JarFile(artifact.getFile());
+         Utils.rsync(warSourceDirectory, webappDirectory);
+         resolver.resolve(importArtifact, remoteRepositories, localRepository);
+         archive = new JarFile(importArtifact.getFile());
 
          Map<String, ImportEntry> importEntries = parseModules();
-         for(ImportEntry entry : importEntries.values()) 
+         for (ImportEntry entry : importEntries.values())
          {
-            for(String location : entry.getLocation())
-            {
-               FileOutputStream fos = new FileOutputStream(location + "/" + entry.getName());
-               fos.write(entry.getData());
-               fos.close();
-               createTempFile(entry.getName());
-            }
+            writeToFile(entry);
          }
       }
-      catch (ArtifactResolutionException e)
-      {
-         throw new MojoExecutionException(e.getMessage(), e);
-      }
-      catch (ArtifactNotFoundException e)
-      {
-         throw new MojoExecutionException(e.getMessage(), e);
-      }
-      catch (IOException e)
+      catch (Exception e)
       {
          throw new MojoExecutionException(e.getMessage(), e);
       }
    }
+   
+   private void writeToFile(ImportEntry entry) throws IOException
+   {
+      for (String location : entry.getLocations())
+      {
+         String path = webappDirectory.getAbsoluteFile() + "/" + location + "/" + entry.getName();
+         FileOutputStream fos = new FileOutputStream(Utils.resolveResourcePath(path));
+         getLog().info("Write import file to: [" + path + "]");
+         fos.write(entry.getData());
+         fos.close();
+      }
 
-   private Map<String, ImportEntry> parseModules() throws IOException
+      for (ImportEntry child : entry.getDependencies().values())
+      {
+         writeToFile(child);
+      }
+   }
+
+   private Map<String, ImportEntry> parseModules() throws Exception
    {
       Map<String, ImportEntry> holder = new HashMap<String, ImportEntry>();
       for (Module module : modules)
       {
          if (!module.hasExternalImport())
             continue;
-         
-         
-         BufferedReader reader = new BufferedReader(new FileReader(module.getHomeDirectory() + "/" + module.getName()));
+
+         File input = new File(warSourceDirectory.getAbsolutePath() + "/" + module.getInput());
+         BufferedReader reader = new BufferedReader(new FileReader(input));
          String line = null;
          while ((line = reader.readLine()) != null)
          {
-            if (line.indexOf("@import") != -1)
-            {
-               String name = line.substring("@import".length(), line.lastIndexOf(';')).trim();
-               name = name.replaceAll("['\"]", "");
+            if (line.indexOf("@import") == -1)
+               continue;
 
-               if (!name.startsWith("gatein"))
+            String name = line.substring("@import".length(), line.lastIndexOf(';')).trim();
+            name = name.replaceAll("['\"]", "");
+
+            for (Enumeration<JarEntry> e = archive.entries(); e.hasMoreElements();)
+            {
+               JarEntry jarEntry = e.nextElement();
+
+               if (!jarEntry.getName().equals(name))
                   continue;
 
                ImportEntry entry = holder.get(name);
@@ -147,47 +166,91 @@ public class LessImporter extends AbstractMojo
 
                if (entry.getData() == null)
                {
-                  for (Enumeration<JarEntry> e = archFile.entries(); e.hasMoreElements();)
-                  {
-                     JarEntry jarEntry = e.nextElement();
-                     String elementName = jarEntry.getName();
-
-                     if(!elementName.endsWith(name)) 
-                        continue;
-                     
-                     entry.setData(writeToByteArrays(jarEntry));
-                  }
+                  entry.setData(Utils.writeToByteArrays(jarEntry, archive));
                }
-               
-               entry.addLocation(module.getHomeDirectory());
+               entry.addLocation(module.getInputDirectory());
+               addDependencies(entry, archive);
                holder.put(name, entry);
+
             }
          }
       }
       return holder;
    }
-   
-   private byte[] writeToByteArrays(JarEntry entry) throws IOException
+
+   private ImportEntry addDependencies(ImportEntry importParent, JarFile archive) throws Exception
    {
-      InputStream is = archFile.getInputStream(entry);
-      BufferedInputStream bis = new BufferedInputStream(is);
-      byte[] buff = new byte[256];
-      ByteArrayOutputStream baos = new ByteArrayOutputStream();
-      for(int l = bis.read(buff); l > -1; l = bis.read(buff))
+      String pwd = importParent.getName().substring(0, importParent.getName().lastIndexOf('/'));
+      StringBuilder b = new StringBuilder();
+
+      BufferedReader reader =
+         new BufferedReader(new InputStreamReader(new ByteArrayInputStream(importParent.getData())));
+      String line = null;
+      while ((line = reader.readLine()) != null)
       {
-         baos.write(buff, 0, l);
+         if (line.indexOf("@import") == -1)
+            continue;
+
+         String importName = line.substring("@import".length(), line.lastIndexOf(';')).trim();
+         importName = importName.replaceAll("['\"]", "");
+         String filePath = b.append(pwd).append("/").append(importName).toString();
+         b.setLength(0);
+
+         // TODO: resolve path foo/bar/juu/../../A.less
+         if (importName.indexOf("../") != -1)
+         {
+            LinkedList<String> stack = new LinkedList<String>();
+
+            for (String s : filePath.split("/"))
+            {
+               if (s.equals(".."))
+                  stack.removeLast();
+               else
+                  stack.addLast(s);
+            }
+
+            for (int i = 0; i < stack.size(); i++)
+            {
+               b.append(stack.get(i));
+
+               if (i < stack.size() - 1)
+                  b.append("/");
+            }
+
+            filePath = b.toString();
+         }
+         //
+
+         JarEntry jarEntry = archive.getJarEntry(filePath);
+         if (jarEntry == null)
+            continue;
+
+         ImportEntry importChild = importParent.getDependencies().get(jarEntry.getName());
+         if (importChild == null)
+         {
+            importChild = new ImportEntry();
+            importChild.setName(jarEntry.getName());
+         }
+
+         if (importChild.getData() == null)
+         {
+            importChild.setData(Utils.writeToByteArrays(jarEntry, archive));
+         }
+
+         importChild.addLocations(importParent.getLocations());
+         importParent.addDenepency(importChild);
+
+         // TODO: lookup dependencies recursive
+         Matcher matcher = gateinImportPattern.matcher(importChild.getName());
+         
+         if (matcher.matches())
+         {
+            addDependencies(importChild, archive);
+         }
       }
-      return baos.toByteArray();
+      return importParent;
    }
-   
-   private boolean createTempFile(String name) throws IOException
-   {
-      String tempDir = System.getProperty("java.io.tmpdir");
-      String fileSeparator = System.getProperty("file.separator");
-      File f = new File(tempDir + fileSeparator + name);
-      return f.createNewFile();
-   }
-   
+
    private boolean hasImported()
    {
       boolean hasImported = false;
@@ -198,7 +261,7 @@ public class LessImporter extends AbstractMojo
       return hasImported;
    }
 
-   private Artifact buildArtifact()
+   private Artifact buildArtifact(String artifactCoords)
    {
       String[] args = artifactCoords.split(":");
       String groupId = args[0];

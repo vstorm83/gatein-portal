@@ -27,32 +27,25 @@ package org.gatein.less.model;
 
 public class Module
 {
-   private String name;
-   
-   private String home;
+   private String input;
    
    private String output;
    
    private boolean hasExternalImport = false;
 
-   public String getName()
+   public String getInput()
    {
-      return name;
+      return input;
    }
 
-   public void setName(String name)
+   public void setInput(String input)
    {
-      this.name = name;
+      this.input = input;
    }
-
-   public String getHomeDirectory()
+   
+   public String getInputDirectory()
    {
-      return home;
-   }
-
-   public void setHomeDirectory(String home)
-   {
-      this.home = home;
+      return input.substring(0, input.lastIndexOf('/'));
    }
 
    public String getOutput()

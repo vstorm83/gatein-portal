@@ -19,7 +19,9 @@
 package org.gatein.less.model;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -31,7 +33,9 @@ public class ImportEntry
 {
    private String name;
    
-   private Set<String> location;
+   private Set<String> locations;
+   
+   private Map<String, ImportEntry> dependencies;
    
    private byte[] data;
 
@@ -45,15 +49,33 @@ public class ImportEntry
       this.name = name;
    }
 
-   public Set<String> getLocation()
+   public Set<String> getLocations()
    {
-      return Collections.unmodifiableSet(location);
+      if(locations == null) locations = new HashSet<String>();
+      return Collections.unmodifiableSet(locations);
    }
 
    public void addLocation(String location)
    {
-      if(this.location == null) this.location = new HashSet<String>();
-      this.location.add(location);
+      if(this.locations == null) this.locations = new HashSet<String>();
+      this.locations.add(location);
+   }
+   
+   public void addLocations(Set<String> locations)
+   {
+      this.locations = locations;
+   }
+   
+   public Map<String, ImportEntry> getDependencies()
+   {
+      if(dependencies == null) dependencies = new HashMap<String, ImportEntry>();
+      return Collections.unmodifiableMap(dependencies);
+   }
+   
+   public void addDenepency(ImportEntry importEntry)
+   {
+      if(dependencies == null) dependencies = new HashMap<String, ImportEntry>();
+      dependencies.put(importEntry.getName(), importEntry);
    }
 
    public byte[] getData()
@@ -64,5 +86,11 @@ public class ImportEntry
    public void setData(byte[] data)
    {
       this.data = data;
+   }
+   
+   @Override
+   public String toString()
+   {
+      return "[" + name + "]";
    }
 }
