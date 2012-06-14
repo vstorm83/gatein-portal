@@ -23,11 +23,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 
+import juzu.plugin.less.impl.lesser.Compilation;
+import juzu.plugin.less.impl.lesser.JSR223Context;
+import juzu.plugin.less.impl.lesser.Lesser;
+import juzu.plugin.less.impl.lesser.URLLessContext;
+
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.gatein.less.model.Module;
-
-import com.asual.lesscss.LessEngine;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -35,7 +38,7 @@ import com.asual.lesscss.LessEngine;
  *
  *
  * @goal compile
- * @phase compile
+ * @phase process-resources
  * @requiresDependencyResolution
  */
 public class LessCompiler extends AbstractMojo
@@ -54,16 +57,22 @@ public class LessCompiler extends AbstractMojo
    {
       try
       {
-         LessEngine engine = new LessEngine();
+         Lesser lesser = new Lesser(new JSR223Context());
          for (Module module : modules)
          {
-            File input = new File(webappDirectory.getAbsoluteFile() + "/" + module.getInput());
-            String result = engine.compile(input);
+            String input = module.getInput().substring(module.getInput().lastIndexOf('/') + 1);
+            String contextPath = webappDirectory.getCanonicalPath() + "/" + module.getInput().substring(0, module.getInput().lastIndexOf(input));
+            getLog().info("Less compile phase - input: " + input);
+            getLog().info("Less compile phase - context: " + new File(contextPath).toURI().toURL());
+            
+            URLLessContext context = new URLLessContext(new File(contextPath).toURI().toURL());
+            Compilation compilation = (Compilation)lesser.compile(context, input);
+            
             BufferedWriter writer = new BufferedWriter(
                new FileWriter(Utils.resolveResourcePath(webappDirectory.getAbsolutePath() + "/"+ module.getOutput())));
             
-            getLog().info("The RESULT: \n" + result);
-            writer.write(result);
+            getLog().info("The RESULT: \n" + compilation.getValue());
+            writer.write(compilation.getValue());
             writer.close();
          }
       }

@@ -118,7 +118,7 @@ public class LessImporter extends AbstractMojo
    {
       for (String location : entry.getLocations())
       {
-         String path = webappDirectory.getAbsoluteFile() + "/" + location + "/" + entry.getName();
+         String path = webappDirectory.getCanonicalPath() + "/" + location + "/" + entry.getName();
          FileOutputStream fos = new FileOutputStream(Utils.resolveResourcePath(path));
          getLog().info("Write import file to: [" + path + "]");
          fos.write(entry.getData());
