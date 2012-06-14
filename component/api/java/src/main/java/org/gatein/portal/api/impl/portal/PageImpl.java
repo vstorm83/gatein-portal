@@ -22,145 +22,132 @@
 
 package org.gatein.portal.api.impl.portal;
 
-import org.exoplatform.portal.pom.data.ModelDataStorage;
-import org.exoplatform.portal.pom.data.PageData;
-import org.gatein.api.commons.PropertyType;
-import org.gatein.api.portal.Navigation;
+import org.exoplatform.portal.config.DataStorage;
+import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.pom.data.PageKey;
+import org.gatein.api.exception.EntityNotFoundException;
 import org.gatein.api.portal.Page;
-import org.gatein.api.portal.PageType;
 import org.gatein.api.portal.Site;
-import org.gatein.common.NotYetImplemented;
-import org.gatein.common.util.ParameterValidation;
-import org.gatein.portal.api.impl.GateInImpl;
-
-import java.util.List;
 
 /**
  * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
  * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
  */
-public class PageImpl implements Page
+public class PageImpl extends DataStorageContext implements Page
 {
-   private final Site.Id siteId;
-   private PageData pageData;
-   protected final GateInImpl gateIn;
+   private final Id id;
+   private final String internalId;
+   private final SiteImpl site;
 
-   public PageImpl(PageData pageData, Site.Id siteId, GateInImpl gateIn)
+   public PageImpl(SiteImpl site, String pageName)
    {
-      ParameterValidation.throwIllegalArgExceptionIfNull(pageData, "PageData");
-      ParameterValidation.throwIllegalArgExceptionIfNull(siteId, "Site.Id");
-      ParameterValidation.throwIllegalArgExceptionIfNull(gateIn, "GateInImpl");
+      super(site.dataStorage);
 
-      this.siteId = siteId;
-      this.pageData = pageData;
-      this.gateIn = gateIn;
+      this.site = site;
+      this.id = Page.Id.create(site.getId(), pageName);
+      SiteKey siteKey = site.getSiteKey();
+      internalId = new PageKey(siteKey.getTypeName(), siteKey.getName(), pageName).getCompositeId();
    }
 
+   @Override
    public Site getSite()
    {
-      return gateIn.getSite(siteId);
+      return site.getSite();
    }
 
+   @Override
    public String getTitle()
    {
-      return pageData.getTitle();
+      return getInternalPage(true).getTitle();
    }
 
    @Override
-   public String getId()
+   public Id getId()
    {
-      return pageData.getId();
-   }
-
-   @Override
-   public PageType getType()
-   {
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public void setType(PageType name)
-   {
-      //TODO:
-      throw new NotYetImplemented();
+      return id;
    }
 
    @Override
    public String getName()
    {
-      return pageData.getName();
+      return id.getPageName();
    }
 
    @Override
-   public List<Navigation> getNavigations()
+   public void setTitle(final String title)
    {
-      //TODO:
-      throw new NotYetImplemented();
-   }
+      org.exoplatform.portal.config.model.Page page = getInternalPage(true);
 
-   @Override
-   public <T> T getProperty(PropertyType<T> property)
-   {
-      if (property == null)
+      execute(page, new PageModify()
       {
-         return null;
-      }
-
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public <T> void setProperty(PropertyType<T> property, T value)
-   {
-      //TODO:
-      throw new NotYetImplemented();
+         @Override
+         public void modifyPage(org.exoplatform.portal.config.model.Page page, DataStorage dataStorage) throws Exception
+         {
+            page.setTitle(title);
+         }
+      });
    }
 
    @Override
    public String toString()
    {
-      return "'" + getName() + "' Page titled '" + getTitle() + "' id " + getId();
+      return id.toString();
    }
 
-   public void setTitle(String title)
+   // Ensures the page exists. Useful to create a simple impl and call this method which handles errors and if page is not found.
+   Page getPage()
    {
-
-      ParameterValidation.throwIllegalArgExceptionIfNull(title, "title");
-      try
-      {
-         getGateInImpl().begin();
-         final ModelDataStorage dataStorage = getGateInImpl().getDataStorage();
-
-         // recreate page with the new title
-         final PageData newPageData = new PageData(pageData.getStorageId(), pageData.getId(), pageData.getName(), pageData.getIcon(),
-            pageData.getTemplate(), pageData.getFactoryId(), title, pageData.getDescription(), pageData.getWidth(), pageData.getHeight(),
-            pageData.getAccessPermissions(), pageData.getChildren(), pageData.getOwnerType(), pageData.getOwnerId(),
-            pageData.getEditPermission(), pageData.isShowMaxWindow());
-
-         // save new page
-         dataStorage.save(newPageData);
-
-         // remove previous data
-         dataStorage.remove(pageData);
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-      finally
-      {
-         getGateInImpl().end();
-      }
-
-
+      getInternalPage(true);
+      return this;
    }
 
-   GateInImpl getGateInImpl()
+   void removePage()
    {
-      return gateIn;
+      org.exoplatform.portal.config.model.Page page = getInternalPage(true);
+      execute(page, new Modify<org.exoplatform.portal.config.model.Page>()
+      {
+         @Override
+         public void modify(org.exoplatform.portal.config.model.Page data, DataStorage dataStorage) throws Exception
+         {
+            dataStorage.remove(data);
+         }
+      });
    }
 
+   private org.exoplatform.portal.config.model.Page getInternalPage(boolean required)
+   {
+      org.exoplatform.portal.config.model.Page page = execute(new Read<org.exoplatform.portal.config.model.Page>()
+      {
+         @Override
+         public org.exoplatform.portal.config.model.Page read(DataStorage dataStorage) throws Exception
+         {
+            return dataStorage.getPage(internalId);
+         }
+      });
 
+      if (page == null && required) throw new EntityNotFoundException("Page not found for id " + id);
+
+      return page;
+   }
+
+   private static abstract class PageModify implements Modify<org.exoplatform.portal.config.model.Page>
+   {
+      @Override
+      public final void modify(org.exoplatform.portal.config.model.Page page, DataStorage dataStorage) throws Exception
+      {
+         modifyPage(page, dataStorage);
+         dataStorage.save(page);
+      }
+
+      abstract void modifyPage(org.exoplatform.portal.config.model.Page page, DataStorage dataStorage) throws Exception;
+   }
+
+   private static Page.Id fromPageId(String pageId)
+   {
+      PageKey pageKey = PageKey.create(pageId);
+      SiteKey siteKey = new SiteKey(pageKey.getType(), pageKey.getId());
+      Site.Id siteId = SiteImpl.fromSiteKey(siteKey);
+
+      return Page.Id.create(siteId, pageKey.getName());
+   }
 }

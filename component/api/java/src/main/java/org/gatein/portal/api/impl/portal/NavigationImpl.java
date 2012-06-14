@@ -22,358 +22,232 @@
 
 package org.gatein.portal.api.impl.portal;
 
-import org.exoplatform.commons.utils.ExpressionUtil;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.portal.mop.Described;
-import org.exoplatform.portal.mop.SiteType;
-import org.exoplatform.portal.mop.description.DescriptionService;
-import org.exoplatform.portal.mop.navigation.NavigationService;
+import org.exoplatform.portal.mop.navigation.NavigationContext;
+import org.exoplatform.portal.mop.navigation.NavigationState;
+import org.exoplatform.portal.mop.navigation.NodeChangeListener;
 import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.NodeModel;
+import org.exoplatform.portal.mop.navigation.NodeState;
 import org.exoplatform.portal.mop.navigation.Scope;
-import org.exoplatform.portal.pom.data.PortalKey;
-import org.exoplatform.services.resources.ResourceBundleManager;
-import org.exoplatform.web.application.RequestContext;
-import org.exoplatform.web.url.navigation.NavigationResource;
-import org.exoplatform.web.url.navigation.NodeURL;
-import org.gatein.api.GateIn;
-import org.gatein.api.commons.PropertyType;
-import org.gatein.api.commons.Range;
 import org.gatein.api.portal.Navigation;
-import org.gatein.api.portal.Page;
+import org.gatein.api.portal.Node;
 import org.gatein.api.portal.Site;
 import org.gatein.common.NotYetImplemented;
-import org.gatein.common.text.EntityEncoder;
-import org.gatein.common.util.EmptyResourceBundle;
-import org.gatein.common.util.ParameterValidation;
 import org.gatein.portal.api.impl.GateInImpl;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 /**
  * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
  * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
  */
-public class NavigationImpl implements Navigation
+public class NavigationImpl implements Navigation, NodeChangeListener<NodeContext<Node>>
 {
-   private final NodeContext<NavigationImpl> context;
-   private SiteImpl site;
-   private String id;
-   private final GateInImpl gateIn;
-   private URI uri;
-   private String displayName;
-   private ResourceBundle bundle;
+   private final SiteImpl site;
+   private final NavigationContext context;
+   private final NodeContext<Node> nodeContext;
 
-   public NavigationImpl(SiteImpl site, NodeContext<NavigationImpl> context, GateInImpl gateIn)
+   public NavigationImpl(SiteImpl site, GateInImpl gateIn)
    {
-      ParameterValidation.throwIllegalArgExceptionIfNull(site, "SiteImpl");
-      ParameterValidation.throwIllegalArgExceptionIfNull(context, "context");
-      ParameterValidation.throwIllegalArgExceptionIfNull(gateIn, "GateInImpl");
-
-
-      this.context = context;
       this.site = site;
-      this.gateIn = gateIn;
-   }
-
-
-
-   @Override
-   public String toString()
-   {
-      String pageRef = context.getState().getPageRef();
-      StringBuilder s = new StringBuilder("Navigation@").append(getId()).append(" URI: ").append(getURI());
-
-      if (pageRef != null)
-      {
-         s.append("-target->").append(pageRef);
-      }
-
-      if (context.getNodeCount() != 0)
-      {
-         loadChildrenIfNeeded();
-         s.append("\n|");
-         Iterator<NavigationImpl> children = context.iterator();
-         while (children.hasNext())
-         {
-            s.append("\n+--").append(children.next());
-         }
-         s.append("\n");
-      }
-
-      return s.toString();
-   }
-
-
-
-   public URI getURI()
-   {
-      if (uri != null)
-      {
-         return uri;
-      }
-      else
-      {
-         try
-         {
-            PortalKey key = site.getPortalKey();
-            RequestContext requestContext = RequestContext.getCurrentInstance();
-            SiteType siteType = SiteType.valueOf(key.getType().toUpperCase());
-            String siteName = key.getId();
-            NavigationResource navResource = new NavigationResource(siteType, siteName, buildURI().toString());
-            NodeURL nodeURL = requestContext.createURL(NodeURL.TYPE, navResource);
-            nodeURL.setSchemeUse(true);
-            uri = new URI(nodeURL.toString());
-         }
-         catch (URISyntaxException e)
-         {
-            throw new RuntimeException(e);
-         }
-         return uri;
-      }
-   }
-
-   private StringBuilder buildURI()
-   {
-      NavigationImpl parent = context.getParentNode();
-      if (parent != null)
-      {
-         StringBuilder builder = parent.buildURI();
-         if (builder.length() > 0)
-         {
-            builder.append('/');
-         }
-         return builder.append(context.getName());
-      }
-      else
-      {
-         return new StringBuilder();
-      }
-   }
-
-   public Page getTargetPage()
-   {
-      String pageRef = context.getState().getPageRef();
-      if (pageRef != null)
-      {
-         return site.pages.getPageByRef(pageRef);
-      }
-      else
-      {
-         return null;
-      }
-   }
-
-   public void setTargetPage(Page target)
-   {
-      if (target != null)
-      {
-         Site po = target.getSite();
-         PortalKey key = SiteImpl.createPortalKey(po.getId());
-         String ref = key.getType() + "::" + key.getId() + "::" + target.getName();
-         context.setState(context.getState().builder().pageRef(ref).build());
-      }
-      else
-      {
-
-         context.setState(context.getState().builder().pageRef(null).build());
-      }
+      this.context = gateIn.getNavigationService().loadNavigation(site.getSiteKey());
+      this.nodeContext = gateIn.getNavigationService().loadNode(new NavigationNodeModel(site, gateIn), context, Scope.SINGLE, this);
    }
 
    @Override
-   public void setTargetPage(String targetId)
+   public int getPriority()
    {
-      if (targetId != null)
-      {
-         context.setState(context.getState().builder().pageRef(targetId).build());
-      }
-      else
-      {
-
-         context.setState(context.getState().builder().pageRef(null).build());
-      }
+      Integer priority = context.getState().getPriority();
+      return (priority == null) ? 1 : priority;
    }
+
+   @Override
+   public void setPriority(int priority)
+   {
+      NavigationState state =  new NavigationState(priority);
+      context.setState(state);
+   }
+
+   @Override
+   public Node getNode(String... path)
+   {
+      return nodeContext.getNode().getDescendant(path);
+   }
+
+   @Override
+   public void removeNode(String... path)
+   {
+      nodeContext.getNode().removeDescendant(path);
+   }
+
+   @Override
+   public Node addNode(String name)
+   {
+      return nodeContext.getNode().addChild(name);
+   }
+
+   @Override
+   public Iterator<Node> iterator()
+   {
+      return nodeContext.getNode().iterator();
+   }
+
+   //   @Override
+//   public String toString()
+//   {
+//      String pageRef = context.getState().getPageRef();
+//      StringBuilder s = new StringBuilder("Navigation@").append(getId()).append(" URI: ").append(getURI());
+//
+//      if (pageRef != null)
+//      {
+//         s.append("-target->").append(pageRef);
+//      }
+//
+//      if (context.getNodeCount() != 0)
+//      {
+//         loadChildrenIfNeeded();
+//         s.append("\n|");
+//         Iterator<NavigationImpl> children = context.iterator();
+//         while (children.hasNext())
+//         {
+//            s.append("\n+--").append(children.next());
+//         }
+//         s.append("\n");
+//      }
+//
+//      return s.toString();
+//   }
+
+
+
+//   public URI getURI()
+//   {
+//      if (uri != null)
+//      {
+//         return uri;
+//      }
+//      else
+//      {
+//         try
+//         {
+//            PortalKey key = site.getPortalKey();
+//            RequestContext requestContext = RequestContext.getCurrentInstance();
+//            SiteType siteType = SiteType.valueOf(key.getType().toUpperCase());
+//            String siteName = key.getId();
+//            NavigationResource navResource = new NavigationResource(siteType, siteName, buildURI().toString());
+//            NodeURL nodeURL = requestContext.createURL(NodeURL.TYPE, navResource);
+//            nodeURL.setSchemeUse(true);
+//            uri = new URI(nodeURL.toString());
+//         }
+//         catch (URISyntaxException e)
+//         {
+//            throw new RuntimeException(e);
+//         }
+//         return uri;
+//      }
+//   }
+
+//   private StringBuilder buildURI()
+//   {
+//      NavigationImpl parent = context.getParentNode();
+//      if (parent != null)
+//      {
+//         StringBuilder builder = parent.buildURI();
+//         if (builder.length() > 0)
+//         {
+//            builder.append('/');
+//         }
+//         return builder.append(context.getName());
+//      }
+//      else
+//      {
+//         return new StringBuilder();
+//      }
+//   }
+//
+//   public Page getTargetPage()
+//   {
+//      String pageRef = context.getState().getPageRef();
+//      if (pageRef != null)
+//      {
+//         return site.pages.getPageByRef(pageRef);
+//      }
+//      else
+//      {
+//         return null;
+//      }
+//   }
+//
+//   public void setTargetPage(Page target)
+//   {
+//      if (target != null)
+//      {
+//         Site po = target.getSite();
+//         PortalKey key = SiteImpl.createPortalKey(po.getId());
+//         String ref = key.getType() + "::" + key.getId() + "::" + target.getName();
+//         context.setState(context.getState().builder().pageRef(ref).build());
+//      }
+//      else
+//      {
+//
+//         context.setState(context.getState().builder().pageRef(null).build());
+//      }
+//   }
+//
+//   @Override
+//   public void setTargetPage(String targetId)
+//   {
+//      if (targetId != null)
+//      {
+//         context.setState(context.getState().builder().pageRef(targetId).build());
+//      }
+//      else
+//      {
+//
+//         context.setState(context.getState().builder().pageRef(null).build());
+//      }
+//   }
 
    public Site getSite()
    {
-      return site;
+      return site.getSite();
    }
 
-   public List<Navigation> getChildren()
-   {
-      loadChildrenIfNeeded();
-      return new LinkedList<Navigation>(context.getNodes());
-   }
-
-   @Override
-   public int getChildrenCount()
-   {
-      return context.getNodeCount();
-   }
-
-   @Override
-   public List<Navigation> getChildren(Range range)
-   {
-
-      ParameterValidation.throwIllegalArgExceptionIfNull(range, "Range");
-
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public void removeChild(String name)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(name, "name");
-
-
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public Navigation addChild(String name)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(name, "name");
-
-
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   private void loadChildrenIfNeeded()
-   {
-      if (!context.isExpanded())
-      {
-         NavigationService service = gateIn.getNavigationService();
-         try
-         {
-            gateIn.begin();
-            service.rebaseNode(context, Scope.CHILDREN, null);
-         }
-         finally
-         {
-            gateIn.end();
-         }
-      }
-   }
-
-   public Navigation getChild(String name)
-   {
-      if (name == null)
-      {
-         return null;
-      }
-      else
-      {
-         loadChildrenIfNeeded();
-         return context.getNode(name);
-      }
-   }
-
-   @Override
-   public Navigation getParent()
-   {
-      return context.getParentNode();
-   }
-
-   @Override
-   public int getIndex()
-   {
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   public String getId()
-   {
-      if (id == null)
-      {
-         id = context.getId();
-      }
-
-      return id;
-   }
-
-   public String getName()
-   {
-      return context.getName();
-   }
-
-
-
-   public String getDisplayName()
-   {
-      // basically duplicating code from UserNode and PortalRequestContext because we can't use it as is
-      if (displayName == null)
-      {
-         String resolvedLabel = null;
-
-         String id = context.getId();
-
-         if (context.getState().getLabel() != null)
-         {
-            resolvedLabel = ExpressionUtil.getExpressionValue(getBundle(), context.getState().getLabel());
-         }
-         else if (id != null)
-         {
-            Locale userLocale = gateIn.getUserLocale();
-            DescriptionService descriptionService = gateIn.getDescriptionService();
-            Described.State description = descriptionService.resolveDescription(id, userLocale);
-            if (description != null)
-            {
-               resolvedLabel = description.getName();
-            }
-         }
-
-         //
-         if (resolvedLabel == null)
-         {
-            resolvedLabel = getName();
-         }
-
-         //
-         this.displayName = EntityEncoder.FULL.encode(resolvedLabel);
-      }
-      return displayName;
-   }
-
-   @Override
-   public void setDisplayName(String displayName)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(displayName, "displayName");
-
-
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-
-   @Override
-   public <T> void setProperty(PropertyType<T> property, T value)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(property, "property");
-
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public <T> T getProperty(PropertyType<T> property)
-   {
-      if (property == null)
-      {
-         return null;
-      }
-      //TODO:
-      throw new NotYetImplemented();
-   }
+//   public String getDisplayName()
+//   {
+//      // basically duplicating code from UserNode and PortalRequestContext because we can't use it as is
+//      if (displayName == null)
+//      {
+//         String resolvedLabel = null;
+//
+//         String id = context.getId();
+//
+//         if (context.getState().getLabel() != null)
+//         {
+//            resolvedLabel = ExpressionUtil.getExpressionValue(getBundle(), context.getState().getLabel());
+//         }
+//         else if (id != null)
+//         {
+//            Locale userLocale = gateIn.getUserLocale();
+//            DescriptionService descriptionService = gateIn.getDescriptionService();
+//            Described.State description = descriptionService.resolveDescription(id, userLocale);
+//            if (description != null)
+//            {
+//               resolvedLabel = description.getName();
+//            }
+//         }
+//
+//         //
+//         if (resolvedLabel == null)
+//         {
+//            resolvedLabel = getName();
+//         }
+//
+//         //
+//         this.displayName = EntityEncoder.FULL.encode(resolvedLabel);
+//      }
+//      return displayName;
+//   }
 
    @Override
    public void moveDown()
@@ -389,46 +263,72 @@ public class NavigationImpl implements Navigation
       throw new NotYetImplemented();
    }
 
+//   public ResourceBundle getBundle()
+//   {
+//      if (bundle == null)
+//      {
+//         PortalKey key = site.getPortalKey();
+//         ExoContainer container = ExoContainerContext.getCurrentContainer();
+//         ResourceBundleManager rbMgr = (ResourceBundleManager)container.getComponentInstanceOfType(ResourceBundleManager.class);
+//         Locale locale = gateIn.getUserLocale();
+//         bundle = rbMgr.getNavigationResourceBundle(
+//            locale.getLanguage(),
+//            key.getType(),
+//            key.getId());
+//
+//         if (bundle == null)
+//         {
+//            bundle = EmptyResourceBundle.INSTANCE;
+//         }
+//      }
+//      return bundle;
+//   }
+
+
    @Override
-   public boolean isVisible()
+   public void onAdd(NodeContext<Node> target, NodeContext<Node> parent, NodeContext<Node> previous)
    {
-      return !context.isHidden();
+      System.out.println("onAdd");
+
    }
 
    @Override
-   public void setVisible(boolean visible)
+   public void onCreate(NodeContext<Node> target, NodeContext<Node> parent, NodeContext<Node> previous, String name)
    {
-      context.setHidden(!visible);
+      System.out.println("onCreate");
    }
 
-   public ResourceBundle getBundle()
+   @Override
+   public void onRemove(NodeContext<Node> target, NodeContext<Node> parent)
    {
-      if (bundle == null)
-      {
-         PortalKey key = site.getPortalKey();
-         ExoContainer container = ExoContainerContext.getCurrentContainer();
-         ResourceBundleManager rbMgr = (ResourceBundleManager)container.getComponentInstanceOfType(ResourceBundleManager.class);
-         Locale locale = gateIn.getUserLocale();
-         bundle = rbMgr.getNavigationResourceBundle(
-            locale.getLanguage(),
-            key.getType(),
-            key.getId());
-
-         if (bundle == null)
-         {
-            bundle = EmptyResourceBundle.INSTANCE;
-         }
-      }
-      return bundle;
+      System.out.println("onRemove");
    }
 
-
-   public GateIn getGateIn()
+   @Override
+   public void onDestroy(NodeContext<Node> target, NodeContext<Node> parent)
    {
-      return gateIn;
+      System.out.println("onDestroy");
    }
 
-   static class NavigationNodeModel implements NodeModel<NavigationImpl>
+   @Override
+   public void onRename(NodeContext<Node> target, NodeContext<Node> parent, String name)
+   {
+      System.out.println("onRename");
+   }
+
+   @Override
+   public void onUpdate(NodeContext<Node> target, NodeState state)
+   {
+      System.out.println("onUpdate");
+   }
+
+   @Override
+   public void onMove(NodeContext<Node> target, NodeContext<Node> from, NodeContext<Node> to, NodeContext<Node> previous)
+   {
+      System.out.println("onMove");
+   }
+
+   static class NavigationNodeModel implements NodeModel<Node>
    {
       private final SiteImpl site;
       private final GateInImpl gateIn;
@@ -439,15 +339,14 @@ public class NavigationImpl implements Navigation
          this.gateIn = gateIn;
       }
 
-      public NodeContext<NavigationImpl> getContext(NavigationImpl node)
+      public NodeContext<Node> getContext(Node node)
       {
-         return node.context;
+         return ((NodeImpl) node).context;
       }
 
-      public NavigationImpl create(NodeContext<NavigationImpl> context)
+      public Node create(NodeContext<Node> context)
       {
-         return new NavigationImpl(site, context, gateIn);
+         return new NodeImpl(site, gateIn, context);
       }
    }
-
 }

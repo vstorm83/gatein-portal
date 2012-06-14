@@ -23,6 +23,7 @@
 package org.gatein.api.rest.mgmt.binding.model;
 
 import org.gatein.api.portal.Navigation;
+import org.gatein.api.portal.Node;
 import org.gatein.api.portal.Page;
 import org.gatein.api.portal.Site;
 import org.gatein.management.api.PathAddress;
@@ -57,7 +58,6 @@ public class SiteModelMapper implements ModelProvider.ModelMapper<Site>
       ModelObject siteModel = model.setEmptyObject();
       siteModel.set("name", site.getId().getName());
       siteModel.set("type", site.getId().getType().name().toLowerCase());
-      siteModel.set("priority", site.getPriority());
 
       // Pages
       ModelList pagesList = siteModel.get("pages", ModelList.class);
@@ -73,11 +73,11 @@ public class SiteModelMapper implements ModelProvider.ModelMapper<Site>
       // Navigation
       Navigation nav = site.getNavigation();
       ModelList navList = siteModel.get("navigation", ModelList.class);
-      for (Navigation child : nav.getChildren())
+      for (Node child : nav)
       {
          ModelReference navRef = navList.add().asValue(ModelReference.class);
          navRef.set("name", child.getName());
-         navRef.set("displayName", child.getDisplayName());
+         navRef.set("label", child.getLabel().getValue());
          navRef.set(PathAddress.pathAddress("api", getSiteTypeRef(site), site.getId().getName(), "navigation", child.getName()));
       }
 

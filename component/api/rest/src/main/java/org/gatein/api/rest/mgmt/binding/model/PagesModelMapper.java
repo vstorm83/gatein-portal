@@ -56,7 +56,8 @@ public class PagesModelMapper implements ModelProvider.ModelMapper<List<Page>>
       {
          ModelReference pageRef = modelPages.add().asValue(ModelReference.class);
          pageRef.set("name", page.getName());
-         pageRef.set("id", page.getId());
+         pageRef.set("siteType", page.getId().getSiteId().getType().name().toLowerCase());
+         pageRef.set("siteName", page.getId().getSiteId().getName());
          Site site = page.getSite();
          PathAddress pageAddress = PathAddress.pathAddress("api", SiteModelMapper.getSiteTypeRef(site), page.getSite().getId().getName(), "pages", page.getName());
          pageRef.set(pageAddress);

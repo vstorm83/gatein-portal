@@ -6,6 +6,7 @@ import org.exoplatform.component.test.ConfiguredBy;
 import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.AbstractPortalTest;
+import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
@@ -46,7 +47,7 @@ public abstract class AbstractAPITestCase extends AbstractPortalTest
    protected NavigationService navService;
 
    /** . */
-   protected ModelDataStorage storage;
+   protected DataStorage storage;
 
 //   /** . */
 //   protected PortletRegistry invoker;
@@ -66,10 +67,9 @@ public abstract class AbstractAPITestCase extends AbstractPortalTest
       PortalContainer container = getContainer();
       POMSessionManager mgr = (POMSessionManager)container.getComponentInstanceOfType(POMSessionManager.class);
       NavigationService navService = (NavigationService)container.getComponentInstanceOfType(NavigationService.class);
-      GateInImpl gatein = new GateInImpl(
-         container.getContext(),
-         (ModelDataStorage)container.getComponentInstanceOfType(ModelDataStorage.class),
-         (UserPortalConfigService)container.getComponentInstanceOfType(UserPortalConfigService.class));
+      DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
+
+      GateInImpl gatein = new GateInImpl(dataStorage, navService);
       gatein.setProperty(GateInImpl.LIFECYCLE_MANAGER, new NoOpLifecycleManager());
 //      PortletRegistry invoker = (PortletRegistry)container.getComponentInstanceOfType(PortletInvoker.class);
 
@@ -83,7 +83,7 @@ public abstract class AbstractAPITestCase extends AbstractPortalTest
       this.gatein = gatein;
       this.mgr = mgr;
       this.navService = navService;
-      this.storage = (ModelDataStorage)container.getComponentInstanceOfType(ModelDataStorage.class);
+      this.storage = dataStorage;
 //      this.invoker = invoker;
       this.userLocale = Locale.ENGLISH;
 
@@ -111,11 +111,11 @@ public abstract class AbstractAPITestCase extends AbstractPortalTest
    {
       try
       {
-         storage.create(new PortalConfig(type.getName(), name).build());
+         storage.create(new PortalConfig(type.getName(), name));
          NavigationContext nav = new NavigationContext(new SiteKey(type, name), new NavigationState(0));
          navService.saveNavigation(nav);
          //
-         storage.create(new org.exoplatform.portal.config.model.Page(type.getName(), name, "homepage").build());
+         storage.create(new org.exoplatform.portal.config.model.Page(type.getName(), name, "homepage"));
 
          //
          return navService.loadNode(NodeModel.SELF_MODEL, nav, Scope.ALL, null);

@@ -49,7 +49,6 @@ public class PageModelMapper implements ModelProvider.ModelMapper<Page>
    public ModelValue to(Model model, Page page)
    {
       ModelObject modelPage = model.setEmptyObject();
-      modelPage.set("id", page.getId());
       modelPage.set("name", page.getName());
       modelPage.set("title", page.getTitle());
 

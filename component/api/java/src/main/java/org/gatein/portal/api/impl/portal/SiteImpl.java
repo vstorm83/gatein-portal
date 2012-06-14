@@ -22,47 +22,36 @@
 
 package org.gatein.portal.api.impl.portal;
 
+import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
+import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
-import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationService;
-import org.exoplatform.portal.mop.navigation.NavigationState;
-import org.exoplatform.portal.mop.navigation.NodeModel;
-import org.exoplatform.portal.mop.navigation.Scope;
-import org.exoplatform.portal.pom.data.PageData;
-import org.exoplatform.portal.pom.data.PageKey;
-import org.exoplatform.portal.pom.data.PortalKey;
+import org.gatein.api.commons.PropertyType;
+import org.gatein.api.exception.ApiException;
+import org.gatein.api.exception.EntityNotFoundException;
+import org.gatein.api.portal.Label;
 import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Page;
 import org.gatein.api.portal.Site;
-import org.gatein.api.commons.PropertyType;
 import org.gatein.common.NotYetImplemented;
-import org.gatein.common.util.ParameterValidation;
 import org.gatein.portal.api.impl.GateInImpl;
 
-
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static org.gatein.common.util.ParameterValidation.*;
 
 /**
  * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
  * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
  */
-public class SiteImpl implements Site
+public class SiteImpl extends DataStorageContext implements Site
 {
-
-   /** . */
-   private static final Map<PageKey, PageImpl> EMPTY_CACHE = Collections.emptyMap();
-
-   /** . */
-   private static final Pattern PAGE_REF_PATTERN = Pattern.compile("^([^:]+)::([^:]+)::([^:]+)$");
-
    public static final Map<Type, String> OWNER_MAP;
 
    static
@@ -75,35 +64,19 @@ public class SiteImpl implements Site
    }
 
    /** . */
-   protected final Id id;
-   protected final PageContainer pages;
-   protected final GateInImpl gateIn;
-
+   private final Id id;
+   private final GateInImpl gateIn;
+   private final Query<org.exoplatform.portal.config.model.Page> pagesQuery;
+   private Navigation navigation;
 
    public SiteImpl(Id id, GateInImpl gateIn)
    {
-      ParameterValidation.throwIllegalArgExceptionIfNull(id, "Site.Id");
-      ParameterValidation.throwIllegalArgExceptionIfNull(gateIn, "GateInImpl");
+      super(gateIn.dataStorage);
 
       this.id = id;
       this.gateIn = gateIn;
-
-      //
-      pages = new PageContainer();
-
-   }
-
-   public SiteImpl(Type type, String name, GateInImpl gatein)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(type, "Site.Type");
-      ParameterValidation.throwIllegalArgExceptionIfNull(name, "name");
-      ParameterValidation.throwIllegalArgExceptionIfNull(gatein, "GateInImpl");
-
-      this.id = Id.create(type, name);
-      this.gateIn = gatein;
-
-      //
-      pages = new PageContainer();
+      this.pagesQuery = new Query<org.exoplatform.portal.config.model.Page>(
+         OWNER_MAP.get(id.getType()), id.getName(), org.exoplatform.portal.config.model.Page.class);
    }
 
    @Override
@@ -115,85 +88,73 @@ public class SiteImpl implements Site
    @Override
    public String toString()
    {
-      return getId().getType() + "::" + getId().getName() + "\n" + getNavigation().toString();
+      return id.toString();
    }
 
    @Override
-   public String getDisplayName()
+   public Label getLabel()
    {
-      //TODO
-      return getId().getName();
-   }
+      String label = getInternalSite(true).getLabel();
 
-   @Override
-   public void setDisplayName(String displayName)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(displayName,  "displayName");
-
-      //TODO
+      //TODO:
       throw new NotYetImplemented();
    }
 
    @Override
    public String getDescription()
    {
-      //TODO
-      throw new NotYetImplemented();
+      return getInternalSite(true).getDescription();
    }
 
    @Override
-   public void setDescription(String description)
+   public void setDescription(final String description)
    {
-      ParameterValidation.throwIllegalArgExceptionIfNull(description,  "description");
-
-      //TODO
-      throw new NotYetImplemented();
+      PortalConfig internalSite = getInternalSite(true);
+      execute(internalSite, new Modify<PortalConfig>()
+      {
+         @Override
+         public void modify(PortalConfig data, DataStorage dataStorage) throws Exception
+         {
+            data.setDescription(description);
+            dataStorage.save(data);
+         }
+      });
    }
 
+   @Override
    public Navigation getNavigation()
    {
-      GateInImpl gateIn = getGateInImpl();
-      NavigationService service = gateIn.getNavigationService();
-
-      try
+      if (navigation == null)
       {
-         gateIn.begin();
-         NavigationContext navigation = service.loadNavigation(getMOPSiteKey());
-
-         if (navigation != null)
-         {
-            NodeModel<NavigationImpl> nodeModel = new NavigationImpl.NavigationNodeModel(this, gateIn);
-
-            return service.loadNode(nodeModel, navigation, Scope.CHILDREN, null).getNode();
-         }
-         else
-         {
-            return null;
-         }
+         navigation = new NavigationImpl(this, gateIn);
       }
-      finally
-      {
-         gateIn.end();
-      }
+      return navigation;
    }
 
-   public int getPriority()
+   @Override
+   public List<Page> getPages()
    {
-      GateInImpl gateIn = getGateInImpl();
-      NavigationService service = gateIn.getNavigationService();
+      List<org.exoplatform.portal.config.model.Page> internalPages = query(pagesQuery);
+      List<Page> pages = new ArrayList<Page>(internalPages.size());
 
-      try
+      for (org.exoplatform.portal.config.model.Page internalPage : internalPages)
       {
-         gateIn.begin();
-         NavigationContext navigation = service.loadNavigation(getMOPSiteKey());
+         pages.add(new PageImpl(this, internalPage.getName()));
+      }
 
-         NavigationState state = navigation.getState();
-         return state != null ? state.getPriority() : 1;
-      }
-      finally
-      {
-         gateIn.end();
-      }
+      return pages;
+   }
+
+   @Override
+   public Page getPage(String pageName)
+   {
+      return new PageImpl(this, pageName).getPage();
+   }
+
+   @Override
+   public void removePage(String pageName) throws EntityNotFoundException
+   {
+      new PageImpl(this, pageName).removePage();
    }
 
    @Override
@@ -212,165 +173,167 @@ public class SiteImpl implements Site
    @Override
    public <T> void setProperty(PropertyType<T> property, T value)
    {
-      ParameterValidation.throwIllegalArgExceptionIfNull(property, "property");
+      throwIllegalArgExceptionIfNull(property, "property");
 
 
       //TODO
       throw new NotYetImplemented();
    }
 
-   @Override
-   public void setPriority(int priority)
+   // Ensures the site exists. Useful to create a simple impl and call this method which handles errors and if site is not found.
+   public Site getSite()
    {
-      //TODO
-      throw new NotYetImplemented();
+      getInternalSite(true);
+      return this;
    }
 
-   @Override
-   public List<Page> getPages()
+   public void removeSite()
    {
-      SiteKey siteKey = getMOPSiteKey();
-      try
+      PortalConfig internalSite = getInternalSite(true);
+      execute(internalSite, new Modify<PortalConfig>()
       {
-         gateIn.begin();
-         List<PageData> pageDataList = gateIn.getDataStorage().find(new Query<PageData>(siteKey.getTypeName(), siteKey.getName(), PageData.class)).getAll();
-         List<Page> pages = new ArrayList<Page>(pageDataList.size());
-         for (PageData page : pageDataList)
+         @Override
+         public void modify(PortalConfig data, DataStorage dataStorage) throws Exception
          {
-            pages.add(new PageImpl(page, id, gateIn));
+            dataStorage.remove(data);
          }
-         return pages;
-      }
-      catch (Exception e)
+      });
+   }
+
+   public Site addSite()
+   {
+      PortalConfig internalSite = getInternalSite(false);
+      if (internalSite == null) throw new ApiException("Cannot add site, site already exists for id " + id);
+
+      //TODO: Need to determine what good default values are when creating a site.
+      SiteKey siteKey = getSiteKey();
+      PortalConfig newSite = new PortalConfig(siteKey.getTypeName(), siteKey.getName());
+      newSite.setLabel(siteKey.getName());
+
+      if (id.getType() == Type.SITE)
       {
-         throw new RuntimeException(e);
+         newSite.setAccessPermissions(new String[] {UserACL.EVERYONE});
       }
-      finally
+
+      execute(newSite, new Modify<PortalConfig>()
       {
-         gateIn.end();
-      }
+         @Override
+         public void modify(PortalConfig data, DataStorage dataStorage) throws Exception
+         {
+            dataStorage.save(data);
+         }
+      });
+
+      return this;
    }
 
-   @Override
-   public Page getPage(String pageName)
+   private PortalConfig getInternalSite(boolean required)
    {
-      ParameterValidation.throwIllegalArgExceptionIfNull(pageName, "pageName");
+      final SiteKey siteKey = getSiteKey();
 
-      return pages.getPageByName(pageName);
+      PortalConfig pc = execute(new Read<PortalConfig>()
+      {
+         @Override
+         public PortalConfig read(DataStorage dataStorage) throws Exception
+         {
+            return dataStorage.getPortalConfig(siteKey.getTypeName(), siteKey.getName());
+         }
+      });
+      if (pc == null && required) throw new EntityNotFoundException("Site not found for id " + id);
+
+      return pc;
    }
 
-   @Override
-   public Navigation getNavigation(String navigationId)
+   SiteKey getSiteKey()
    {
-      ParameterValidation.throwIllegalArgExceptionIfNull(navigationId, "navigationId");
-
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public Navigation getNavigation(String... path)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNullOrEmpty(path, "path");
-
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   public SiteKey getMOPSiteKey()
-   {
-      switch (getId().getType())
+      switch (id.getType())
       {
          case SITE:
-            return SiteKey.portal(getId().getName());
+            return SiteKey.portal(id.getName());
          case SPACE:
-            return SiteKey.group(getId().getName());
+            return SiteKey.group(id.getName());
          case DASHBOARD:
-            return SiteKey.user(getId().getName());
+            return SiteKey.user(id.getName());
       }
 
-      throw new RuntimeException("Not recognized type: " + getId().getType());
+      throw new RuntimeException(id.getType() + " is not recognized as a valid site type");
    }
 
-   public static PortalKey createPortalKey(Site.Id id)
+   public static Id fromSiteKey(SiteKey siteKey)
    {
-      ParameterValidation.throwIllegalArgExceptionIfNull(id, "id");
-
-      return new PortalKey(OWNER_MAP.get(id.getType()), id.getName());
-   }
-
-   public PortalKey getPortalKey()
-   {
-      return createPortalKey(this.getId());
-   }
-
-   GateInImpl getGateInImpl()
-   {
-      return gateIn;
-   }
-
-
-
-   class PageContainer
-   {
-
-      /** . */
-      private final Query<PageData> pageDataQuery;
-
-      /** A local cache so we return the same pages. */
-      private Map<PageKey, PageImpl> cache;
-
-      private PageContainer()
+      switch (siteKey.getType())
       {
-         this.pageDataQuery = new Query<PageData>(OWNER_MAP.get(getId().getType()), null, PageData.class);
-         this.cache = EMPTY_CACHE;
-      }
-
-      PageImpl getPageByRef(String pageRef)
-      {
-         Matcher m = PAGE_REF_PATTERN.matcher(pageRef);
-         m.matches();
-         PageKey key = new PageKey(m.group(1), m.group(2), m.group(3));
-         return getPageData(key);
-      }
-
-      PageImpl getPageByName(String name)
-      {
-         SiteKey siteKey = getMOPSiteKey();
-         PageKey key = new PageKey(siteKey.getTypeName(), siteKey.getName(), name);
-         return getPageData(key);
-      }
-
-      private PageImpl getPageData(PageKey key)
-      {
-         PageImpl page = cache.get(key);
-         if (page == null)
-         {
-            try
-            {
-               gateIn.begin();
-               PageData data = gateIn.getDataStorage().getPage(key);
-               if (data != null)
-               {
-                  page = new PageImpl(data, getId(), gateIn);
-                  if (cache == EMPTY_CACHE)
-                  {
-                     cache = new HashMap<PageKey, PageImpl>();
-                  }
-                  cache.put(key, page);
-               }
-            }
-            catch (Exception e)
-            {
-               throw new UndeclaredThrowableException(e);
-            }
-            finally
-            {
-               gateIn.end();
-            }
-         }
-         return page;
+         case PORTAL:
+            return Id.create(Type.SITE, siteKey.getName());
+         case GROUP:
+            return Id.create(Type.SPACE, siteKey.getName());
+         case USER:
+            return Id.create(Type.DASHBOARD, siteKey.getName());
+         default:
+            throw new RuntimeException(siteKey.getType() + " cannot be mapped to proper site type.");
       }
    }
+
+//   class PageContainer
+//   {
+//
+//      /** . */
+//      private final Query<PageData> pageDataQuery;
+//
+//      /** A local cache so we return the same pages. */
+//      private Map<PageKey, PageImpl> cache;
+//
+//      private PageContainer()
+//      {
+//         this.pageDataQuery = new Query<PageData>(OWNER_MAP.get(getId().getType()), null, PageData.class);
+//         this.cache = EMPTY_CACHE;
+//      }
+//
+//      PageImpl getPageByRef(String pageRef)
+//      {
+//         Matcher m = PAGE_REF_PATTERN.matcher(pageRef);
+//         m.matches();
+//         PageKey key = new PageKey(m.group(1), m.group(2), m.group(3));
+//         return getPageData(key);
+//      }
+//
+//      PageImpl getPageByName(String name)
+//      {
+//         SiteKey siteKey = getMOPSiteKey();
+//         PageKey key = new PageKey(siteKey.getTypeName(), siteKey.getName(), name);
+//         return getPageData(key);
+//      }
+//
+//      private PageImpl getPageData(PageKey key)
+//      {
+//         PageImpl page = cache.get(key);
+//         if (page == null)
+//         {
+//            try
+//            {
+//               gateIn.begin();
+//               PageData data = gateIn.getDataStorage().getPage(key.getId());
+//               if (data != null)
+//               {
+//                  page = new PageImpl(data, getId(), gateIn);
+//                  if (cache == EMPTY_CACHE)
+//                  {
+//                     cache = new HashMap<PageKey, PageImpl>();
+//                  }
+//                  cache.put(key, page);
+//               }
+//            }
+//            catch (Exception e)
+//            {
+//               throw new UndeclaredThrowableException(e);
+//            }
+//            finally
+//            {
+//               gateIn.end();
+//            }
+//         }
+//         return page;
+//      }
+//   }
 
 }

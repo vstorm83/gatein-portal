@@ -22,15 +22,12 @@
 
 package org.gatein.portal.api.impl;
 
-import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
-import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.SiteType;
-import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationService;
-import org.exoplatform.portal.pom.data.ModelDataStorage;
-import org.exoplatform.portal.pom.data.PortalData;
-import org.exoplatform.portal.pom.data.PortalKey;
 import org.exoplatform.web.application.RequestContext;
 import org.gatein.api.GateIn;
 import org.gatein.api.commons.PropertyType;
@@ -39,38 +36,140 @@ import org.gatein.api.exception.EntityNotFoundException;
 import org.gatein.api.portal.Site;
 import org.gatein.api.portal.SiteQuery;
 import org.gatein.common.NotYetImplemented;
-import org.gatein.common.util.ParameterValidation;
+import org.gatein.portal.api.impl.portal.DataStorageContext;
 import org.gatein.portal.api.impl.portal.SiteImpl;
 import org.picocontainer.Startable;
 
-import java.lang.reflect.UndeclaredThrowableException;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import static org.gatein.common.util.ParameterValidation.*;
 
 /**
  * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
  * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
  */
-public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
+public class GateInImpl extends DataStorageContext implements GateIn, Startable, GateIn.LifecycleManager
 {
-   private static final Query<PortalData> SITES = new Query<PortalData>(SiteType.PORTAL.getName(), null, PortalData.class);
-   private static final Query<PortalData> SPACES = new Query<PortalData>(SiteType.GROUP.getName(), null, PortalData.class);
-   private static final Query<PortalData> DASHBOARDS = new Query<PortalData>(SiteType.USER.getName(), null, PortalData.class);
+   private static final Query<PortalConfig> SITES = new Query<PortalConfig>(SiteType.PORTAL.getName(), null, PortalConfig.class);
+   private static final Query<PortalConfig> SPACES = new Query<PortalConfig>(SiteType.GROUP.getName(), null, PortalConfig.class);
+   private static final Query<PortalConfig> DASHBOARDS = new Query<PortalConfig>(SiteType.USER.getName(), null, PortalConfig.class);
 
-   ExoContainerContext context;
-   private ModelDataStorage dataStorage;
-   private UserPortalConfigService configService;
    private Map<PropertyType, Object> properties = new HashMap<PropertyType, Object>(7);
    private LifecycleManager lcManager = GateIn.NO_OP_MANAGER;
 
-   public GateInImpl(ExoContainerContext context, ModelDataStorage dataStorage, UserPortalConfigService configService)
+   private final NavigationService navigationService;
+   public GateInImpl(DataStorage dataStorage, NavigationService navigationService)
    {
-      this.context = context;
-      this.dataStorage = dataStorage;
-      this.configService = configService;
+      super(dataStorage);
+      this.navigationService = navigationService;
+   }
+
+   @Override
+   public List<Site> getSites()
+   {
+      List<PortalConfig> list = query(SITES);
+      list.addAll(query(SPACES));
+      list.addAll(query(DASHBOARDS));
+
+      return fromList(list);
+   }
+
+   @Override
+   public List<Site> getSites(Site.Type siteType)
+   {
+      throwIllegalArgExceptionIfNull(siteType, "Site.Type");
+
+      switch (siteType)
+      {
+         case SITE:
+            return fromList(query(SITES));
+         case SPACE:
+            return fromList(query(SPACES));
+         case DASHBOARD:
+            return fromList(query(DASHBOARDS));
+         default:
+            throw new IllegalArgumentException(siteType + " is not recognized as a valid site type.");
+      }
+   }
+
+   @Override
+   public List<Site> getSites(Range range)
+   {
+      throwIllegalArgExceptionIfNull(range, "Range");
+
+      //TODO:
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public Site getSite(Site.Id siteId)
+   {
+      throwIllegalArgExceptionIfNull(siteId, "Site.Id");
+
+      return siteImpl(siteId).getSite();
+   }
+
+   @Override
+   public Site getSite(Site.Type type, String name)
+   {
+      throwIllegalArgExceptionIfNull(type, "Site.Type");
+      throwIllegalArgExceptionIfNull(name, "name");
+
+      return getSite(Site.Id.create(type, name));
+   }
+
+   @Override
+   public List<Site> getSites(Site.Type siteType, Range range)
+   {
+      throwIllegalArgExceptionIfNull(siteType, "Site.Type");
+      throwIllegalArgExceptionIfNull(range, "range");
+
+      //TODO:
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public Site getDefaultSite()
+   {
+      //TODO:
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public SiteQuery<Site> createSiteQuery()
+   {
+      //TODO:
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public Site addSite(Site.Type siteType, String name)
+   {
+      throwIllegalArgExceptionIfNull(siteType, "Site.Type");
+      throwIllegalArgExceptionIfNull(name, "name");
+
+      return siteImpl(Site.Id.create(siteType, name)).addSite();
+   }
+
+   @Override
+   public void removeSite(Site.Id siteId) throws EntityNotFoundException
+   {
+      throwIllegalArgExceptionIfNull(siteId, "Site.Id");
+
+      siteImpl(siteId).removeSite();
+   }
+
+   @Override
+   public void removeSite(Site.Type siteType, String siteName) throws EntityNotFoundException
+   {
+      throwIllegalArgExceptionIfNull(siteType, "Site.Type");
+      throwIllegalArgExceptionIfNull(siteName, "Site name");
+
+      removeSite(Site.Id.create(siteType, siteName));
    }
 
    public <T> T getProperty(PropertyType<T> property)
@@ -97,195 +196,6 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
       }
    }
 
-   @Override
-   public List<Site> getSites()
-   {
-      try
-      {
-         begin();
-         List<PortalData> sites = getDataStorage().find(SITES).getAll();
-         List<PortalData> spaces = getDataStorage().find(SPACES).getAll();
-         List<PortalData> dashboards = getDataStorage().find(DASHBOARDS).getAll();
-
-         List<Site> allSites = new LinkedList<Site>();
-
-         // sites
-         for (PortalData portalData : sites)
-         {
-            allSites.add(new SiteImpl(Site.Type.SITE, portalData.getName(), this));
-         }
-
-         // spaces
-         for (PortalData portalData : spaces)
-         {
-            allSites.add(new SiteImpl(Site.Type.SPACE, portalData.getName(), this));
-         }
-
-         // dashboards
-         for (PortalData portalData : dashboards)
-         {
-            allSites.add(new SiteImpl(Site.Type.DASHBOARD, portalData.getName(), this));
-         }
-
-         return allSites;
-
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-      finally
-      {
-         end();
-      }
-   }
-
-   @Override
-   public List<Site> getSites(Site.Type siteType)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(siteType,  "Site.Type");
-
-      try
-      {
-         List<PortalData> sites = null;
-
-         switch (siteType)
-         {
-            case SITE:
-               sites = getDataStorage().find(SITES).getAll();
-               break;
-            case SPACE:
-               sites = getDataStorage().find(SPACES).getAll();
-               break;
-            case DASHBOARD:
-               sites = getDataStorage().find(DASHBOARDS).getAll();
-               break;
-            default:
-               throw new IllegalArgumentException("Not supported Site.Type: " + siteType);
-         }
-
-         List<Site> allSites = new LinkedList<Site>();
-
-         // sites
-         for (PortalData portalData : sites)
-         {
-            allSites.add(new SiteImpl(siteType, portalData.getName(), this));
-         }
-
-         return allSites;
-
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-      finally
-      {
-         end();
-      }
-   }
-
-   @Override
-   public List<Site> getSites(Range range)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(range,  "Range");
-
-      if (range == null)
-      {
-         throw new IllegalArgumentException("Range cannot be null");
-      }
-
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public Site getSite(Site.Id siteId)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(siteId,  "Site.Id");
-
-      try
-      {
-         PortalKey key = SiteImpl.createPortalKey(siteId);
-
-         PortalData data = getPortalDataFor(key);
-
-         if (data != null)
-         {
-            return new SiteImpl(siteId, this);
-         }
-
-         return null;
-      }
-      catch (Exception e)
-      {
-         throw new RuntimeException(e);
-      }
-      finally
-      {
-         end();
-      }
-   }
-
-   @Override
-   public Site getSite(Site.Type type, String name)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(type,  "Site.Type");
-      ParameterValidation.throwIllegalArgExceptionIfNull(name,  "name");
-
-      return getSite(Site.Id.create(type, name));
-   }
-
-   @Override
-   public List<Site> getSites(Site.Type siteType, Range range)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(siteType,  "Site.Type");
-      ParameterValidation.throwIllegalArgExceptionIfNull(range,  "range");
-
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public Site getDefaultSite()
-   {
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public SiteQuery<Site> createSiteQuery()
-   {
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public Site addSite(Site.Type siteType, String name)
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(siteType,  "Site.Type");
-      ParameterValidation.throwIllegalArgExceptionIfNull(name,  "name");
-
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public void removeSite(Site.Id siteId) throws EntityNotFoundException
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(siteId, "Site.Id");
-      removePortalDataFor(siteId);
-   }
-
-   @Override
-   public void removeSite(Site.Type siteType, String siteName) throws EntityNotFoundException
-   {
-      ParameterValidation.throwIllegalArgExceptionIfNull(siteType, "Site.Type");
-      ParameterValidation.throwIllegalArgExceptionIfNull(siteName, "Site name");
-
-      removeSite(Site.Id.create(siteType, siteName));
-   }
-
 
    public void start()
    {
@@ -297,62 +207,74 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
       // nothing to do
    }
 
-   public ModelDataStorage getDataStorage()
-   {
-      return dataStorage;
-   }
-
    public NavigationService getNavigationService()
    {
-      return configService.getNavigationService();
+      return navigationService;
    }
 
-   private PortalData getPortalDataFor(PortalKey key)
+   private List<Site> fromList(List<PortalConfig> internalSites)
    {
-      ParameterValidation.throwIllegalArgExceptionIfNull(key, "Portal Id");
-      try
+      List<Site> sites = new ArrayList<Site>(internalSites.size());
+      for (PortalConfig internalSite : internalSites)
       {
-         begin();
-
-         return getDataStorage().getPortalConfig(key);
+         Site.Id siteId = SiteImpl.fromSiteKey(new SiteKey(internalSite.getType(), internalSite.getName()));
+         sites.add(siteImpl(siteId));
       }
-      catch (Exception e)
-      {
-         throw new UndeclaredThrowableException(e);
-      }
-      finally
-      {
-         end();
-      }
+      return sites;
    }
 
-   private void removePortalDataFor(Site.Id siteId) throws EntityNotFoundException
+   private SiteImpl siteImpl(Site.Id siteId)
    {
-      PortalKey key = SiteImpl.createPortalKey(siteId);
-      try
-      {
-         begin();
-         ModelDataStorage mds = getDataStorage();
-         PortalData data = mds.getPortalConfig(key);
-         if (data == null)
-         {
-            throw new EntityNotFoundException("Site " + siteId + " does not exist.");
-         }
-         mds.remove(data);
-      }
-      catch (EntityNotFoundException e)
-      {
-         throw e;
-      }
-      catch (Exception e)
-      {
-         throw new UndeclaredThrowableException(e);
-      }
-      finally
-      {
-         end();
-      }
+      return new SiteImpl(siteId, this);
    }
+
+//   private PortalConfig getPortalConfig(Site.Id siteId)
+//   {
+//      try
+//      {
+//         begin();
+//
+//         SiteKey siteKey = SiteImpl.createMOPSiteKey(siteId);
+//
+//         return getDataStorage().getPortalConfig(siteKey.getTypeName(), siteKey.getName());
+//      }
+//      catch (Exception e)
+//      {
+//         throw new UndeclaredThrowableException(e);
+//      }
+//      finally
+//      {
+//         end();
+//      }
+//   }
+//
+//   private void removePortalDataFor(Site.Id siteId) throws EntityNotFoundException
+//   {
+//      PortalKey key = SiteImpl.createPortalKey(siteId);
+//      try
+//      {
+//         begin();
+//         ModelDataStorage mds = getDataStorage();
+//         PortalData data = mds.getPortalConfig(key);
+//         if (data == null)
+//         {
+//            throw new EntityNotFoundException("Site " + siteId + " does not exist.");
+//         }
+//         mds.remove(data);
+//      }
+//      catch (EntityNotFoundException e)
+//      {
+//         throw e;
+//      }
+//      catch (Exception e)
+//      {
+//         throw new UndeclaredThrowableException(e);
+//      }
+//      finally
+//      {
+//         end();
+//      }
+//   }
 
    public void begin()
    {
@@ -371,10 +293,5 @@ public class GateInImpl implements GateIn, Startable, GateIn.LifecycleManager
       if (rc == null) return Locale.getDefault();
 
       return rc.getLocale();
-   }
-
-   public DescriptionService getDescriptionService()
-   {
-      return configService.getDescriptionService();
    }
 }

@@ -25,6 +25,7 @@ package org.gatein.portal.samples.api;
 import org.exoplatform.container.ExoContainerContext;
 import org.gatein.api.GateIn;
 import org.gatein.api.portal.Navigation;
+import org.gatein.api.portal.Node;
 import org.gatein.api.portal.Site;
 
 import javax.portlet.GenericPortlet;
@@ -34,7 +35,6 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.List;
 
 /** @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a> */
@@ -74,19 +74,16 @@ public class NavigationPortlet extends GenericPortlet
    private void outputSite(Site site, PrintWriter writer) throws IOException
    {
 
-      writer.println("<h2>" + site.getDisplayName() + "</h2>");
+      writer.println("<h2>" + site.getLabel().getValue() + "</h2>");
       writer.println("<ul>");
 
       Navigation navigation = site.getNavigation();
 
       if (navigation != null)
       {
-
-         Collection<? extends Navigation> adminNodes = navigation.getChildren();
-
-         for (Navigation adminNode : adminNodes)
+         for (Node node : navigation)
          {
-            outputNode(adminNode, writer);
+            outputNode(node, writer);
          }
       }
       else
@@ -96,20 +93,20 @@ public class NavigationPortlet extends GenericPortlet
       writer.println("</ul><br/>");
    }
 
-   private void outputNode(Navigation node, PrintWriter writer)
+   private void outputNode(Node node, PrintWriter writer)
    {
-      Collection<? extends Navigation> children = node.getChildren();
-      int size = children.size();
+      //Collection<? extends Navigation> children = node.getChildren();
+      int size = node.getCount();
       boolean isLeaf = size == 0;
       writer.println("<li>"
          + (isLeaf ? "<a style='font-weight: bold; text-decoration: underline; color: #336666;' href='" + node.getURI() + "'>" : "")
-         + node.getDisplayName()
+         + node.getLabel().getValue()
          + (isLeaf ? "</a>" : "")
          + "</li>");
       if (size != 0)
       {
          writer.println("<ul>");
-         for (Navigation child : children)
+         for (Node child : node)
          {
             outputNode(child, writer);
          }
