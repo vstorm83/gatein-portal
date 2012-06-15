@@ -19,8 +19,13 @@
 package org.exoplatform.commons.chromattic;
 
 import org.chromattic.api.ChromatticSession;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
+import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 
+import javax.jcr.Credentials;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import java.util.HashMap;
@@ -60,7 +65,7 @@ abstract class AbstractContext implements SessionContext
    {
       if (session == null)
       {
-         session = lifeCycle.realChromattic.openSession();
+         session = lifeCycle.realChromattic.openSession((Credentials)getAttachment("credentials"));
       }
       return session;
    }
@@ -90,7 +95,12 @@ abstract class AbstractContext implements SessionContext
       }
    }
 
-   public abstract Session doLogin() throws RepositoryException;
+   public Session doLogin() throws RepositoryException
+   {
+      return doLogin(null);
+   }
+   
+   public abstract Session doLogin(Credentials credentials) throws RepositoryException;
 
    /**
     * Open and returns a session. Should be used by subclasses.
@@ -98,10 +108,21 @@ abstract class AbstractContext implements SessionContext
     * @return a session
     * @throws RepositoryException any repository exception
     */
-   protected final Session openSession() throws RepositoryException
+   protected final Session openSession(Credentials credentials) throws RepositoryException
    {
-      ManageableRepository repo = lifeCycle.manager.repositoryService.getCurrentRepository();
-      return repo.getSystemSession(lifeCycle.getWorkspaceName());
+      if (credentials == JCRCredentials.CURRENT_USER_CREDENTIALS)
+      {
+         // temporarily use SesssionProviderService for now to get current user session.
+         ExoContainer container = ExoContainerContext.getCurrentContainer();
+         SessionProviderService service = (SessionProviderService)container.getComponentInstanceOfType(SessionProviderService.class);
+         RepositoryService repo = (RepositoryService)container.getComponentInstanceOfType(RepositoryService.class);
+         return service.getSessionProvider(null).getSession(lifeCycle.getWorkspaceName(), repo.getCurrentRepository());
+      }
+      else
+      {
+         ManageableRepository repo = lifeCycle.manager.repositoryService.getCurrentRepository();
+         return repo.getSystemSession(lifeCycle.getWorkspaceName());
+      }
    }
 
    public void close(boolean save)
