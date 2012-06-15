@@ -7,7 +7,6 @@ import org.exoplatform.component.test.ContainerScope;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.AbstractPortalTest;
 import org.exoplatform.portal.config.DataStorage;
-import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.SiteType;
@@ -18,11 +17,8 @@ import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.NodeModel;
 import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.pom.config.POMSessionManager;
-import org.exoplatform.portal.pom.data.ModelDataStorage;
 import org.exoplatform.web.application.RequestContext;
 import org.gatein.api.GateIn;
-import org.gatein.pc.api.PortletInvoker;
-import org.gatein.portal.api.impl.lifecycle.NoOpLifecycleManager;
 
 import java.util.Locale;
 
@@ -34,8 +30,8 @@ import java.util.Locale;
    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml"),
    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration.xml"),
-   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.application-registry-configuration.xml"),
-   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "org/gatein/portal/api/impl/configuration.xml")
+   //@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.application-registry-configuration.xml"),
+   //@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "org/gatein/portal/api/impl/configuration.xml")
 })
 public abstract class AbstractAPITestCase extends AbstractPortalTest
 {
@@ -70,7 +66,6 @@ public abstract class AbstractAPITestCase extends AbstractPortalTest
       DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
 
       GateInImpl gatein = new GateInImpl(dataStorage, navService);
-      gatein.setProperty(GateInImpl.LIFECYCLE_MANAGER, new NoOpLifecycleManager());
 //      PortletRegistry invoker = (PortletRegistry)container.getComponentInstanceOfType(PortletInvoker.class);
 
       //

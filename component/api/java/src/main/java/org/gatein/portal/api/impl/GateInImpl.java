@@ -38,10 +38,12 @@ import org.gatein.api.portal.SiteQuery;
 import org.gatein.common.NotYetImplemented;
 import org.gatein.portal.api.impl.portal.DataStorageContext;
 import org.gatein.portal.api.impl.portal.SiteImpl;
+import org.gatein.portal.api.impl.portal.SiteQueryImpl;
 import org.picocontainer.Startable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -52,14 +54,16 @@ import static org.gatein.common.util.ParameterValidation.*;
  * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
  * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
  */
-public class GateInImpl extends DataStorageContext implements GateIn, Startable, GateIn.LifecycleManager
+public class GateInImpl extends DataStorageContext implements GateIn, Startable
 {
    private static final Query<PortalConfig> SITES = new Query<PortalConfig>(SiteType.PORTAL.getName(), null, PortalConfig.class);
    private static final Query<PortalConfig> SPACES = new Query<PortalConfig>(SiteType.GROUP.getName(), null, PortalConfig.class);
    private static final Query<PortalConfig> DASHBOARDS = new Query<PortalConfig>(SiteType.USER.getName(), null, PortalConfig.class);
 
+   //TODO: should be configurable
+   public Site.Id DEFAULT_SITE_KEY = Site.Id.create(Site.Type.SITE, "classic");
+
    private Map<PropertyType, Object> properties = new HashMap<PropertyType, Object>(7);
-   private LifecycleManager lcManager = GateIn.NO_OP_MANAGER;
 
    private final NavigationService navigationService;
    public GateInImpl(DataStorage dataStorage, NavigationService navigationService)
@@ -101,8 +105,9 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable,
    {
       throwIllegalArgExceptionIfNull(range, "Range");
 
-      //TODO:
-      throw new NotYetImplemented();
+      //TODO: true pagination
+      return cutPageFromResults(getSites(), range);
+
    }
 
    @Override
@@ -128,22 +133,22 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable,
       throwIllegalArgExceptionIfNull(siteType, "Site.Type");
       throwIllegalArgExceptionIfNull(range, "range");
 
-      //TODO:
-      throw new NotYetImplemented();
+      //TODO: true pagination
+      return cutPageFromResults(getSites(siteType), range);
    }
 
    @Override
    public Site getDefaultSite()
    {
-      //TODO:
-      throw new NotYetImplemented();
+      //TODO: make this configurable on the service level with fallback to classic
+      return getSite(DEFAULT_SITE_KEY);
    }
 
    @Override
    public SiteQuery<Site> createSiteQuery()
    {
       //TODO:
-      throw new NotYetImplemented();
+      return new SiteQueryImpl(this);
    }
 
    @Override
@@ -188,23 +193,8 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable,
    {
       if (property != null)
       {
-         if (GateIn.LIFECYCLE_MANAGER.equals(property))
-         {
-            lcManager = GateIn.LIFECYCLE_MANAGER.getValueType().cast(value);
-         }
          properties.put(property, value);
       }
-   }
-
-
-   public void start()
-   {
-      // nothing to do
-   }
-
-   public void stop()
-   {
-      // nothing to do
    }
 
    public NavigationService getNavigationService()
@@ -276,14 +266,45 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable,
 //      }
 //   }
 
-   public void begin()
+   public int getQueryResultCount(SiteQueryImpl query)
    {
-      lcManager.begin();
+      //TODO:
+      throw new NotYetImplemented();
    }
 
-   public void end()
+   public List<Site> executeSiteQuery(SiteQueryImpl query)
    {
-      lcManager.end();
+      //TODO:
+      throw new NotYetImplemented();
+   }
+
+   //TODO: helper until pagination is not built into layer below
+   private List<Site> cutPageFromResults(List<Site> sites, Range range)
+   {
+
+      List<Site> results = new LinkedList<Site>();
+
+      if (range.getLimit() == 0)
+      {
+         for (int i = range.getOffset(); i < sites.size(); i++)
+         {
+            if (i < sites.size())
+            {
+               results.add(sites.get(i));
+            }
+         }
+      }
+      else
+      {
+         for (int i = range.getOffset(); i < range.getOffset() + range.getLimit(); i++)
+         {
+            if (i < sites.size())
+            {
+               results.add(sites.get(i));
+            }
+         }
+      }
+      return results;
    }
 
    public Locale getUserLocale()
@@ -293,5 +314,17 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable,
       if (rc == null) return Locale.getDefault();
 
       return rc.getLocale();
+   }
+
+   @Override
+   public void start()
+   {
+      //nothing
+   }
+
+   @Override
+   public void stop()
+   {
+      //nothing
    }
 }
