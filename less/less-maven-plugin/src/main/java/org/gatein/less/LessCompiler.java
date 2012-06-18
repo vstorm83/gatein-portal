@@ -51,6 +51,7 @@ public class LessCompiler extends AbstractMojo
     * @parameter
     * @required
     */
+   
    private Module[] modules;
 
    public void execute() throws MojoExecutionException

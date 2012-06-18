@@ -41,12 +41,17 @@ public class Utils
 {
    public static File resolveResourcePath(File resource) throws IOException
    {
-      return resolveResourcePath(resource.getAbsolutePath());
+      return resolveResourcePath(resource.getCanonicalPath());
    }
 
    public static File resolveResourcePath(String sourcePath) throws IOException
    {
-      String directoryPath = sourcePath.substring(0, sourcePath.lastIndexOf('/'));
+      String separator = System.getProperty("file.separator");
+      if("\\".equals(separator)) {
+         sourcePath = sourcePath.replaceAll("/", "\\\\");
+      }
+      
+      String directoryPath = sourcePath.substring(0, sourcePath.lastIndexOf(separator));
       String fileName = sourcePath.substring(directoryPath.length() + 1);
       File directory = new File(directoryPath);
       if (!directory.exists())

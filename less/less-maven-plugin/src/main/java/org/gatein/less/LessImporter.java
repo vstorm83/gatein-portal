@@ -84,6 +84,8 @@ public class LessImporter extends AbstractMojo
    private Artifact importArtifact;
 
    private Pattern gateinImportPattern = Pattern.compile("(.*)(gatein-)(.[^/]*)(\\.less)");
+   
+   private static String separator = System.getProperty("file.separator");
 
    @Override
    public void execute() throws MojoExecutionException
@@ -118,7 +120,9 @@ public class LessImporter extends AbstractMojo
    {
       for (String location : entry.getLocations())
       {
-         String path = webappDirectory.getCanonicalPath() + "/" + location + "/" + entry.getName();
+         StringBuilder sb = new StringBuilder();
+         sb.append(webappDirectory.getCanonicalPath()).append(separator).append(location).append(separator).append(entry.getName());
+         String path = sb.toString();
          FileOutputStream fos = new FileOutputStream(Utils.resolveResourcePath(path));
          getLog().info("Write import file to: [" + path + "]");
          fos.write(entry.getData());
@@ -139,7 +143,7 @@ public class LessImporter extends AbstractMojo
          if (!module.hasExternalImport())
             continue;
 
-         File input = new File(warSourceDirectory.getAbsolutePath() + "/" + module.getInput());
+         File input = new File(warSourceDirectory.getCanonicalFile() + separator + module.getInput());
          BufferedReader reader = new BufferedReader(new FileReader(input));
          String line = null;
          while ((line = reader.readLine()) != null)
