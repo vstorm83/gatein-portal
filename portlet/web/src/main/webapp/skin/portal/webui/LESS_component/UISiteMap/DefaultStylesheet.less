@@ -25,20 +25,25 @@
  * version: $Id$
  */
 
+@import "core/core.less";
+@import "variables.less";
+@import "mixin.less";
 
 .UIWindow .UISitemapPortlet {
 	border: none;
 	margin: 0px;
 }
 
-.UISitemapPortlet {
-}
-
 .UISitemap {
-	background: #fff url('DefaultSkin/background/default_sitemap.gif') no-repeat 95% 90%; /* orientation=lt */
-	background: #fff url('DefaultSkin/background/default_sitemap.gif') no-repeat 5% 90%; /* orientation=rt */
-	padding: 10px 30px;
+	.padding(10px, 30px, 10px, 30px);
 	color: #4e4e4e;
+	.dir(@dir);
+	.dir(lt) {
+		background: #fff url('@{pathBackground}/default_sitemap.gif') no-repeat 95% 90%;
+	}
+	.dir(rt) {
+		background: #fff url('@{pathBackground}/default_sitemap.gif') no-repeat 5% 90%;
+	}
 }
 
 .UISitemap a {
@@ -46,24 +51,33 @@
 }
 
 .UISitemap .CollapseAll {
-	background: url('DefaultSkin/background/CollapseAllIcon.gif') no-repeat left center; /* orientation=lt */
-	background: url('DefaultSkin/background/CollapseAllIcon-rt.gif') no-repeat right center; /* orientation=rt */
-	padding: 0px 20px;
+	.padding(0px, 20px, 0px, 20px);
 	cursor: pointer;
+	.dir(@dir);
+	.dir(lt) {
+		background: url('@{pathBackground}/CollapseAllIcon.gif') no-repeat left center;
+	}
+	.dir(rt) {
+		background: url('@{pathBackground}/CollapseAllIcon-rt.gif') no-repeat right center;
+	}
 }
 
 .UISitemap .SitemapContent {
-	background: url('DefaultSkin/background/RootTree.gif') no-repeat left top; /* orientation=lt */
-	background: url('DefaultSkin/background/RootTree-rt.gif') no-repeat right top; /* orientation=rt */
-	padding-top: 8px; 
+	.padding(8px, 0px, 0px, 0px);
 	margin: 20px 0px;
+	.dir(@dir);
+	.dir(lt) {
+		background: url('@{pathBackground}/RootTree.gif') no-repeat left top;
+	}
+	.dir(rt) {
+		background: url('@{pathBackground}/RootTree-rt.gif') no-repeat right top;
+	}
 }
 
 .UISitemap .SitemapContent .UISiteTree a {
 	font-weight: bold;
 	display: block;
-	float: left; /* orientation=lt */
-	float: right; /* orientation=rt */
+	.FL;
 }
 
 .UISitemap .SitemapContent .UISiteTree a:hover {
@@ -72,48 +86,75 @@
 
 .UISitemap .UISiteTree .Node {
 	line-height: 24px;
-	background: url('DefaultSkin/background/Dotted.gif') repeat-y left top; /* orientation=lt */
-	background: url('DefaultSkin/background/Dotted.gif') repeat-y right top; /* orientation=rt */
+	.dir(@dir);
+	.dir(lt) {
+		background: url('@{pathBackground}/Dotted.gif') repeat-y left top;
+	}
+	.dir(rt) {
+		background: url('@{pathBackground}/Dotted.gif') repeat-y right top;
+	}
 }
 
 .UISitemap .UISiteTree .LastNode {
 	line-height: 24px;
-	background: url('DefaultSkin/background/LastNode.gif') no-repeat left top; /* orientation=lt */
-	background: url('DefaultSkin/background/LastNode.gif') no-repeat right top; /* orientation=rt */
+	.dir(@dir);
+	.dir(lt) {
+		background: url('@{pathBackground}/LastNode.gif') no-repeat left top;
+	}
+	.dir(rt) {
+		background: url('@{pathBackground}/LastNode.gif') no-repeat right top;
+	}
 }
 
 .UISitemap .CollapseIcon {
-	background: url('DefaultSkin/background/CollapseIcon.gif') no-repeat left center; /* orientation=lt */
-	background: url('DefaultSkin/background/CollapseIcon-rt.gif') no-repeat right center; /* orientation=rt */
-	padding: 0px 5px 0px 30px; /* orientation=lt */
-	padding: 0px 30px 0px 5px; /* orientation=rt */
 	cursor: pointer;
+	.padding(0px, 5px, 0px, 30px);
+	.dir(@dir);
+	.dir(lt) {
+		background: url('@{pathBackground}/CollapseIcon.gif') no-repeat left center;
+	}
+	.dir(rt) {
+		background: url('@{pathBackground}/CollapseIcon-rt.gif') no-repeat right center;
+	}
 }
 
 .UISitemap .ExpandIcon {
-	background: url('DefaultSkin/background/ExpandIcon.gif') no-repeat left center; /* orientation=lt */
-	background: url('DefaultSkin/background/ExpandIcon-rt.gif') no-repeat right center; /* orientation=rt */
-	padding: 0px 5px 0px 30px; /* orientation=lt */
-	padding: 0px 30px 0px 5px; /* orientation=rt */
 	cursor: pointer;
+	.padding(0px, 5px, 0px, 30px);
+	.dir(@dir);
+	.dir(lt) {
+		background: url('@{pathBackground}/ExpandIcon.gif') no-repeat left center;
+	}
+	.dir(rt) {
+		background: url('@{pathBackground}/ExpandIcon-rt.gif') no-repeat right center;
+	}
 }
 
 .UISitemap .NullItem {
-	background: url('DefaultSkin/background/NullItem.gif') no-repeat left center; /* orientation=lt */
-	background: url('DefaultSkin/background/NullItem-rt.gif') no-repeat right center; /* orientation=rt */
-	padding: 0px 30px;
+	.padding(0px, 30px, 0px, 30px);
+	.dir(@dir);
+	.dir(lt) {
+		background: url('@{pathBackground}/NullItem.gif') no-repeat left center;
+	}
+	.dir(rt) {
+		background: url('@{pathBackground}/NullItem-rt.gif') no-repeat right center;
+	}
 }
 
 .UISitemap .DefaultPageIcon {
-	padding: 4px 0px 4px 20px; /* orientation=lt */
-	padding: 4px 20px 4px 0px; /* orientation=rt */
-	background-position: left center; /* orientation=lt */
-	background-position: right center; /* orientation=rt */
 	width: auto;
+	.padding(4px, 0px, 4px, 20px);
+	.dir(@dir);
+	.dir(lt) {
+		
+		background-position: left center;
+	}
+	.dir(rt) {
+		background-position: right center;
+	}
 }
 
 .UISitemap .ChildrenContainer {
-	padding-left: 31px; /* orientation=lt */
-	padding-right: 31px; /* orientation=rt */
 	float: none;
+	.padding(0px, 0px, 0px, 31px);
 }
