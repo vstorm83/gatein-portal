@@ -24,10 +24,18 @@
  * January 10, 2007
  * version: $Id$
  */
+ 
+/** external import from eXoResources */
 
-@import "core/core.less";
+@import "core/gatein-core.less";
+@import "internal-core/core.less";
 @import "variables.less";
 @import "mixin.less";
+
+.Foo {
+	foo: @foo;
+	bar: @bar;
+}
 
 .UIWindow .UISitemapPortlet {
 	border: none;

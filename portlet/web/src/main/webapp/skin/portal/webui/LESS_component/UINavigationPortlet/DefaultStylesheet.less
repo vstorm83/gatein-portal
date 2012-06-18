@@ -23,6 +23,15 @@
  * April 23, 2007
  * version: $Id$
  */
+ 
+/** external import from eXoResources */
+
+@import "core/gatein-core.less";
+
+.Foo {
+	foo: @foo;
+	bar: @bar;
+}
 
 .UINavigationPortlet ul { 
 	list-style:none;	
@@ -40,7 +49,7 @@
 	background-color:#0e4aaa;
 	padding: 0 10px;
 	height: 33px;		
-	!position: relative;
+	position: relative;
 	-moz-border-radius-topleft:  5px;  /* Firefox up to version 3.6 */
 	-moz-border-radius-topright:  5px; 
    -webkit-border-top-left-radius: 5px;  /* Safari, Chrome (before WebKit version 533) */
