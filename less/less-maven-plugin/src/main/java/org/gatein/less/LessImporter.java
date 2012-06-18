@@ -191,6 +191,7 @@ public class LessImporter extends AbstractMojo
          if (line.indexOf("@import") == -1)
             continue;
 
+         getLog().info("Process line: [" + line + "]");
          String importName = line.substring("@import".length(), line.lastIndexOf(';')).trim();
          importName = importName.replaceAll("['\"]", "");
          String filePath = b.append(pwd).append("/").append(importName).toString();

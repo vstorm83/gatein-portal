@@ -62,8 +62,8 @@ public class LessCompiler extends AbstractMojo
          {
             String input = module.getInput().substring(module.getInput().lastIndexOf('/') + 1);
             String contextPath = webappDirectory.getCanonicalPath() + "/" + module.getInput().substring(0, module.getInput().lastIndexOf(input));
-            getLog().info("Less compile phase - input: " + input);
-            getLog().info("Less compile phase - context: " + new File(contextPath).toURI().toURL());
+            //getLog().info("Less compile phase - input: " + input);
+            //getLog().info("Less compile phase - context: " + new File(contextPath).toURI().toURL());
             
             URLLessContext context = new URLLessContext(new File(contextPath).toURI().toURL());
             Compilation compilation = (Compilation)lesser.compile(context, input);
@@ -71,7 +71,7 @@ public class LessCompiler extends AbstractMojo
             BufferedWriter writer = new BufferedWriter(
                new FileWriter(Utils.resolveResourcePath(webappDirectory.getAbsolutePath() + "/"+ module.getOutput())));
             
-            getLog().info("The RESULT: \n" + compilation.getValue());
+            //getLog().info("The RESULT: \n" + compilation.getValue());
             writer.write(compilation.getValue());
             writer.close();
          }
