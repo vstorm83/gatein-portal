@@ -46,7 +46,7 @@ public class SiteQueryImpl implements SiteQuery<Site>
    private Site.Type siteType;
    private String userId;
    private String groupId;
-   private boolean containsNavigation = true;
+   private boolean containsNavigation = false;
 
    private final GateInImpl gateinImpl;
 
@@ -96,6 +96,7 @@ public class SiteQueryImpl implements SiteQuery<Site>
    public SiteQuery<Site> setId(Site.Id id)
    {
       this.siteId = id;
+      this.siteType = id.getType();
       return this;
    }
 
@@ -108,7 +109,7 @@ public class SiteQueryImpl implements SiteQuery<Site>
    @Override
    public SiteQuery<Site> setType(Site.Type siteType)
    {
-      siteType = siteType;
+      this.siteType = siteType;
       return this;
    }
 
@@ -252,6 +253,12 @@ public class SiteQueryImpl implements SiteQuery<Site>
       return range.getPage();
    }
 
+   public SiteQuery<Site> setPage(int page)
+   {
+      //TODO:
+      return this;
+   }
+
    @Override
    public SiteQuery<Site> nextPage()
    {
@@ -294,7 +301,7 @@ public class SiteQueryImpl implements SiteQuery<Site>
    }
 
    @Override
-   public List execute()
+   public List<Site> execute()
    {
       return getGateInImpl().executeSiteQuery(this);
    }

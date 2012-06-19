@@ -27,7 +27,9 @@ import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationService;
+import org.exoplatform.portal.mop.navigation.NavigationState;
 import org.gatein.api.commons.PropertyType;
 import org.gatein.api.exception.ApiException;
 import org.gatein.api.exception.EntityNotFoundException;
@@ -203,7 +205,7 @@ public class SiteImpl extends DataStorageContext implements Site
    public Site addSite()
    {
       PortalConfig internalSite = getInternalSite(false);
-      if (internalSite == null) throw new ApiException("Cannot add site, site already exists for id " + id);
+      if (internalSite != null) throw new ApiException("Cannot add site, site already exists for id " + id);
 
       //TODO: Need to determine what good default values are when creating a site.
       SiteKey siteKey = getSiteKey();
@@ -220,14 +222,18 @@ public class SiteImpl extends DataStorageContext implements Site
          @Override
          public void modify(PortalConfig data, DataStorage dataStorage) throws Exception
          {
-            dataStorage.save(data);
+            dataStorage.create(data);
          }
       });
+
+      // Create navigation context for new site
+      NavigationContext navContext = new NavigationContext(this.getSiteKey(), new NavigationState(0));
+      gateIn.getNavigationService().saveNavigation(navContext);
 
       return this;
    }
 
-   private PortalConfig getInternalSite(boolean required)
+   public PortalConfig getInternalSite(boolean required)
    {
       final SiteKey siteKey = getSiteKey();
 

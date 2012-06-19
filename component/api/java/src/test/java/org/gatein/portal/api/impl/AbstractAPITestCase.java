@@ -17,6 +17,7 @@ import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.NodeModel;
 import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.pom.config.POMSessionManager;
+import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.web.application.RequestContext;
 import org.gatein.api.GateIn;
 
@@ -63,16 +64,17 @@ public abstract class AbstractAPITestCase extends AbstractPortalTest
       PortalContainer container = getContainer();
       POMSessionManager mgr = (POMSessionManager)container.getComponentInstanceOfType(POMSessionManager.class);
       NavigationService navService = (NavigationService)container.getComponentInstanceOfType(NavigationService.class);
+      OrganizationService orgService = (OrganizationService)container.getComponentInstanceOfType(OrganizationService.class);
       DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
 
-      GateInImpl gatein = new GateInImpl(dataStorage, navService);
+      GateInImpl gatein = new GateInImpl(dataStorage, navService, orgService);
 //      PortletRegistry invoker = (PortletRegistry)container.getComponentInstanceOfType(PortletInvoker.class);
 
       //
       gatein.start();
 
       // Clear the cache for each test
-      // navService.clearCache();
+      //navService.clearCache();
 
       //
       this.gatein = gatein;
