@@ -300,6 +300,11 @@ public class SiteImpl extends DataStorageContext implements Site
 
    SiteKey getSiteKey()
    {
+      return toSiteKey(id);
+   }
+
+   public static SiteKey toSiteKey(Id id)
+   {
       switch (id.getType())
       {
          case SITE:

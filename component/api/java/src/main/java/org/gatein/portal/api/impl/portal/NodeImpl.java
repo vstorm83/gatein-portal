@@ -26,6 +26,7 @@ import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.NodeState;
 import org.exoplatform.portal.mop.navigation.Scope;
+import org.exoplatform.portal.pom.data.PageKey;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
@@ -33,6 +34,7 @@ import org.gatein.api.exception.EntityNotFoundException;
 import org.gatein.api.portal.Label;
 import org.gatein.api.portal.Node;
 import org.gatein.api.portal.Page;
+import org.gatein.api.portal.Site;
 import org.gatein.common.NotYetImplemented;
 import org.gatein.portal.api.impl.GateInImpl;
 
@@ -50,7 +52,7 @@ public class NodeImpl implements Node
 {
    final NodeContext<Node> context;
 
-   private final Id id;
+   private Id id;
    private final SiteImpl site;
    private final GateInImpl gateIn;
 
@@ -59,14 +61,17 @@ public class NodeImpl implements Node
       this.site = site;
       this.gateIn = gateIn;
       this.context = context;
-
-      String buildPath = buildPath().toString();
-      this.id = Node.Id.create(site.getId(), buildPath.split("/"));
    }
 
    @Override
    public Id getId()
    {
+      // Can't calculate the id in the constructor (which includes the path) because the internal service is still creating the node.
+      if (id == null)
+      {
+         String buildPath = buildPath().toString();
+         this.id = Node.Id.create(site.getId(), buildPath.split("/"));
+      }
       return id;
    }
 
@@ -149,7 +154,7 @@ public class NodeImpl implements Node
       {
          SiteKey siteKey = site.getSiteKey();
          RequestContext requestContext = RequestContext.getCurrentInstance();
-         NavigationResource navResource = new NavigationResource(siteKey, id.getPathAsString());
+         NavigationResource navResource = new NavigationResource(siteKey, getId().getPathAsString());
          NodeURL nodeURL = requestContext.createURL(NodeURL.TYPE, navResource);
          nodeURL.setSchemeUse(true);
          return new URI(nodeURL.toString());
@@ -181,22 +186,44 @@ public class NodeImpl implements Node
    @Override
    public Page getPage()
    {
-      //TODO: Implement
-      throw new NotYetImplemented();
+      Page.Id pageId = getPageReference();
+      if (pageId == null) return null;
+
+      Site site = gateIn.getSite(pageId.getSiteId());
+      if (site == null) return null; //TODO: Do we want to return null or throw an exception here.
+
+      return site.getPage(pageId.getPageName());
    }
 
    @Override
    public Page.Id getPageReference()
    {
-      //TODO: Implement
-      throw new NotYetImplemented();
+      String pageRef = context.getState().getPageRef();
+      if (pageRef == null) return null;
+
+      PageKey pageKey = PageKey.create(pageRef);
+      SiteKey siteKey = new SiteKey(pageKey.getType(), pageKey.getId());
+      Site.Id siteId = SiteImpl.fromSiteKey(siteKey);
+
+      return Page.Id.create(siteId, pageKey.getName());
    }
 
    @Override
    public void setPageReference(Page.Id pageId)
    {
-      //TODO: Implement
-      throw new NotYetImplemented();
+      String pageRef = null;
+      if (pageId != null)
+      {
+         Site site = gateIn.getSite(pageId.getSiteId());
+         if (site == null) throw new EntityNotFoundException("Cannot set page id " + pageId + " because site does not exist.");
+         Page page = site.getPage(pageId.getPageName());
+         if (page == null) throw new EntityNotFoundException("Cannot set page id " + pageId + " because page does not exist.");
+
+         SiteKey siteKey = SiteImpl.toSiteKey(pageId.getSiteId());
+         pageRef = new PageKey(siteKey.getTypeName(), siteKey.getName(), pageId.getPageName()).getCompositeId();
+      }
+
+      context.setState(context.getState().builder().pageRef(pageRef).build());
    }
 
    @Override
@@ -285,7 +312,7 @@ public class NodeImpl implements Node
    @Override
    public String toString()
    {
-      return id.toString();
+      return getId().toString();
    }
 
    private void loadChildren()

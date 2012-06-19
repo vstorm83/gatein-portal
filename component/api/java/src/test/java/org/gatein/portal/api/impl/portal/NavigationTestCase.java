@@ -2,6 +2,7 @@ package org.gatein.portal.api.impl.portal;
 
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.navigation.NodeContext;
+import org.gatein.api.exception.ApiException;
 import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Node;
 import org.gatein.api.portal.Page;
@@ -67,13 +68,24 @@ public class NavigationTestCase extends AbstractAPITestCase
       Navigation rootNav = site.getNavigation();
       Node homeNav = rootNav.getNode("home");
 
-      //TODO:
-      //assertNull(homeNav.getTargetPage());
-      //homeNav.setTargetPage(homePage);
-      //assertSame(homePage, homeNav.getTargetPage());
+      assertNull(homeNav.getPage());
+      homeNav.setPageReference(homePage.getId());
+      assertEquals(homePage.getId(), homeNav.getPage().getId());
 
       //
-      //homeNav.setTargetPage((Page)null);
-      //assertNull(null, homeNav.getTargetPage());
+      homeNav.setPageReference(null);
+      assertNull(homeNav.getPage());
+      assertNull(homeNav.getPageReference());
+
+      try
+      {
+         homeNav.setPageReference(Page.Id.create(Site.Type.SITE, "foo", "bar"));
+         fail("Should not be able to set a page that doesn't exist.");
+      }
+      catch (ApiException e)
+      {
+         assertNull(homeNav.getPage());
+         assertNull(homeNav.getPageReference());
+      }
    }
 }
