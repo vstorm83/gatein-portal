@@ -23,6 +23,5 @@
   </dependencies>
   <modules>
     <module>less-maven-plugin</module>
-		<module>resources-sample</module>
   </modules>
 </project>

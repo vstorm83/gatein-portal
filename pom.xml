@@ -91,9 +91,10 @@
    <modules>
       <module>component</module>
       <module>gadgets</module>
-      <module>webui</module>
-      <module>portlet</module>
+			<module>webui</module>
+			<module>less</module>
       <module>web</module>
+      <module>portlet</module>
       <module>examples</module>
       <module>starter</module>
       <module>wsrp-integration</module>

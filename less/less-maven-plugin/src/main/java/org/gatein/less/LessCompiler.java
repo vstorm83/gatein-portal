@@ -47,24 +47,23 @@ public class LessCompiler extends AbstractMojo
    /** @parameter default-value="${project.build.directory}/${project.build.finalName}" @required */
    private File webappDirectory;
    
-   /**
-    * @parameter
-    * @required
-    */
+   /** @parameter default-value="${basedir}/src/main/webapp" @required */
+   private File warSourceDirectory;
    
+   /** @parameter @required */
    private Module[] modules;
 
    public void execute() throws MojoExecutionException
    {
       try
       {
+         Utils.rsync(warSourceDirectory, webappDirectory);
+         
          Lesser lesser = new Lesser(new JSR223Context());
          for (Module module : modules)
          {
             String input = module.getInput().substring(module.getInput().lastIndexOf('/') + 1);
             String contextPath = webappDirectory.getCanonicalPath() + "/" + module.getInput().substring(0, module.getInput().lastIndexOf(input));
-            //getLog().info("Less compile phase - input: " + input);
-            //getLog().info("Less compile phase - context: " + new File(contextPath).toURI().toURL());
             
             URLLessContext context = new URLLessContext(new File(contextPath).toURI().toURL());
             Compilation compilation = (Compilation)lesser.compile(context, input);
@@ -72,7 +71,6 @@ public class LessCompiler extends AbstractMojo
             BufferedWriter writer = new BufferedWriter(
                new FileWriter(Utils.resolveResourcePath(webappDirectory.getAbsolutePath() + "/"+ module.getOutput())));
             
-            //getLog().info("The RESULT: \n" + compilation.getValue());
             writer.write(compilation.getValue());
             writer.close();
          }

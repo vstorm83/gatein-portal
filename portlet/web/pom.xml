@@ -43,29 +43,51 @@
     <finalName>web</finalName>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>generate-resources</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>org.exoplatform.portal</groupId>
+                  <artifactId>exo.portal.web.eXoResources</artifactId>
+									<version>3.4.0-GA-SNAPSHOT</version>
+									<type>war</type>
+                  <overWrite>false</overWrite>
+                  <outputDirectory>${project.build.directory}/${project.build.finalName}/eXoResources</outputDirectory>
+                  <includes>**\/*.less</includes>
+                </artifactItem>
+              </artifactItems>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.gatein.less</groupId>
         <artifactId>less-maven-plugin</artifactId>
         <version>1.0</version>
         <executions>
           <execution>
             <goals>
-              <goal>import</goal>
               <goal>compile</goal>
             </goals>
           </execution>
         </executions>
         <configuration>
-          <artifactCoords>org.exoplatform.portal:exo.portal.web.eXoResources:3.4.0-GA-SNAPSHOT:war</artifactCoords>
 					<modules>
             <module>
 							<input>skin/portal/webui/LESS_component/UINavigationPortlet/DefaultStylesheet.less</input>
 							<output>skin/portal/webui/LESS_component/UINavigationPortlet/DefaultStylesheet.css</output>
-              <hasExternalImport>true</hasExternalImport>
 						</module>
             <module>
 							<input>skin/portal/webui/LESS_component/UISiteMap/DefaultStylesheet.less</input>
 							<output>skin/portal/webui/LESS_component/UISiteMap/DefaultStylesheet.css</output>
-              <hasExternalImport>true</hasExternalImport>
 						</module>
           </modules>
         </configuration>
