@@ -184,6 +184,13 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
       return siteImpl(Site.Id.create(siteType, name)).addSite();
    }
 
+   public Site addSite(Site.Id id)
+   {
+      throwIllegalArgExceptionIfNull(id, "Site ID");
+
+      return addSite(id.getType(), id.getName());
+   }
+
    @Override
    public void removeSite(Site.Id siteId) throws EntityNotFoundException
    {
@@ -453,7 +460,7 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
          List<Site> newResults = new LinkedList<Site>();
          for (Site site : results)
          {
-            if (site.getNavigation() != null)
+            if (site.getNavigation() != null && site.getNavigation().iterator().hasNext())
             {
                newResults.add(site);
             }
@@ -464,4 +471,6 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
 
       return results;
    }
+
+
 }

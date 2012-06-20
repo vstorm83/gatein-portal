@@ -27,6 +27,11 @@ import org.gatein.portal.api.impl.AbstractAPITestCase;
 /** @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a> */
 public class SiteTestCase extends AbstractAPITestCase
 {
+
+   //TODO: label -NYI
+   //TODO: description
+   //TODO: navigation
+   //TODO: pages
    public void testSimple()
    {
 
