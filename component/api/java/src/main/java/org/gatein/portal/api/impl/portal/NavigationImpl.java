@@ -54,7 +54,7 @@ public class NavigationImpl implements Navigation, NodeChangeListener<NodeContex
       NavigationContext navContext = gateIn.getNavigationService().loadNavigation(site.getSiteKey());
       if (navContext == null)
       {
-         navContext = new NavigationContext(site.getSiteKey(), new NavigationState(0));
+         navContext = new NavigationContext(site.getSiteKey(), new NavigationState(1));
          gateIn.getNavigationService().saveNavigation(navContext);
          this.context = navContext;
       }

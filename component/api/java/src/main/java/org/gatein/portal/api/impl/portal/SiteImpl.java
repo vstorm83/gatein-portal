@@ -275,7 +275,7 @@ public class SiteImpl extends DataStorageContext implements Site
       });
 
       // Create navigation context for new site
-      NavigationContext navContext = new NavigationContext(this.getSiteKey(), new NavigationState(0));
+      NavigationContext navContext = new NavigationContext(this.getSiteKey(), new NavigationState(1));
       gateIn.getNavigationService().saveNavigation(navContext);
 
       return this;
