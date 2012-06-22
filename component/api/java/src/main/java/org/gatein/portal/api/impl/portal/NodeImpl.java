@@ -30,12 +30,14 @@ import org.exoplatform.portal.pom.data.PageKey;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
+import org.gatein.api.exception.ApiException;
 import org.gatein.api.exception.EntityNotFoundException;
 import org.gatein.api.portal.Label;
 import org.gatein.api.portal.Node;
 import org.gatein.api.portal.Page;
 import org.gatein.api.portal.Site;
-import org.gatein.common.NotYetImplemented;
+import org.gatein.common.logging.Logger;
+import org.gatein.common.logging.LoggerFactory;
 import org.gatein.portal.api.impl.GateInImpl;
 
 import java.net.URI;
@@ -50,6 +52,9 @@ import static org.gatein.common.util.ParameterValidation.*;
  */
 public class NodeImpl implements Node
 {
+   //TODO: Do we want a better name for logger ? Probably need to standardize our logging for api
+   private static final Logger log = LoggerFactory.getLogger(NodeImpl.class);
+
    final NodeContext<Node> context;
 
    private Id id;
@@ -88,63 +93,59 @@ public class NodeImpl implements Node
    }
 
    @Override
+   public boolean removeNode()
+   {
+      try
+      {
+         context.remove();
+         gateIn.getNavigationService().saveNode(context, null);
+         return true;
+      }
+      catch (IllegalStateException e)
+      {
+         log.error("Invalid internal state, could not remove node.", e);
+         throw new ApiException("Could not remove node. See log for details.");
+      }
+   }
+
+   @Override
    public Node getChild(String name)
    {
       throwIllegalArgExceptionIfNull(name, "name");
 
-      loadChildren();
+      loadChildren(context);
+
       return context.getNode(name);
    }
 
    @Override
-   public Node getDescendant(String... path)
-   {
-      throwIllegalArgExceptionIfNullOrEmpty(path, "path");
-
-      if (path.length == 1) return getChild(path[0]);
-
-      //TODO: Implement
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public void removeChild(String name) throws EntityNotFoundException
+   public boolean removeChild(String name) throws EntityNotFoundException
    {
       throwIllegalArgExceptionIfNull(name, "name");
 
-      loadChildren();
+      Node node = getChild(name);
+      if (node == null) throw new EntityNotFoundException("Cannot remove child because child " + name + " does not exist for node " + this);
 
-      boolean removed = context.removeNode(name);
-      if (!removed) throw new EntityNotFoundException("Node " + this + " does not have child of name " + name);
-   }
-
-   @Override
-   public void removeDescendant(String... path) throws EntityNotFoundException
-   {
-      throwIllegalArgExceptionIfNullOrEmpty(path, "path");
-
-      if (path.length == 1)
-      {
-         removeChild(path[0]);
-         return;
-      }
-
-      //TODO: Implement
-      throw new NotYetImplemented();
+      return node.removeNode();
    }
 
    @Override
    public Node addChild(String name)
    {
-      loadChildren();
+      loadChildren(context);
 
-      return context.add(null, name).getNode();
+      Node node = context.add(null, name).getNode();
+      gateIn.getNavigationService().saveNode(context, null);
+
+      return node;
    }
 
    @Override
-   public int getCount()
+   public int getChildCount()
    {
-      return context.getNodeCount();
+      loadChildren(context);
+
+      return context.getNodeSize();
    }
 
    @Override
@@ -186,17 +187,17 @@ public class NodeImpl implements Node
    @Override
    public Page getPage()
    {
-      Page.Id pageId = getPageReference();
+      Page.Id pageId = getPageId();
       if (pageId == null) return null;
 
       Site site = gateIn.getSite(pageId.getSiteId());
-      if (site == null) return null; //TODO: Do we want to return null or throw an exception here.
+      if (site == null) throw new ApiException("Invalid page id " + pageId + " because the site does not exist.");
 
       return site.getPage(pageId.getPageName());
    }
 
    @Override
-   public Page.Id getPageReference()
+   public Page.Id getPageId()
    {
       String pageRef = context.getState().getPageRef();
       if (pageRef == null) return null;
@@ -209,7 +210,7 @@ public class NodeImpl implements Node
    }
 
    @Override
-   public void setPageReference(Page.Id pageId)
+   public void setPageId(Page.Id pageId)
    {
       String pageRef = null;
       if (pageId != null)
@@ -305,7 +306,7 @@ public class NodeImpl implements Node
    @Override
    public Iterator<Node> iterator()
    {
-      loadChildren();
+      loadChildren(context);
       return context.iterator();
    }
 
@@ -315,11 +316,11 @@ public class NodeImpl implements Node
       return getId().toString();
    }
 
-   private void loadChildren()
+   private void loadChildren(NodeContext<Node> ctx)
    {
-      if (!context.isExpanded())
+      if (!ctx.isExpanded())
       {
-         gateIn.getNavigationService().rebaseNode(context, Scope.CHILDREN, null);
+         gateIn.getNavigationService().rebaseNode(ctx, Scope.CHILDREN, null);
       }
    }
 

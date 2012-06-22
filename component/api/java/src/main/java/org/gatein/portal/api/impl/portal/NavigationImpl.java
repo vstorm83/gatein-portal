@@ -22,27 +22,28 @@
 
 package org.gatein.portal.api.impl.portal;
 
-import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationState;
-import org.exoplatform.portal.mop.navigation.NodeChangeListener;
 import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.NodeModel;
-import org.exoplatform.portal.mop.navigation.NodeState;
 import org.exoplatform.portal.mop.navigation.Scope;
+import org.gatein.api.exception.EntityNotFoundException;
 import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Node;
 import org.gatein.api.portal.Site;
 import org.gatein.common.NotYetImplemented;
 import org.gatein.portal.api.impl.GateInImpl;
 
+import java.util.Arrays;
 import java.util.Iterator;
+
+import static org.gatein.common.util.ParameterValidation.*;
 
 /**
  * @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a>
  * @author <a href="mailto:chris.laprun@jboss.com">Chris Laprun</a>
  */
-public class NavigationImpl implements Navigation, NodeChangeListener<NodeContext<Node>>
+public class NavigationImpl implements Navigation
 {
    private final SiteImpl site;
    private final NavigationContext context;
@@ -62,7 +63,7 @@ public class NavigationImpl implements Navigation, NodeChangeListener<NodeContex
       {
          context = navContext;
       }
-      this.nodeContext = gateIn.getNavigationService().loadNode(new NavigationNodeModel(site, gateIn), context, Scope.SINGLE, this);
+      this.nodeContext = gateIn.getNavigationService().loadNode(new NavigationNodeModel(site, gateIn), context, Scope.SINGLE, null);
    }
 
    @Override
@@ -82,19 +83,51 @@ public class NavigationImpl implements Navigation, NodeChangeListener<NodeContex
    @Override
    public Node getNode(String... path)
    {
-      return nodeContext.getNode().getDescendant(path);
+      throwIllegalArgExceptionIfNullOrEmpty(path, "path");
+
+      Node node = nodeContext.getNode();
+      for (String name : path)
+      {
+         node = node.getChild(name);
+         if (node == null) return null;
+      }
+
+      return node;
    }
 
    @Override
-   public void removeNode(String... path)
+   public boolean removeNode(String... path) throws EntityNotFoundException
    {
-      nodeContext.getNode().removeDescendant(path);
+      throwIllegalArgExceptionIfNullOrEmpty(path, "path");
+
+      Node node = getNode(path);
+      if (node == null) throw new EntityNotFoundException("Cannot find node for path " + Arrays.asList(path));
+
+      return node.removeNode();
    }
 
    @Override
-   public Node addNode(String name)
+   public Node addNode(String...path) throws EntityNotFoundException
    {
-      return nodeContext.getNode().addChild(name);
+      throwIllegalArgExceptionIfNullOrEmpty(path, "path");
+      if (path.length == 1)
+      {
+         return nodeContext.getNode().addChild(path[0]);
+      }
+
+      String[] parentPath = new String[path.length-1];
+      System.arraycopy(path, 0, parentPath, 0, path.length-1);
+
+      Node node = getNode(parentPath);
+      if (node == null) throw new EntityNotFoundException("Cannot add node " + path[path.length-1] +" because parent for path " + Arrays.asList(parentPath) + " does not exist.");
+
+      return node.addChild(path[path.length-1]);
+   }
+
+   @Override
+   public int getNodeCount()
+   {
+      return nodeContext.getNode().getChildCount();
    }
 
    @Override
@@ -294,50 +327,6 @@ public class NavigationImpl implements Navigation, NodeChangeListener<NodeContex
 //      }
 //      return bundle;
 //   }
-
-
-   @Override
-   public void onAdd(NodeContext<Node> target, NodeContext<Node> parent, NodeContext<Node> previous)
-   {
-      System.out.println("onAdd");
-
-   }
-
-   @Override
-   public void onCreate(NodeContext<Node> target, NodeContext<Node> parent, NodeContext<Node> previous, String name)
-   {
-      System.out.println("onCreate");
-   }
-
-   @Override
-   public void onRemove(NodeContext<Node> target, NodeContext<Node> parent)
-   {
-      System.out.println("onRemove");
-   }
-
-   @Override
-   public void onDestroy(NodeContext<Node> target, NodeContext<Node> parent)
-   {
-      System.out.println("onDestroy");
-   }
-
-   @Override
-   public void onRename(NodeContext<Node> target, NodeContext<Node> parent, String name)
-   {
-      System.out.println("onRename");
-   }
-
-   @Override
-   public void onUpdate(NodeContext<Node> target, NodeState state)
-   {
-      System.out.println("onUpdate");
-   }
-
-   @Override
-   public void onMove(NodeContext<Node> target, NodeContext<Node> from, NodeContext<Node> to, NodeContext<Node> previous)
-   {
-      System.out.println("onMove");
-   }
 
    static class NavigationNodeModel implements NodeModel<Node>
    {
