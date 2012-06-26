@@ -20,12 +20,12 @@
 
 -->
 
-<page-set>
+<page-set
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_2 http://www.gatein.org/xml/ns/gatein_objects_1_2"
+    xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_2">
     
   <page>
-    <page-id>group::organization/management/executive-board::newStaff</page-id>
-    <owner-type>group</owner-type>
-    <owner-id>organization/management/executive-board</owner-id>
     <name>newStaff</name>
     <title>New Staff</title>
     <access-permissions>*:/organization/management/executive-board</access-permissions>
@@ -42,9 +42,6 @@
   </page>
   
   <page>
-    <page-id>group::organization/management/executive-board::management</page-id>
-    <owner-type>group</owner-type>
-    <owner-id>organization/management/executive-board</owner-id>
     <name>management</name>
     <title>Organization Management</title>
     <access-permissions>*:/organization/management/executive-board</access-permissions>
@@ -55,6 +52,7 @@
         <portlet-ref>OrganizationPortlet</portlet-ref>
       </portlet>
       <title>Organization Management</title>
+      <access-permissions>Everyone</access-permissions>
       <show-info-bar>false</show-info-bar>
     </portlet-application>
   </page> 

@@ -18,7 +18,10 @@
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
 
-<portal-config>
+<portal-config
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_2 http://www.gatein.org/xml/ns/gatein_objects_1_2"
+  xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_2">
   <portal-name>/platform/users</portal-name>
   <locale>en</locale>
   <access-permissions>Everyone</access-permissions>
@@ -30,7 +33,8 @@
           <application-ref>web</application-ref>
           <portlet-ref>BannerPortlet</portlet-ref>
         </portlet>
-	    <show-info-bar>false</show-info-bar>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
 	  </portlet-application>
 
 	  <portlet-application>
@@ -38,7 +42,8 @@
          <application-ref>web</application-ref>
          <portlet-ref>NavigationPortlet</portlet-ref>
        </portlet>
-	    <show-info-bar>false</show-info-bar>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
 	  </portlet-application>
 
 	  <portlet-application>
@@ -46,7 +51,8 @@
          <application-ref>web</application-ref>
          <portlet-ref>BreadcumbsPortlet</portlet-ref>
        </portlet>
-	    <show-info-bar>false</show-info-bar>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
 	  </portlet-application>
 
 	  <page-body> </page-body>
@@ -56,7 +62,8 @@
          <application-ref>web</application-ref>
          <portlet-ref>FooterPortlet</portlet-ref>
        </portlet>
-	    <show-info-bar>false</show-info-bar>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
 	  </portlet-application>
   </portal-layout>
 

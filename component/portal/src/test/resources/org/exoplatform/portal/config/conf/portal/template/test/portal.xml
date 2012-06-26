@@ -20,7 +20,10 @@
 
 -->
 
-<portal-config>
+<portal-config
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_2 http://www.gatein.org/xml/ns/gatein_objects_1_2"
+  xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_2">
   <portal-name>@owner@</portal-name>
   <locale>en</locale>
   <access-permissions>access_permission</access-permissions>
@@ -45,6 +48,8 @@
           </preference>
         </preferences>
       </portlet>
+      <access-permissions>Everyone</access-permissions>
+      <show-info-bar>true</show-info-bar>
     </portlet-application>
 
     <page-body> </page-body>

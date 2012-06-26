@@ -20,13 +20,13 @@
 
 -->
 
-<page-set>  
+<page-set
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_objects_1_2 http://www.gatein.org/xml/ns/gatein_objects_1_2"
+    xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_2">  
 
   <page>
-  	<page-id>portal::test::test1</page-id>
-    <owner-type>portal</owner-type>
-    <owner-id>test</owner-id>
-    <name>test1</name>
+  	<name>test1</name>
     <title>test_title</title>
     <factory-id>test_factory_id</factory-id>
 	  <access-permissions>test_access_permissions</access-permissions>
@@ -34,7 +34,6 @@
     <show-max-window>true</show-max-window>
     <container
         template="container_1_template"
-        decorator="container_1_decorator"
         width="container_1_width"
         height="container_1_height">
       <name>container_1</name>
@@ -66,33 +65,26 @@
       <icon>application_1_icon</icon>
       <width>application_1_width</width>
       <height>application_1_height</height>
-      <properties>
-        <entry key="prop_key">application_1_prop_value</entry>
-      </properties>
     </portlet-application>
   </page>
     
   <page>
-    <owner-type>portal</owner-type>
-    <owner-id>test</owner-id>
     <name>test2</name>
   </page>
 
   <page>
-    <owner-type>portal</owner-type>
-    <owner-id>test</owner-id>
     <name>test3</name>
     <portlet-application>
       <portlet>
         <application-ref>web</application-ref>
         <portlet-ref>BannerPortlet</portlet-ref>
       </portlet>
+      <access-permissions>Everyone</access-permissions>
+      <show-info-bar>true</show-info-bar>
     </portlet-application>
   </page>
 
   <page>
-    <owner-type>portal</owner-type>
-    <owner-id>test</owner-id>
     <name>test4</name>
     <portlet-application>
       <portlet>
@@ -106,6 +98,8 @@
           </preference>
         </preferences>
       </portlet>
+      <access-permissions>Everyone</access-permissions>
+      <show-info-bar>true</show-info-bar>
     </portlet-application>
     <container>
       <portlet-application>
@@ -120,6 +114,8 @@
             </preference>
           </preferences>
         </portlet>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
       </portlet-application>
       <portlet-application>
         <portlet>
@@ -133,6 +129,8 @@
             </preference>
           </preferences>
         </portlet>
+        <access-permissions>Everyone</access-permissions>
+        <show-info-bar>false</show-info-bar>
       </portlet-application>
     </container>
   </page>

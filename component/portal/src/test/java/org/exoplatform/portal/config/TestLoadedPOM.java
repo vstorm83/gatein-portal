@@ -212,7 +212,6 @@ public class TestLoadedPOM extends AbstractConfigTest
       assertEquals("application_1_icon", application1.getIcon());
       assertEquals("application_1_width", application1.getWidth());
       assertEquals("application_1_height", application1.getHeight());
-      assertEquals("application_1_prop_value", application1.getProperties().get("prop_key"));
       //    assertEquals("portal#test:/web/BannerPortlet/banner", application1.getInstanceState().getWeakReference());
    }
 
