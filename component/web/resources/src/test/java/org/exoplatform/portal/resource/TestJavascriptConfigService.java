@@ -187,12 +187,12 @@ public class TestJavascriptConfigService extends AbstractWebResourceTest
    public void testGenerateURL() throws Exception
    {
       ResourceId remote1 = new ResourceId(ResourceScope.SHARED, "remote1");
-      String remoteURL = jsService.generateURL(CONTROLLER_CONTEXT, remote1, false, false, null);
+      String remoteURL = jsService.generateURL(CONTROLLER_CONTEXT, remote1, false, null);
       //Return remote module/script url as it's  declared in gatein-resources.xml
       assertEquals("http://js/remote1.js", remoteURL);
       
       ResourceId module1 = new ResourceId(ResourceScope.SHARED, "module1");      
-      remoteURL = jsService.generateURL(CONTROLLER_CONTEXT, module1, false, false, null);
+      remoteURL = jsService.generateURL(CONTROLLER_CONTEXT, module1, false, null);
       assertEquals("mock_url_of_module1.js", remoteURL);
    }
    
@@ -223,24 +223,6 @@ public class TestJavascriptConfigService extends AbstractWebResourceTest
       assertEquals(1, ids.size());
       assertEquals("module2", ids.keySet().iterator().next().getId().getName());
    }
-   
-/*
-   public void testCommonJScripts()
-   {
-      assertEquals(5, jsService.getCommonJScripts().size());
-      assertTrue(jsService.isModuleLoaded("js.test1"));
-      assertTrue(jsService.isModuleLoaded("js.test2"));
-      assertTrue(jsService.isModuleLoaded("js.test3"));
-      assertTrue(jsService.isModuleLoaded("js.test4"));
-      assertTrue(jsService.isModuleLoaded("js.test7"));
-      
-      assertFalse(jsService.isModuleLoaded("js.test5"));
-      
-      //
-      InputStream script = jsService.getScript(new ResourceId(ResourceScope.SHARED, "common"), "js.test1");
-      assertNotNull(script);
-   }
-*/
 
    private void assertReader(String expected, Reader actual) throws Exception
    {
@@ -249,56 +231,11 @@ public class TestJavascriptConfigService extends AbstractWebResourceTest
       assertEquals(expected, buffer.toString());
    }
 
-/*
-   public void testPortalJScript() throws IOException
-   {
-      Collection<Javascript> site = jsService.getPortalJScripts("site1");
-      assertEquals(1, site.size());
-      Iterator<Javascript> iterator = site.iterator();
-      assertEquals(mockServletContext.getContextPath() + "/js/test5.js", iterator.next().getPath());
-
-      //
-      InputStream script = jsService.getScript(new ResourceId(ResourceScope.PORTAL, "site1"));
-      assertNotNull(script);
-      assertEquals("", read(script));
-
-      site = jsService.getPortalJScripts("site2");
-      assertEquals(2, site.size());
-      iterator = site.iterator();
-      assertEquals(mockServletContext.getContextPath() + "/js/test6.js", iterator.next().getPath());
-      assertEquals(mockServletContext.getContextPath() + "/js/test5.js", iterator.next().getPath());
-
-      //
-      script = jsService.getScript(new ResourceId(ResourceScope.PORTAL, "site2"));
-      assertNotNull(script);
-      assertEquals("", read(script));
-
-      //
-      assertNull(jsService.getPortalJScripts("classic"));
-      assertNull(jsService.getScript(new ResourceId(ResourceScope.PORTAL, "classic")));
-
-      //
-      jsService.removePortalJScripts("site1");
-      assertNull(jsService.getPortalJScripts("site1"));
-      assertNull(jsService.getScript(new ResourceId(ResourceScope.PORTAL, "site1")));
-
-      //
-      Javascript portalJScript = Javascript.create(new ResourceId(ResourceScope.PORTAL, "/portal"), "portal1", "/mockwebapp", "/portal", Integer.MAX_VALUE);
-      jsService.addPortalJScript(portalJScript);
-      String jScript = jsService.getJScript(portalJScript.getPath());
-      assertNull(jScript);
-      assertEquals("", read(script));
-      resResolver.addResource(portalJScript.getPath(), "bar1");
-      jScript = jsService.getJScript(portalJScript.getPath());
-      assertEquals("bar1", jScript);
-   }
-*/
-
    private static class MockControllerContext extends ControllerContext
    {
       public MockControllerContext()
       {
-         super(null, null, new MockServletRequest(null, null), null, null);
+         super(null, null);
       }
 
       @Override

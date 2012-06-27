@@ -42,6 +42,7 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.CompositeReader;
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.resource.AbstractResourceService;
 import org.exoplatform.portal.resource.compressor.ResourceCompressor;
 import org.exoplatform.web.ControllerContext;
@@ -228,7 +229,6 @@ public class JavascriptConfigService extends AbstractResourceService implements 
    public String generateURL(
       ControllerContext controllerContext,
       ResourceId id,
-      boolean merge,
       boolean minified,
       Locale locale) throws IOException
    {      
@@ -254,11 +254,15 @@ public class JavascriptConfigService extends AbstractResourceService implements 
             if (modules.size() > 0 && modules.get(0) instanceof Module.Remote)
             {
                return ((Module.Remote)modules.get(0)).getURI();
-            }
+            } 
          }
-
+         
          StringBuilder buffer = new StringBuilder();
          URIWriter writer = new URIWriter(buffer);
+         
+         // Append portal context path
+         String contextPath = PortalContainer.getInstance().getPortalContext().getContextPath();
+         writer.append(contextPath);
          controllerContext.renderURL(resource.getParameters(minified, locale), writer);
          return buffer.toString();            
       }
@@ -372,8 +376,7 @@ public class JavascriptConfigService extends AbstractResourceService implements 
    
    private String buildURL(ResourceId id, ControllerContext context, Locale locale) throws Exception
    {      
-      String url = generateURL(context, id, !PropertyManager.isDevelopping(),
-         !PropertyManager.isDevelopping(), locale);         
+      String url = generateURL(context, id, !PropertyManager.isDevelopping(), locale);         
       
       if (url != null && url.endsWith(".js"))
       {            
