@@ -16,9 +16,23 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-package org.exoplatform.portal.resource;
+package org.exoplatform.web.application.javascript;
 
-import javax.servlet.ServletContext;
+import org.exoplatform.component.test.web.WebAppImpl;
+import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.resource.AbstractWebResourceTest;
+import org.exoplatform.test.mocks.servlet.MockServletContext;
+import org.exoplatform.web.ControllerContext;
+import org.exoplatform.web.application.javascript.JavascriptConfigParser;
+import org.exoplatform.web.application.javascript.JavascriptConfigService;
+import org.exoplatform.web.controller.QualifiedName;
+import org.exoplatform.web.controller.router.URIWriter;
+import org.gatein.common.io.IOTools;
+import org.gatein.portal.controller.resource.ResourceId;
+import org.gatein.portal.controller.resource.ResourceScope;
+import org.gatein.portal.controller.resource.script.FetchMode;
+import org.gatein.portal.controller.resource.script.ScriptResource;
+import org.json.JSONObject;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -31,21 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.component.test.web.WebAppImpl;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.test.mocks.servlet.MockServletContext;
-import org.exoplatform.test.mocks.servlet.MockServletRequest;
-import org.exoplatform.web.ControllerContext;
-import org.exoplatform.web.application.javascript.JavascriptConfigParser;
-import org.exoplatform.web.application.javascript.JavascriptConfigService;
-import org.exoplatform.web.controller.QualifiedName;
-import org.exoplatform.web.controller.router.URIWriter;
-import org.gatein.common.io.IOTools;
-import org.gatein.portal.controller.resource.ResourceId;
-import org.gatein.portal.controller.resource.ResourceScope;
-import org.gatein.portal.controller.resource.script.FetchMode;
-import org.gatein.portal.controller.resource.script.ScriptResource;
-import org.json.JSONObject;
+import javax.servlet.ServletContext;
 
 /**
  * @author <a href="mailto:phuong.vu@exoplatform.com">Vu Viet Phuong</a>
@@ -79,6 +79,7 @@ public class TestJavascriptConfigService extends AbstractWebResourceTest
          resources.put("/js/normalize_test.js", " \n /* // */  //  /* \n  /* /*  */  \n  ggg; // /* */ \n");
          mockServletContext = new MockJSServletContext("mockwebapp", resources);
          jsService.registerContext(new WebAppImpl(mockServletContext, Thread.currentThread().getContextClassLoader()));
+         jsService.portalContextPath = "/portal";
 
          URL url = portalContainer.getPortalClassLoader().getResource("mockwebapp/gatein-resources.xml");
          JavascriptConfigParser.processConfigResource(url.openStream(), jsService, mockServletContext);
@@ -176,24 +177,24 @@ public class TestJavascriptConfigService extends AbstractWebResourceTest
       assertEquals("http://js/remote2", paths.getString("remote2"));
       
       //module1 and module2 are grouped
-      assertEquals("mock_url_of_fooGroup", paths.getString("SHARED/module1"));
-      assertEquals("mock_url_of_fooGroup", paths.getString("SHARED/module2"));
+      assertEquals("/portal/mock_url_of_fooGroup", paths.getString("SHARED/module1"));
+      assertEquals("/portal/mock_url_of_fooGroup", paths.getString("SHARED/module2"));
 
       //navController url for scripts
-      assertEquals("mock_url_of_script1", paths.getString("SHARED/script1"));
-      assertEquals("mock_url_of_script2", paths.getString("SHARED/script2"));
+      assertEquals("/portal/mock_url_of_script1", paths.getString("SHARED/script1"));
+      assertEquals("/portal/mock_url_of_script2", paths.getString("SHARED/script2"));
    }
    
    public void testGenerateURL() throws Exception
    {
       ResourceId remote1 = new ResourceId(ResourceScope.SHARED, "remote1");
-      String remoteURL = jsService.generateURL(CONTROLLER_CONTEXT, remote1, false, false, null);
+      String remoteURL = jsService.generateURL(CONTROLLER_CONTEXT, remote1, false, null);
       //Return remote module/script url as it's  declared in gatein-resources.xml
       assertEquals("http://js/remote1.js", remoteURL);
       
       ResourceId module1 = new ResourceId(ResourceScope.SHARED, "module1");      
-      remoteURL = jsService.generateURL(CONTROLLER_CONTEXT, module1, false, false, null);
-      assertEquals("mock_url_of_module1.js", remoteURL);
+      remoteURL = jsService.generateURL(CONTROLLER_CONTEXT, module1, false, null);
+      assertEquals("/portal/mock_url_of_module1.js", remoteURL);
    }
    
    public void testNormalize() throws Exception
@@ -298,13 +299,13 @@ public class TestJavascriptConfigService extends AbstractWebResourceTest
    {
       public MockControllerContext()
       {
-         super(null, null, new MockServletRequest(null, null), null, null);
+         super(null, null);
       }
 
       @Override
       public void renderURL(Map<QualifiedName, String> parameters, URIWriter uriWriter) throws IOException
       {
-         uriWriter.appendSegment("mock_url_of_" + parameters.get(QualifiedName.create("gtn", "resource")) + ".js");
+         uriWriter.append("/mock_url_of_" + parameters.get(QualifiedName.create("gtn", "resource")) + ".js");
       }      
    }
    

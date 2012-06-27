@@ -41,11 +41,14 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.CompositeReader;
 import org.exoplatform.commons.utils.PropertyManager;
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.resource.AbstractResourceService;
 import org.exoplatform.portal.resource.compressor.ResourceCompressor;
 import org.exoplatform.web.ControllerContext;
 import org.exoplatform.web.controller.router.URIWriter;
+import org.exoplatform.web.url.MimeType;
 import org.gatein.common.logging.Logger;
 import org.gatein.common.logging.LoggerFactory;
 import org.gatein.portal.controller.resource.ResourceId;
@@ -75,6 +78,8 @@ public class JavascriptConfigService extends AbstractResourceService implements 
 
    /** . */
    private final WebAppListener deployer;
+
+   String portalContextPath;
    
    /** . */
    public static final List<String> RESERVED_MODULE = Arrays.asList("require", "exports", "module");
@@ -98,6 +103,11 @@ public class JavascriptConfigService extends AbstractResourceService implements 
       //
       this.scripts = new ScriptGraph();
       this.deployer = new JavascriptConfigDeployer(context.getPortalContainerName(), this);
+      ExoContainer container = context.getContainer();
+      if (container instanceof PortalContainer)
+      {
+         portalContextPath = ((PortalContainer)container).getPortalContext().getContextPath();
+      }
    }
 
    public Reader getScript(ResourceId resourceId, Locale locale) throws Exception
@@ -224,15 +234,12 @@ public class JavascriptConfigService extends AbstractResourceService implements 
       }      
    }   
 
-   @SuppressWarnings("unchecked")
    public String generateURL(
       ControllerContext controllerContext,
       ResourceId id,
-      boolean merge,
       boolean minified,
       Locale locale) throws IOException
-   {      
-      @SuppressWarnings("rawtypes")
+   {
       BaseScriptResource resource = null;
       if (ResourceScope.GROUP.equals(id.getScope()))
       {
@@ -242,7 +249,7 @@ public class JavascriptConfigService extends AbstractResourceService implements 
       {
          resource = getResource(id);            
       }
-             
+
       //
       if (resource != null)
       {         
@@ -254,12 +261,20 @@ public class JavascriptConfigService extends AbstractResourceService implements 
             if (modules.size() > 0 && modules.get(0) instanceof Module.Remote)
             {
                return ((Module.Remote)modules.get(0)).getURI();
-            }
+            } 
          }
-
-         StringBuilder buffer = new StringBuilder();
-         URIWriter writer = new URIWriter(buffer);
-         controllerContext.renderURL(resource.getParameters(minified, locale), writer);
+         
+         String contextPath;
+         if (portalContextPath != null)
+         {
+            contextPath = portalContextPath;
+         }
+         else
+         {
+            contextPath = PortalContainer.getInstance().getPortalContext().getContextPath();
+         }
+         StringBuilder buffer = new StringBuilder(contextPath);
+         controllerContext.renderURL(resource.getParameters(minified, locale), new URIWriter(buffer, MimeType.PLAIN));
          return buffer.toString();            
       }
       else
@@ -372,8 +387,7 @@ public class JavascriptConfigService extends AbstractResourceService implements 
    
    private String buildURL(ResourceId id, ControllerContext context, Locale locale) throws Exception
    {      
-      String url = generateURL(context, id, !PropertyManager.isDevelopping(),
-         !PropertyManager.isDevelopping(), locale);         
+      String url = generateURL(context, id, !PropertyManager.isDevelopping(), locale);         
       
       if (url != null && url.endsWith(".js"))
       {            
