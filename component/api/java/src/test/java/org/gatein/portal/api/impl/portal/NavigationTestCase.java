@@ -150,7 +150,23 @@ public class NavigationTestCase extends AbstractAPITestCase
       }
    }
 
-   public void testNodeCount()
+   public void testRemoveNode()
+   {
+      NodeContext<?> root = createSite(SiteType.PORTAL, "classic");
+      root.add(null, "foo").add(null, "bar");
+      navService.saveNode(root, null);
+
+      Site site = gatein.getSite(Site.Type.SITE, "classic");
+      Navigation navigation = site.getNavigation();
+
+      assertNotNull(navigation.getNode("foo", "bar"));
+      assertTrue(navigation.removeNode("foo"));
+      assertNull(navigation.getNode("foo"));
+      assertNull(navigation.getNode("foo", "bar"));
+      assertEquals(0, navigation.getNodeCount());
+   }
+
+   public void testRemoveNode_No_Child()
    {
       NodeContext<?> root = createSite(SiteType.PORTAL, "classic");
       root.add(null, "foo");
@@ -158,13 +174,53 @@ public class NavigationTestCase extends AbstractAPITestCase
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
       Navigation navigation = site.getNavigation();
-      Node node = navigation.getNode("foo");
-      assertNotNull(node);
-      assertEquals(1, navigation.getNodeCount());
 
+      assertNotNull(navigation.getNode("foo"));
+      assertNull(navigation.getNode("foo", "bar"));
+      try
+      {
+         navigation.removeNode("foo", "bar");
+         fail("Should not be able to remove a child that doesn't exist");
+      }
+      catch (EntityNotFoundException e)
+      {
+         assertEquals(0, navigation.getNode("foo").getChildCount());
+      }
+   }
+
+   public void testRemoveNode_No_Parent()
+   {
+      NodeContext<?> root = createSite(SiteType.PORTAL, "classic");
+      root.add(null, "foo");
+      navService.saveNode(root, null);
+
+      Site site = gatein.getSite(Site.Type.SITE, "classic");
+      Navigation navigation = site.getNavigation();
+
+      assertNotNull(navigation.getNode("foo"));
+      assertNull(navigation.getNode("foo", "bar", "foobar"));
+      try
+      {
+         navigation.removeNode("foo", "bar", "foobar");
+         fail("Should not be able to remove a child that doesn't exist");
+      }
+      catch (EntityNotFoundException e)
+      {
+         assertEquals(0, navigation.getNode("foo").getChildCount());
+      }
+   }
+
+   public void testNodeCount()
+   {
+      NodeContext<?> root = createSite(SiteType.PORTAL, "classic");
+      root.add(null, "foo");
       root.add(null, "bar");
       navService.saveNode(root, null);
 
+      Site site = gatein.getSite(Site.Type.SITE, "classic");
+      Navigation navigation = site.getNavigation();
+      assertNotNull(navigation.getNode("foo"));
+      assertNotNull(navigation.getNode("bar"));
       assertEquals(2, navigation.getNodeCount());
    }
 
@@ -207,10 +263,45 @@ public class NavigationTestCase extends AbstractAPITestCase
       assertNull(node.getLabel().getValue());
    }
 
-   public void testRemoveNode()
+   public void testNodeRemove()
    {
+      NodeContext<?> root = createSite(SiteType.PORTAL, "classic");
+      root.add(null, "foo").add(null, "bar");
+      navService.saveNode(root, null);
 
+      Site site = gatein.getSite(Site.Type.SITE, "classic");
+      Navigation navigation = site.getNavigation();
+      Node foo = navigation.getNode("foo");
+
+      assertNotNull(foo);
+      assertTrue(foo.removeNode());
+      assertNull(navigation.getNode("foo"));
+
+      navigation.addNode("foo");
+      assertNotNull(navigation.getNode("foo"));
    }
+
+   public void testRemoveChild()
+   {
+      NodeContext<?> root = createSite(SiteType.PORTAL, "classic");
+      root.add(null, "foo").add(null, "bar");
+      navService.saveNode(root, null);
+
+      Site site = gatein.getSite(Site.Type.SITE, "classic");
+      Navigation navigation = site.getNavigation();
+      Node foo = navigation.getNode("foo");
+
+      assertNotNull(foo);
+      assertNotNull(foo.getChild("bar"));
+      assertNotNull(navigation.getNode("foo", "bar"));
+
+      assertTrue(foo.removeChild("bar"));
+
+      assertNull(foo.getChild("bar"));
+      assertNull(navigation.getNode("foo", "bar"));
+   }
+
+   //TODO: Test concurrent changes for different navigation contexts.
 
    public void testPage()
    {
