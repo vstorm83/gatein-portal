@@ -31,7 +31,7 @@
 		<application-name>web</application-name>
 		<portlet-name>BannerPortlet</portlet-name>
 		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIBannerPortlet/DefaultStylesheet.css</css-path>
+		<css-path>/skin/portal/webui/LESS_component/UIBannerPortlet/DefaultStylesheet.less</css-path>
 	</portlet-skin>
 		
 	<!-- FooterPortlet skins -->
@@ -40,7 +40,7 @@
 		<application-name>web</application-name>
 		<portlet-name>FooterPortlet</portlet-name>
 		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UIFooterPortlet/DefaultStylesheet.css</css-path>
+		<css-path>/skin/portal/webui/LESS_component/UIFooterPortlet/DefaultStylesheet.less</css-path>
 	</portlet-skin>
 	
 	
@@ -69,7 +69,7 @@
 		<application-name>web</application-name>
 		<portlet-name>LogoPortlet</portlet-name>
 		<skin-name>Default</skin-name>
-		<css-path>/skin/portal/webui/component/UILogoPortlet/DefaultStylesheet.css</css-path>
+		<css-path>/skin/portal/webui/LESS_component/UILogoPortlet/DefaultStylesheet.less</css-path>
 	</portlet-skin>
 	
 	<!-- IFramePortlet skins -->
