@@ -98,7 +98,7 @@ public class NavigationPortlet extends GenericPortlet
    private void outputNode(Node node, PrintWriter writer)
    {
       //Collection<? extends Navigation> children = node.getChildren();
-      int size = node.getCount();
+      int size = node.getChildCount();
       boolean isLeaf = size == 0;
       writer.println("<li>"
          + (isLeaf ? "<a style='font-weight: bold; text-decoration: underline; color: #336666;' href='" + node.getURI() + "'>" : "")
