@@ -19,18 +19,15 @@
 package org.exoplatform.commons.chromattic;
 
 import org.chromattic.api.ChromatticSession;
-import org.exoplatform.container.ExoContainer;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.core.ManageableRepository;
-import org.exoplatform.services.jcr.ext.app.SessionProviderService;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 
 import javax.jcr.Credentials;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 
 /**
  * An abstract implementation of the {@link org.exoplatform.commons.chromattic.SessionContext} interface. The context
@@ -94,11 +91,6 @@ abstract class AbstractContext implements SessionContext
          attributes.remove(name);
       }
    }
-
-   public Session doLogin() throws RepositoryException
-   {
-      return doLogin(null);
-   }
    
    public abstract Session doLogin(Credentials credentials) throws RepositoryException;
 
@@ -110,19 +102,13 @@ abstract class AbstractContext implements SessionContext
     */
    protected final Session openSession(Credentials credentials) throws RepositoryException
    {
+      ManageableRepository repo = lifeCycle.manager.repositoryService.getCurrentRepository();
       if (credentials == JCRCredentials.CURRENT_USER_CREDENTIALS)
       {
-         // temporarily use SesssionProviderService for now to get current user session.
-         ExoContainer container = ExoContainerContext.getCurrentContainer();
-         SessionProviderService service = (SessionProviderService)container.getComponentInstanceOfType(SessionProviderService.class);
-         RepositoryService repo = (RepositoryService)container.getComponentInstanceOfType(RepositoryService.class);
-         return service.getSessionProvider(null).getSession(lifeCycle.getWorkspaceName(), repo.getCurrentRepository());
+         return repo.login(lifeCycle.getWorkspaceName());
       }
-      else
-      {
-         ManageableRepository repo = lifeCycle.manager.repositoryService.getCurrentRepository();
-         return repo.getSystemSession(lifeCycle.getWorkspaceName());
-      }
+
+      return repo.getSystemSession(lifeCycle.getWorkspaceName());
    }
 
    public void close(boolean save)

@@ -346,11 +346,6 @@ public class ChromatticLifeCycle extends BaseComponentPlugin
    {
    }
 
-   Session doLogin() throws RepositoryException
-   {
-      return doLogin(null);
-   }
-
    Session doLogin(Credentials credentials) throws RepositoryException
    {
       AbstractContext loginContext = getLoginContext(credentials);

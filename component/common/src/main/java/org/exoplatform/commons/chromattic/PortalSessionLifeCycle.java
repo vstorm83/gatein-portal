@@ -48,7 +48,7 @@ public class PortalSessionLifeCycle implements SessionLifeCycle
 
    public final Session login() throws RepositoryException
    {
-      return chromatticLifeCycle.doLogin();
+      return chromatticLifeCycle.doLogin(null);
    }
 
    public void save(Session session) throws RepositoryException
