@@ -24,13 +24,25 @@ import org.exoplatform.commons.chromattic.ChromatticLifeCycle;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.chromattic.ContextualTask;
 import org.exoplatform.commons.chromattic.SessionContext;
-import org.exoplatform.container.component.ComponentPlugin;
+import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.web.security.GateInToken;
+import org.exoplatform.web.security.codec.AbstractCodec;
+import org.exoplatform.web.security.codec.AbstractCodecBuilder;
+import org.exoplatform.web.security.codec.ToThrowAwayCodec;
+import org.gatein.common.io.IOTools;
+import org.gatein.common.logging.Logger;
+import org.gatein.common.logging.LoggerFactory;
 import org.gatein.wci.security.Credentials;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Created by The eXo Platform SAS Author : liem.nguyen ncliam@gmail.com Jun 5,
@@ -38,6 +50,8 @@ import java.util.Date;
  */
 public class CookieTokenService extends AbstractTokenService<GateInToken, String>
 {
+
+   private static final Logger LOG = LoggerFactory.getLogger(CookieTokenService.class);
 
    /** . */
    public static final String LIFECYCLE_NAME="lifecycle-name";
@@ -48,7 +62,6 @@ public class CookieTokenService extends AbstractTokenService<GateInToken, String
    /** . */
    private String lifecycleName="autologin";
 
-   //TODO: Introduce the concept of priority and store the plugins in a map structure
    private AbstractCodec codec;
    
    public CookieTokenService(InitParams initParams, ChromatticManager chromatticManager)
@@ -61,18 +74,49 @@ public class CookieTokenService extends AbstractTokenService<GateInToken, String
       }
       this.chromatticLifeCycle = chromatticManager.getLifeCycle(lifecycleName);
       
-      //Set the default codec
-      this.codec = new ToThrowAwayCodec();
+      initCodec();
    }
 
-   public final void setupCodec(ComponentPlugin codecPlugin)
+   private void initCodec()
    {
-      if(codecPlugin instanceof AbstractCodec)
+      try
       {
-         this.codec = (AbstractCodec)codecPlugin;
+         String builderType = PropertyManager.getProperty("gatein.codec.builderclass");
+         String configFile = PropertyManager.getProperty("gatein.codec.config");
+         AbstractCodecBuilder builder = Class.forName(builderType).asSubclass(AbstractCodecBuilder.class).newInstance();
+         Map<String, String> config = new HashMap<String, String>();
+
+         File f = new File(configFile);
+         InputStream in = new FileInputStream(f);
+         Properties properties = new Properties();
+         try
+         {
+            properties.load(in);
+            for (Map.Entry entry : properties.entrySet())
+            {
+               config.put(entry.getKey().toString(), entry.getValue().toString());
+            }
+            config.put("gatein.codec.config.basedir", f.getParentFile().getAbsolutePath());
+         }
+         catch (IOException ioEx)
+         {
+            ioEx.printStackTrace();
+         }
+         finally
+         {
+            IOTools.safeClose(in);
+         }
+
+         this.codec = builder.build(config);
+         LOG.info("Init successfully the codec with config from " + configFile);
+      }
+      catch (Exception ex)
+      {
+         LOG.warn("Failed to init the default configured codec, please verify if your codec configuration conforms to the codec key(s)", ex);
+         this.codec = new ToThrowAwayCodec();
       }
    }
-   
+
    public String createToken(final Credentials credentials)
    {
       if (validityMillis < 0)
