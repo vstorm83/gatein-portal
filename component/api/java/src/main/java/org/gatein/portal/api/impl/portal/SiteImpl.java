@@ -40,7 +40,9 @@ import org.gatein.api.exception.EntityNotFoundException;
 import org.gatein.api.portal.Label;
 import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Page;
+import org.gatein.api.portal.PageFilter;
 import org.gatein.api.portal.Site;
+import org.gatein.api.security.AccessRestriction;
 import org.gatein.common.NotYetImplemented;
 import org.gatein.portal.api.impl.GateInImpl;
 
@@ -205,6 +207,55 @@ public class SiteImpl extends DataStorageContext implements Site
    public void removePage(String pageName) throws EntityNotFoundException
    {
       new PageImpl(this, pageName).removePage();
+   }
+
+   @Override
+   public List<Page> getPages(PageFilter pageFilter)
+   {
+      //TODO: Implement
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public List<Page> getPages(PageFilter pageFilter, Range range)
+   {
+      //TODO: Implement
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public AccessRestriction getAccessRestriction(AccessRestriction.Type type)
+   {
+      //TODO: Implement
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public void updateAccessRestriction(AccessRestriction accessRestriction)
+   {
+      //TODO: Implement
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public boolean isPublic()
+   {
+      //TODO: Implement
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public void setPublic(boolean access)
+   {
+      //TODO: Implement
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public boolean hasAccess(String user)
+   {
+      //TODO: Implement
+      throw new NotYetImplemented();
    }
 
    @Override

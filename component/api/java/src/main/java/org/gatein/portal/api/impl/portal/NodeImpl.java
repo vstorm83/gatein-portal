@@ -36,6 +36,7 @@ import org.gatein.api.portal.Label;
 import org.gatein.api.portal.Node;
 import org.gatein.api.portal.Page;
 import org.gatein.api.portal.Site;
+import org.gatein.common.NotYetImplemented;
 import org.gatein.common.logging.Logger;
 import org.gatein.common.logging.LoggerFactory;
 import org.gatein.portal.api.impl.GateInImpl;
@@ -97,9 +98,7 @@ public class NodeImpl implements Node
    {
       try
       {
-         context.remove();
-         gateIn.getNavigationService().saveNode(context, null);
-         return true;
+         return context.removeNode();
       }
       catch (IllegalStateException e)
       {
@@ -173,15 +172,15 @@ public class NodeImpl implements Node
    }
 
    @Override
-   public String getIcon()
+   public String getIconName()
    {
       return context.getState().getIcon();
    }
 
    @Override
-   public void setIcon(String icon)
+   public void setIconName(String iconName)
    {
-      context.setState(new NodeState.Builder(context.getState()).icon(icon).build());
+      context.setState(new NodeState.Builder(context.getState()).icon(iconName).build());
    }
 
    @Override
@@ -301,6 +300,20 @@ public class NodeImpl implements Node
          .visibility(org.exoplatform.portal.mop.Visibility.DISPLAYED).build();
 
       context.setState(state);
+   }
+
+   @Override
+   public void moveUp()
+   {
+      //TODO: Implement or think of better way of "moving" nodes around.
+      throw new NotYetImplemented();
+   }
+
+   @Override
+   public void moveDown()
+   {
+      //TODO: Implement or think of better way of "moving" nodes around.
+      throw new NotYetImplemented();
    }
 
    @Override

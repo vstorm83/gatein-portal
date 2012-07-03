@@ -293,20 +293,6 @@ public class NavigationImpl implements Navigation
 //      return displayName;
 //   }
 
-   @Override
-   public void moveDown()
-   {
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
-   @Override
-   public void moveUp()
-   {
-      //TODO:
-      throw new NotYetImplemented();
-   }
-
 //   public ResourceBundle getBundle()
 //   {
 //      if (bundle == null)

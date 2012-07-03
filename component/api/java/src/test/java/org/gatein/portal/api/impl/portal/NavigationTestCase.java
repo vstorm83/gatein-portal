@@ -258,7 +258,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       assertNull(node.getPageId());
       assertNull(node.getStartPublicationDate());
       assertNull(node.getEndPublicationDate());
-      assertNull(node.getIcon());
+      assertNull(node.getIconName());
       assertEquals(Node.Visibility.VISIBLE, node.getVisibility());
       assertNull(node.getLabel().getValue());
    }
