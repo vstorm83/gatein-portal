@@ -1,24 +1,24 @@
 /*
-* JBoss, a division of Red Hat
-* Copyright 2008, Red Hat Middleware, LLC, and individual contributors as indicated
-* by the @authors tag. See the copyright.txt in the distribution for a
-* full listing of individual contributors.
-*
-* This is free software; you can redistribute it and/or modify it
-* under the terms of the GNU Lesser General Public License as
-* published by the Free Software Foundation; either version 2.1 of
-* the License, or (at your option) any later version.
-*
-* This software is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-* Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this software; if not, write to the Free
-* Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-* 02110-1301 USA, or see the FSF site: http://www.fsf.org.
-*/
+ * JBoss, Home of Professional Open Source.
+ * Copyright 2012, Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags. See the copyright.txt file in the
+ * distribution for a full listing of individual contributors.
+ *
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ *
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
 
 package org.gatein.portal.api.impl.portal;
 
@@ -27,6 +27,7 @@ import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationState;
 import org.gatein.api.commons.Filter;
@@ -48,7 +49,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import static org.gatein.common.util.ParameterValidation.*;
 
@@ -71,6 +74,7 @@ public class SiteImpl extends DataStorageContext implements Site
 
    /** . */
    private final Id id;
+   private final Label label;
    private final GateInImpl gateIn;
    private final Query<org.exoplatform.portal.config.model.Page> pagesQuery;
    private Navigation navigation;
@@ -80,6 +84,7 @@ public class SiteImpl extends DataStorageContext implements Site
       super(gateIn.dataStorage);
 
       this.id = id;
+      this.label = new SiteLabel(gateIn.getDescriptionService());
       this.gateIn = gateIn;
       this.pagesQuery = new Query<org.exoplatform.portal.config.model.Page>(
          OWNER_MAP.get(id.getType()), id.getName(), org.exoplatform.portal.config.model.Page.class);
@@ -100,13 +105,7 @@ public class SiteImpl extends DataStorageContext implements Site
    @Override
    public Label getLabel()
    {
-
-      return new LabelImpl(getId().getName());
-
-      //TODO: implement properly
-
-      //String label = getInternalSite(true).getLabel();
-      //return new LabelImpl(label);
+      return label;
    }
 
    @Override
@@ -131,11 +130,43 @@ public class SiteImpl extends DataStorageContext implements Site
    }
 
    @Override
-   public Navigation getNavigation()
+   public Locale getLocale()
+   {
+      String lang = getInternalSite(true).getLocale();
+      return (lang == null) ? null : new Locale(lang);
+   }
+
+   @Override
+   public void setLocale(final Locale locale)
+   {
+      execute(getInternalSite(true), new Modify<PortalConfig>()
+      {
+         @Override
+         public void modify(PortalConfig data, DataStorage dataStorage) throws Exception
+         {
+            data.setLocale(locale.getLanguage());
+            dataStorage.save(data);
+         }
+      });
+   }
+
+   @Override
+   public Navigation getNavigation(boolean create)
    {
       if (navigation == null)
       {
-         navigation = new NavigationImpl(this, gateIn);
+         SiteKey siteKey = getSiteKey();
+         NavigationContext context = gateIn.getNavigationService().loadNavigation(siteKey);
+         if (context == null && create)
+         {
+            context = new NavigationContext(siteKey, new NavigationState(1));
+            gateIn.getNavigationService().saveNavigation(context);
+         }
+
+         if (context != null)
+         {
+            navigation = new NavigationImpl(this, gateIn, context);
+         }
       }
       return navigation;
    }
@@ -436,4 +467,62 @@ public class SiteImpl extends DataStorageContext implements Site
 //      }
 //   }
 
+   private class SiteLabel extends AbstractLabel
+   {
+
+      public SiteLabel(DescriptionService service)
+      {
+         super(service);
+      }
+
+      @Override
+      public String getDescriptionId()
+      {
+         return null;
+      }
+
+      @Override
+      public String getSimpleValue()
+      {
+         return getInternalSite(true).getLabel();
+      }
+
+      @Override
+      public String getDefaultName()
+      {
+         return getInternalSite(true).getName();
+      }
+
+      @Override
+      public void setValue(final String value)
+      {
+         execute(getInternalSite(true), new Modify<PortalConfig>()
+         {
+            @Override
+            public void modify(PortalConfig data, DataStorage dataStorage) throws Exception
+            {
+               data.setLabel(value);
+               dataStorage.save(data);
+            }
+         });
+      }
+
+      @Override
+      public ResourceBundle getResourceBundle()
+      {
+         return null;
+      }
+
+      @Override
+      public Locale getUserLocale()
+      {
+         return null;
+      }
+
+      @Override
+      public Locale getPortalLocale()
+      {
+         return null;
+      }
+   }
 }

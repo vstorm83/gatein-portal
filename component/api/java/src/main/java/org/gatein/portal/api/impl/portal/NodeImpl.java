@@ -22,11 +22,15 @@
 
 package org.gatein.portal.api.impl.portal;
 
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.exoplatform.portal.mop.navigation.NodeState;
 import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.pom.data.PageKey;
+import org.exoplatform.services.resources.ResourceBundleManager;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
@@ -45,6 +49,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
 import static org.gatein.common.util.ParameterValidation.*;
 
@@ -61,12 +67,14 @@ public class NodeImpl implements Node
    private Id id;
    private final SiteImpl site;
    private final GateInImpl gateIn;
+   private final Label label;
 
    NodeImpl(SiteImpl site, GateInImpl gateIn, NodeContext<Node> context)
    {
       this.site = site;
       this.gateIn = gateIn;
       this.context = context;
+      this.label = new NodeLabel(gateIn.getDescriptionService());
    }
 
    @Override
@@ -168,7 +176,7 @@ public class NodeImpl implements Node
    @Override
    public Label getLabel()
    {
-      return new LabelImpl(context.getState().getLabel());
+      return label;
    }
 
    @Override
@@ -352,6 +360,56 @@ public class NodeImpl implements Node
       else
       {
          return new StringBuilder();
+      }
+   }
+
+   private class NodeLabel extends AbstractLabel
+   {
+      public NodeLabel(DescriptionService service)
+      {
+         super(service);
+      }
+
+      @Override
+      public String getDescriptionId()
+      {
+         return context.getId();
+      }
+
+      @Override
+      public String getSimpleValue()
+      {
+         return context.getState().getLabel();
+      }
+
+      @Override
+      public String getDefaultName()
+      {
+         return context.getName();
+      }
+
+      @Override
+      public void setValue(String value)
+      {
+         context.setState(new NodeState.Builder(context.getState()).label(value).build());
+      }
+
+      @Override
+      public ResourceBundle getResourceBundle()
+      {
+         return gateIn.getNavigationResourceBundle(site.getId());
+      }
+
+      @Override
+      public Locale getUserLocale()
+      {
+         return gateIn.getUserLocale();
+      }
+
+      @Override
+      public Locale getPortalLocale()
+      {
+         return site.getLocale();
       }
    }
 }

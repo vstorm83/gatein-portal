@@ -28,7 +28,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       assertEquals("classic", site.getId().getName());
 
       //
-      Navigation rootNav = site.getNavigation();
+      Navigation rootNav = site.getNavigation(false);
       assertSame(site, rootNav.getSite());
       assertNotNull(rootNav);
       Iterator<Node> i = rootNav.iterator();
@@ -44,7 +44,7 @@ public class NavigationTestCase extends AbstractAPITestCase
 
       //
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation rootNav = site.getNavigation();
+      Navigation rootNav = site.getNavigation(false);
       Iterator<Node> i = rootNav.iterator();
       assertTrue(i.hasNext());
       Node homeNav = i.next();
@@ -64,7 +64,7 @@ public class NavigationTestCase extends AbstractAPITestCase
 
       //
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
       Iterator<Node> i = navigation.iterator();
       assertTrue(i.hasNext());
 
@@ -95,7 +95,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
 
       assertNotNull(navigation.getNode("foo"));
       assertNotNull(navigation.getNode("foo", "bar"));
@@ -107,7 +107,7 @@ public class NavigationTestCase extends AbstractAPITestCase
    {
       NodeContext<?> root = createSite(SiteType.PORTAL, "classic");
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
       Node node = navigation.addNode("foo");
       assertNotNull(node);
       assertEquals("foo", node.getName());
@@ -123,7 +123,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
       Node node = navigation.addNode("foo", "bar", "foobar", "newnode");
       assertNotNull(node);
       assertEquals("newnode", node.getName());
@@ -139,7 +139,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
       try
       {
          navigation.addNode("foo", "bar", "foobar", "not-exist", "newnode");
@@ -157,7 +157,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
 
       assertNotNull(navigation.getNode("foo", "bar"));
       assertTrue(navigation.removeNode("foo"));
@@ -173,7 +173,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
 
       assertNotNull(navigation.getNode("foo"));
       assertNull(navigation.getNode("foo", "bar"));
@@ -195,7 +195,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
 
       assertNotNull(navigation.getNode("foo"));
       assertNull(navigation.getNode("foo", "bar", "foobar"));
@@ -218,7 +218,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
       assertNotNull(navigation.getNode("foo"));
       assertNotNull(navigation.getNode("bar"));
       assertEquals(2, navigation.getNodeCount());
@@ -231,7 +231,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
       Node fooNode = navigation.getNode("foo");
 
       assertNotNull(fooNode.getChild("bar"));
@@ -246,7 +246,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
       Node node = navigation.getNode("foo");
 
       // test default values
@@ -260,7 +260,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       assertNull(node.getEndPublicationDate());
       assertNull(node.getIconName());
       assertEquals(Node.Visibility.VISIBLE, node.getVisibility());
-      assertNull(node.getLabel().getValue());
+      assertEquals("foo", node.getLabel().getValue(true));
    }
 
    public void testNodeRemove()
@@ -270,7 +270,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
       Node foo = navigation.getNode("foo");
 
       assertNotNull(foo);
@@ -288,7 +288,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       navService.saveNode(root, null);
 
       Site site = gatein.getSite(Site.Type.SITE, "classic");
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
       Node foo = navigation.getNode("foo");
 
       assertNotNull(foo);
@@ -299,6 +299,19 @@ public class NavigationTestCase extends AbstractAPITestCase
 
       assertNull(foo.getChild("bar"));
       assertNull(navigation.getNode("foo", "bar"));
+   }
+
+   public void testNodeLabel()
+   {
+      NodeContext<?> root = createSite(SiteType.PORTAL, "classic");
+      NodeContext<?> foo = root.add(null, "foo");
+      foo.setState(foo.getState().builder().label("Simple Foo Label").build());
+      navService.saveNode(root, null);
+
+      Site site = gatein.getSite(Site.Type.SITE, "classic");
+      Navigation navigation = site.getNavigation(false);
+      Node fooNode = navigation.getNode("foo");
+      assertEquals("Simple Foo Label", fooNode.getLabel().getValue(true));
    }
 
    //TODO: Test concurrent changes for different navigation contexts.
@@ -316,7 +329,7 @@ public class NavigationTestCase extends AbstractAPITestCase
       assertEquals("homepage", homePage.getName());
 
       //
-      Navigation rootNav = site.getNavigation();
+      Navigation rootNav = site.getNavigation(false);
       Node homeNav = rootNav.getNode("home");
 
       assertNull(homeNav.getPage());

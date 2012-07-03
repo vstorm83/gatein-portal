@@ -76,12 +76,12 @@ public class NavigationPortlet extends GenericPortlet
    private void outputSite(Site site, PrintWriter writer) throws IOException
    {
 
-      writer.println("<h2>" + site.getLabel().getValue() + "</h2>");
+      writer.println("<h2>" + site.getLabel().getValue(true) + "</h2>");
       writer.println("<ul>");
 
-      Navigation navigation = site.getNavigation();
+      Navigation navigation = site.getNavigation(false);
 
-      if (navigation != null && navigation.iterator().hasNext())
+      if (navigation != null)
       {
          for (Node node : navigation)
          {
@@ -102,7 +102,7 @@ public class NavigationPortlet extends GenericPortlet
       boolean isLeaf = size == 0;
       writer.println("<li>"
          + (isLeaf ? "<a style='font-weight: bold; text-decoration: underline; color: #336666;' href='" + node.getURI() + "'>" : "")
-         + node.getLabel().getValue()
+         + node.getLabel().getValue(true)
          + (isLeaf ? "</a>" : "")
          + "</li>");
       if (size != 0)

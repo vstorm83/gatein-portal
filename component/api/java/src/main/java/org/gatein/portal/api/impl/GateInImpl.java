@@ -27,15 +27,18 @@ import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.SiteType;
+import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationService;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.resources.ResourceBundleManager;
 import org.exoplatform.web.application.RequestContext;
 import org.gatein.api.GateIn;
 import org.gatein.api.commons.Filter;
 import org.gatein.api.commons.PropertyType;
 import org.gatein.api.commons.Range;
 import org.gatein.api.exception.EntityNotFoundException;
+import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Site;
 import org.gatein.api.portal.SiteQuery;
 import org.gatein.common.logging.Logger;
@@ -55,6 +58,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 
 import static org.gatein.common.util.ParameterValidation.*;
@@ -88,13 +92,17 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
    private Map<PropertyType, Object> properties = new HashMap<PropertyType, Object>(7);
 
    private final NavigationService navigationService;
+   private final DescriptionService descriptionService;
    private final OrganizationService organizationService;
+   private final ResourceBundleManager bundleManager;
 
-   public GateInImpl(DataStorage dataStorage, NavigationService navigationService, OrganizationService organizationService)
+   public GateInImpl(DataStorage dataStorage, NavigationService navigationService, DescriptionService descriptionService, OrganizationService organizationService, ResourceBundleManager bundleManager)
    {
       super(dataStorage);
       this.navigationService = navigationService;
+      this.descriptionService = descriptionService;
       this.organizationService = organizationService;
+      this.bundleManager = bundleManager;
    }
 
    @Override
@@ -258,11 +266,6 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
       }
    }
 
-   public NavigationService getNavigationService()
-   {
-      return navigationService;
-   }
-
    private List<Site> fromList(List<PortalConfig> internalSites)
    {
       List<Site> sites = new ArrayList<Site>(internalSites.size());
@@ -370,6 +373,22 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
       if (rc == null) return Locale.getDefault();
 
       return rc.getLocale();
+   }
+
+   public ResourceBundle getNavigationResourceBundle(Site.Id id)
+   {
+      SiteKey siteKey = SiteImpl.toSiteKey(id);
+      return bundleManager.getNavigationResourceBundle(getUserLocale().getLanguage(), siteKey.getTypeName(), siteKey.getName());
+   }
+
+   public NavigationService getNavigationService()
+   {
+      return navigationService;
+   }
+
+   public DescriptionService getDescriptionService()
+   {
+      return descriptionService;
    }
 
    @Override
@@ -497,7 +516,7 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
          List<Site> newResults = new LinkedList<Site>();
          for (Site site : results)
          {
-            if (site.getNavigation() != null && site.getNavigation().iterator().hasNext())
+            if (site.getNavigation(false) != null)
             {
                newResults.add(site);
             }

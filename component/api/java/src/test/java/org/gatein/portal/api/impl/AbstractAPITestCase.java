@@ -10,6 +10,7 @@ import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.SiteType;
+import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationService;
 import org.exoplatform.portal.mop.navigation.NavigationState;
@@ -18,6 +19,7 @@ import org.exoplatform.portal.mop.navigation.NodeModel;
 import org.exoplatform.portal.mop.navigation.Scope;
 import org.exoplatform.portal.pom.config.POMSessionManager;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.resources.ResourceBundleManager;
 import org.exoplatform.web.application.RequestContext;
 import org.gatein.api.GateIn;
 
@@ -30,7 +32,8 @@ import java.util.Locale;
 @ConfiguredBy({
    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml"),
    @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.identity-configuration.xml"),
-   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration.xml")
+   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.portal-configuration.xml"),
+   @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.resources-configuration.xml")
    //@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.application-registry-configuration.xml"),
    //@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "org/gatein/portal/api/impl/configuration.xml")
 })
@@ -66,8 +69,10 @@ public abstract class AbstractAPITestCase extends AbstractPortalTest
       NavigationService navService = (NavigationService)container.getComponentInstanceOfType(NavigationService.class);
       OrganizationService orgService = (OrganizationService)container.getComponentInstanceOfType(OrganizationService.class);
       DataStorage dataStorage = (DataStorage)container.getComponentInstanceOfType(DataStorage.class);
+      DescriptionService descriptionService = (DescriptionService)container.getComponentInstanceOfType(DescriptionService.class);
+      ResourceBundleManager bundleManager = (ResourceBundleManager)container.getComponentInstanceOfType(ResourceBundleManager.class);
 
-      GateInImpl gatein = new GateInImpl(dataStorage, navService, orgService);
+      GateInImpl gatein = new GateInImpl(dataStorage, navService, descriptionService, orgService, bundleManager);
 //      PortletRegistry invoker = (PortletRegistry)container.getComponentInstanceOfType(PortletInvoker.class);
 
       //

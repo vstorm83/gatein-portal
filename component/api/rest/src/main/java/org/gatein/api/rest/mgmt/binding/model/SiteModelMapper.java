@@ -71,13 +71,13 @@ public class SiteModelMapper implements ModelProvider.ModelMapper<Site>
       }
 
       // Navigation
-      Navigation nav = site.getNavigation();
+      Navigation nav = site.getNavigation(false);
       ModelList navList = siteModel.get("navigation", ModelList.class);
       for (Node child : nav)
       {
          ModelReference navRef = navList.add().asValue(ModelReference.class);
          navRef.set("name", child.getName());
-         navRef.set("label", child.getLabel().getValue());
+         navRef.set("label", child.getLabel().getValue(true));
          navRef.set(PathAddress.pathAddress("api", getSiteTypeRef(site), site.getId().getName(), "navigation", child.getName()));
       }
 

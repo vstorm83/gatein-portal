@@ -22,25 +22,47 @@
 
 package org.gatein.portal.api.impl.portal;
 
+import org.exoplatform.portal.config.DataStorage;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.navigation.NodeContext;
 import org.gatein.api.portal.Node;
 import org.gatein.api.portal.Page;
 import org.gatein.api.portal.Site;
 import org.gatein.portal.api.impl.AbstractAPITestCase;
+import org.gatein.portal.api.impl.GateInImpl;
 
 /** @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a> */
 public class SiteTestCase extends AbstractAPITestCase
 {
-
-   //TODO: label -NYI
    //TODO: navigation
    //TODO: properties -NYI
 
    public void testLabel()
    {
-      //TODO: NYI
+      Site classic = gatein.addSite(Site.Id.site("classic"));
 
+      classic.getLabel().setValue("Some label");
+
+      GateInImpl impl = (GateInImpl) gatein;
+      PortalConfig pc = impl.execute(new DataStorageContext.Read<PortalConfig>()
+      {
+         @Override
+         public PortalConfig read(DataStorage dataStorage) throws Exception
+         {
+            return dataStorage.getPortalConfig("portal", "classic");
+         }
+      });
+
+      // Test internals
+      assertNotNull(pc);
+      assertEquals("Some label", pc.getLabel());
+
+      // Test from api
+      assertEquals("Some label", classic.getLabel().getValue(true));
+
+      // Remove site for other tests
+      gatein.removeSite(Site.Id.site("classic"));
    }
 
    public void testDescription()
@@ -121,25 +143,39 @@ public class SiteTestCase extends AbstractAPITestCase
       assertEquals(3, site.getPages().size());
    }
 
-   public void testNavigation()
+   public void testGetNavigation()
    {
-      // After last two tests there should be "test1" site  with "page1", "page2" and "newPage1"
+      Site site = gatein.addSite(Site.Id.site("foo"));
 
-      Site site = gatein.getSite(Site.Id.site("test1"));
+      // There should be navigation when we create a site through the API.
+      assertNotNull(site.getNavigation(false));
 
-      // There should be empty navigation
-      assertNotNull(site.getNavigation());
-      assertFalse(site.getNavigation().iterator().hasNext());
+      GateInImpl impl = (GateInImpl) gatein;
+      PortalConfig pc = new PortalConfig("group", "/platform/administrators");
 
-      //TODO: uncomment when Site.setPageReference is implemented
-//      site.getNavigation().addNode("node1").setPageReference(site.getPage("page1").getId());
-//
-//      Node node = gatein.getSite(Site.Id.site("test1")).getNavigation().getNode("node1");
-//      assertEquals("page1", node.getPage().getName());
+      impl.execute(pc, new DataStorageContext.Modify<PortalConfig>()
+      {
+         @Override
+         public void modify(PortalConfig pc, DataStorage dataStorage) throws Exception
+         {
+            dataStorage.create(pc);
+         }
+      });
 
+      Site group = gatein.getSite(Site.Type.SPACE, "/platform/administrators");
+      assertNotNull(group);
+      assertEquals(pc.getName(), group.getId().getName());
+
+      // We shouldn't create the navigation if it doesn't exist internally
+      assertNull(group.getNavigation(false));
+      // Create it
+      assertNotNull(group.getNavigation(true));
+
+      for (Node node : group.getNavigation(false))
+      {
+         fail("Shouldn't be any nodes but got " + node.getName());
+      }
    }
-
-
 
    public void testProperties()
    {

@@ -49,20 +49,12 @@ public class NavigationImpl implements Navigation
    private final NavigationContext context;
    private final NodeContext<Node> nodeContext;
 
-   public NavigationImpl(SiteImpl site, GateInImpl gateIn)
+   public NavigationImpl(SiteImpl site, GateInImpl gateIn, NavigationContext context)
    {
+      if (context == null) throw new IllegalStateException("Navigation does not exist for site " + site);
+
       this.site = site;
-      NavigationContext navContext = gateIn.getNavigationService().loadNavigation(site.getSiteKey());
-      if (navContext == null)
-      {
-         navContext = new NavigationContext(site.getSiteKey(), new NavigationState(1));
-         gateIn.getNavigationService().saveNavigation(navContext);
-         this.context = navContext;
-      }
-      else
-      {
-         context = navContext;
-      }
+      this.context = context;
       this.nodeContext = gateIn.getNavigationService().loadNode(new NavigationNodeModel(site, gateIn), context, Scope.SINGLE, null);
    }
 
