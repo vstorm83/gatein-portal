@@ -32,6 +32,7 @@ import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.web.application.RequestContext;
 import org.gatein.api.GateIn;
+import org.gatein.api.commons.Filter;
 import org.gatein.api.commons.PropertyType;
 import org.gatein.api.commons.Range;
 import org.gatein.api.exception.EntityNotFoundException;
@@ -49,6 +50,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -99,9 +101,9 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
    public List<Site> getSites()
    {
       List<PortalConfig> list = new LinkedList<PortalConfig>();
-      list.addAll(query(SITES, SITE_COMPARATOR));
-      list.addAll(query(SPACES, SITE_COMPARATOR));
-      list.addAll(query(DASHBOARDS, SITE_COMPARATOR));
+      list.addAll(query(SITES));
+      list.addAll(query(SPACES));
+      list.addAll(query(DASHBOARDS));
 
       return fromList(list);
    }
@@ -114,11 +116,11 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
       switch (siteType)
       {
          case SITE:
-            return fromList(query(SITES, SITE_COMPARATOR));
+            return fromList(query(SITES));
          case SPACE:
-            return fromList(query(SPACES, SITE_COMPARATOR));
+            return fromList(query(SPACES));
          case DASHBOARD:
-            return fromList(query(DASHBOARDS, SITE_COMPARATOR));
+            return fromList(query(DASHBOARDS));
          default:
             throw new IllegalArgumentException(siteType + " is not recognized as a valid site type.");
       }
@@ -166,6 +168,26 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
 
       //TODO: true pagination
       return cutPageFromResults(getSites(siteType), range);
+   }
+
+   @Override
+   public List<Site> getSites(Filter<Site> filter)
+   {
+      List<Site> sites = getSites();
+      for (Iterator<Site> iter = sites.iterator(); iter.hasNext();)
+      {
+         boolean keep = filter.accept(iter.next());
+         if (!keep) iter.remove();
+      }
+
+      return sites;
+   }
+
+   @Override
+   public List<Site> getSites(Filter<Site> filter, Range range)
+   {
+      List<Site> sites = getSites(filter);
+      return cutPageFromResults(sites, range);
    }
 
    @Override

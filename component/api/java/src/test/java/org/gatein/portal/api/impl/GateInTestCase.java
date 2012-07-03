@@ -23,10 +23,12 @@
 package org.gatein.portal.api.impl;
 
 import org.exoplatform.portal.mop.SiteType;
+import org.gatein.api.commons.Filter;
 import org.gatein.api.commons.Range;
 import org.gatein.api.portal.Site;
 import org.gatein.api.portal.SiteQuery;
 
+import java.util.Iterator;
 import java.util.List;
 
 /** @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a> */
@@ -154,6 +156,33 @@ public class GateInTestCase extends AbstractAPITestCase
       assertEquals("b", sites.get(1).getId().getName());
       assertEquals("c", sites.get(2).getId().getName());
       assertEquals("d", sites.get(3).getId().getName());
+   }
+
+   public void testFilteredSites()
+   {
+      cleanup();
+
+      gatein.addSite(Site.Id.site("c"));
+      gatein.addSite(Site.Id.site("a"));
+      gatein.addSite(Site.Id.site("d"));
+      gatein.addSite(Site.Id.site("b"));
+
+      List<Site> sites = gatein.getSites(new Filter<Site>()
+      {
+         @Override
+         public boolean accept(Site site)
+         {
+            String name = site.getId().getName();
+            return (name.equals("a") || name.equals("b"));
+         }
+      });
+
+      Iterator<Site> iter = sites.iterator();
+      assertEquals(2, sites.size());
+      Site site = iter.next();
+      assertEquals("a", site.getId().getName());
+      site = iter.next();
+      assertEquals("b", site.getId().getName());
    }
 
    public void testDefaultSite()

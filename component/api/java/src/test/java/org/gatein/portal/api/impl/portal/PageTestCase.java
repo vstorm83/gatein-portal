@@ -22,14 +22,55 @@
 
 package org.gatein.portal.api.impl.portal;
 
+import org.gatein.api.commons.Filter;
+import org.gatein.api.portal.Page;
+import org.gatein.api.portal.Site;
 import org.gatein.portal.api.impl.AbstractAPITestCase;
+
+import java.util.List;
 
 /** @author <a href="mailto:boleslaw.dawidowicz@redhat.com">Boleslaw Dawidowicz</a> */
 public class PageTestCase extends AbstractAPITestCase
 {
-   public void testSimple()
+   public void testGetPages_WithFilter()
    {
+      Site fooSite = gatein.addSite(Site.Type.SITE, "foo");
+      fooSite.createPage("page1");
+      fooSite.createPage("page2");
+      fooSite.createPage("page3");
+      fooSite.createPage("page4");
+      fooSite.createPage("page5");
+      fooSite.createPage("page6");
+      fooSite.createPage("page7");
+      fooSite.createPage("page8");
+      fooSite.createPage("page9");
+      fooSite.createPage("page10");
 
+      List<Page> pages = fooSite.getPages(new Filter<Page>()
+      {
+         @Override
+         public boolean accept(Page page)
+         {
+            String name = page.getName();
+            int number = getNumber(name);
+
+            return (number % 2 == 0);
+         }
+
+         private int getNumber(String name)
+         {
+            if (name.length() > 5)
+            {
+               return Integer.parseInt(name.substring(4, 6));
+            }
+            else
+            {
+               return Integer.parseInt(name.substring(4, 5));
+            }
+         }
+      });
+
+      assertEquals(5, pages.size());
    }
 
 }

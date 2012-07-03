@@ -27,11 +27,9 @@ import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
-import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.navigation.NavigationContext;
-import org.exoplatform.portal.mop.navigation.NavigationService;
 import org.exoplatform.portal.mop.navigation.NavigationState;
-import org.exoplatform.portal.pom.data.ModelChange;
+import org.gatein.api.commons.Filter;
 import org.gatein.api.commons.PropertyType;
 import org.gatein.api.commons.Range;
 import org.gatein.api.exception.ApiException;
@@ -40,7 +38,6 @@ import org.gatein.api.exception.EntityNotFoundException;
 import org.gatein.api.portal.Label;
 import org.gatein.api.portal.Navigation;
 import org.gatein.api.portal.Page;
-import org.gatein.api.portal.PageFilter;
 import org.gatein.api.portal.Site;
 import org.gatein.api.security.SecurityRestriction;
 import org.gatein.common.NotYetImplemented;
@@ -49,6 +46,7 @@ import org.gatein.portal.api.impl.GateInImpl;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -210,14 +208,20 @@ public class SiteImpl extends DataStorageContext implements Site
    }
 
    @Override
-   public List<Page> getPages(PageFilter pageFilter)
+   public List<Page> getPages(Filter<Page> filter)
    {
-      //TODO: Implement
-      throw new NotYetImplemented();
+      List<Page> pages = getPages();
+      for (Iterator<Page> iter = pages.iterator(); iter.hasNext();)
+      {
+         boolean keep = filter.accept(iter.next());
+         if (!keep) iter.remove();
+      }
+
+      return pages;
    }
 
    @Override
-   public List<Page> getPages(PageFilter pageFilter, Range range)
+   public List<Page> getPages(Filter<Page> filter, Range range)
    {
       //TODO: Implement
       throw new NotYetImplemented();
