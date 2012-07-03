@@ -28,6 +28,7 @@ import org.gatein.api.exception.ApiException;
 import org.gatein.common.logging.Logger;
 import org.gatein.common.logging.LoggerFactory;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -74,9 +75,14 @@ public class DataStorageContext
 
    protected <T> List<T> query(Query<T> query)
    {
+      return query(query, null);
+   }
+
+   protected <T> List<T> query(Query<T> query, Comparator<T> comparator)
+   {
       try
       {
-         return dataStorage.find(query).getAll();
+         return dataStorage.find(query, comparator).getAll();
       }
       catch (Exception e)
       {

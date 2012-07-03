@@ -22,7 +22,6 @@
 
 package org.gatein.portal.api.impl;
 
-import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -38,7 +37,6 @@ import org.gatein.api.commons.Range;
 import org.gatein.api.exception.EntityNotFoundException;
 import org.gatein.api.portal.Site;
 import org.gatein.api.portal.SiteQuery;
-import org.gatein.common.NotYetImplemented;
 import org.gatein.common.logging.Logger;
 import org.gatein.common.logging.LoggerFactory;
 import org.gatein.portal.api.impl.portal.DataStorageContext;
@@ -48,6 +46,7 @@ import org.picocontainer.Startable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -68,6 +67,15 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
    private static final Query<PortalConfig> SITES = new Query<PortalConfig>(SiteType.PORTAL.getName(), null, PortalConfig.class);
    private static final Query<PortalConfig> SPACES = new Query<PortalConfig>(SiteType.GROUP.getName(), null, PortalConfig.class);
    private static final Query<PortalConfig> DASHBOARDS = new Query<PortalConfig>(SiteType.USER.getName(), null, PortalConfig.class);
+
+   private static final Comparator<PortalConfig> SITE_COMPARATOR = new Comparator<PortalConfig>()
+   {
+      @Override
+      public int compare(PortalConfig pc1, PortalConfig pc2)
+      {
+         return pc1.getName().compareTo(pc2.getName());
+      }
+   };
 
    //TODO: Do we want a better name for loggeer ? Probably need to standardize our logging for api
    static final Logger log = LoggerFactory.getLogger(GateInImpl.class);
@@ -91,9 +99,9 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
    public List<Site> getSites()
    {
       List<PortalConfig> list = new LinkedList<PortalConfig>();
-      list.addAll(query(SITES));
-      list.addAll(query(SPACES));
-      list.addAll(query(DASHBOARDS));
+      list.addAll(query(SITES, SITE_COMPARATOR));
+      list.addAll(query(SPACES, SITE_COMPARATOR));
+      list.addAll(query(DASHBOARDS, SITE_COMPARATOR));
 
       return fromList(list);
    }
@@ -106,11 +114,11 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
       switch (siteType)
       {
          case SITE:
-            return fromList(query(SITES));
+            return fromList(query(SITES, SITE_COMPARATOR));
          case SPACE:
-            return fromList(query(SPACES));
+            return fromList(query(SPACES, SITE_COMPARATOR));
          case DASHBOARD:
-            return fromList(query(DASHBOARDS));
+            return fromList(query(DASHBOARDS, SITE_COMPARATOR));
          default:
             throw new IllegalArgumentException(siteType + " is not recognized as a valid site type.");
       }
@@ -383,9 +391,15 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
       }
       else if (query.getType() == null)
       {
-         queryResults.addAll(query(SITES));
-         queryResults.addAll(query(SPACES));
-         queryResults.addAll(query(DASHBOARDS));
+         Comparator<PortalConfig> comparator = null;
+         if (query.isSorted())
+         {
+            //TODO: Implement ascending
+            comparator = SITE_COMPARATOR;
+         }
+         queryResults.addAll(query(SITES, SITE_COMPARATOR));
+         queryResults.addAll(query(SPACES, SITE_COMPARATOR));
+         queryResults.addAll(query(DASHBOARDS, SITE_COMPARATOR));
       }
       else
       {
@@ -409,7 +423,8 @@ public class GateInImpl extends DataStorageContext implements GateIn, Startable
             //if query.getGroupId() is provided just ignore.
          }
 
-         queryResults = query(dataQuery);
+         //TODO: Implement ascending
+         queryResults = query(dataQuery, (query.isSorted()) ? SITE_COMPARATOR : null);
 
 
          // In case of SPACE it may need to be filtered by user memberships in groups

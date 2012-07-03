@@ -220,12 +220,12 @@ public class SiteQueryImpl implements SiteQuery<Site>
       return this;
    }
 
-   boolean isSorted()
+   public boolean isSorted()
    {
       return sort;
    }
 
-   boolean isAscending()
+   public boolean isAscending()
    {
       return ascending;
    }

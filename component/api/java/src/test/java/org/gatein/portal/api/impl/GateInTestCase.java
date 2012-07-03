@@ -137,7 +137,24 @@ public class GateInTestCase extends AbstractAPITestCase
 
    }
 
+   public void testSortedSiteQuery()
+   {
+      cleanup();
 
+      gatein.addSite(Site.Id.site("c"));
+      gatein.addSite(Site.Id.site("a"));
+      gatein.addSite(Site.Id.site("d"));
+      gatein.addSite(Site.Id.site("b"));
+
+      SiteQuery<Site> query = gatein.createSiteQuery().setType(Site.Type.SITE).sort(true);
+      List<Site> sites = query.execute();
+
+      assertEquals(4, sites.size());
+      assertEquals("a", sites.get(0).getId().getName());
+      assertEquals("b", sites.get(1).getId().getName());
+      assertEquals("c", sites.get(2).getId().getName());
+      assertEquals("d", sites.get(3).getId().getName());
+   }
 
    public void testDefaultSite()
    {
