@@ -28,14 +28,14 @@
 
    <groupId>org.gatein.integration</groupId>
    <artifactId>gatein-wsrp-integration-parent</artifactId>
-   <version>3.3.0-CR01-SNAPSHOT</version>
+   <version>3.4.0-GA-SNAPSHOT</version>
 
    <packaging>pom</packaging>
 
    <parent>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.parent</artifactId>
-      <version>3.3.0-CR01-SNAPSHOT</version>
+      <version>3.4.0-GA-SNAPSHOT</version>
    </parent>
 
    <description>GateIn WSRP Integration extension parent</description>
@@ -52,6 +52,7 @@
             <module>extension-config</module>
             <module>extension-component</module>
             <module>extension-war</module>
+            <module>extension-ear</module>
             <module>extension-ear-as5</module>
             <module>extension-ear-as6</module>
          </modules>
@@ -99,6 +100,21 @@
             <module>extension-component</module>
             <module>extension-war</module>
             <module>extension-ear-as5</module>
+         </modules>
+      </profile>
+      <profile>
+         <id>pkg-jbossas7</id>
+         <activation>
+            <property>
+               <name>gatein.dev</name>
+               <value>jbossas7</value>
+            </property>
+         </activation>
+         <modules>
+            <module>extension-config</module>
+            <module>extension-component</module>
+            <module>extension-war</module>
+            <module>extension-ear</module>
          </modules>
       </profile>
    </profiles>

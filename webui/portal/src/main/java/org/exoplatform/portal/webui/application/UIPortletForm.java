@@ -69,6 +69,8 @@ import org.gatein.pc.portlet.impl.spi.*;
 
 import javax.portlet.PortletMode;
 import javax.servlet.http.Cookie;
+
+import java.io.StringWriter;
 import java.util.*;
 
 /** Author : Nhu Dinh Thuan nhudinhthuan@yahoo.com Jun 8, 2006 */
@@ -102,9 +104,9 @@ public class UIPortletForm extends UIFormTabPane
             .addValidator(StringLengthValidator.class, 3, 60)
             .addValidator(NotHTMLTagValidator.class, "UIPortletForm.msg.InvalidPortletTitle"))
          .addUIFormInput(new UIFormStringInput("width", "width", null)
-            .addValidator(ExpressionValidator.class, "(^([1-9]\\d*)px$)?", "UIPortletForm.msg.InvalidWidthHeight"))
+            .addValidator(ExpressionValidator.class, "(^([1-9]\\d*)(?:px)?$)?", "UIPortletForm.msg.InvalidWidthHeight"))
          .addUIFormInput(new UIFormStringInput("height", "height", null)
-            .addValidator(ExpressionValidator.class, "(^([1-9]\\d*)px$)?", "UIPortletForm.msg.InvalidWidthHeight"))
+            .addValidator(ExpressionValidator.class, "(^([1-9]\\d*)(?:px)?$)?", "UIPortletForm.msg.InvalidWidthHeight"))
          .addUIFormInput(new UICheckBoxInput("showInfoBar", "showInfoBar", false))
          .addUIFormInput(new UICheckBoxInput("showPortletMode", "showPortletMode", false))
          .addUIFormInput(new UICheckBoxInput("showWindowState", "showWindowState", false))
@@ -149,16 +151,10 @@ public class UIPortletForm extends UIFormTabPane
 
    public String getEditModeContent()
    {
-      StringBuilder portletContent = new StringBuilder();
       try
       {
          PortalRequestContext prcontext = (PortalRequestContext)WebuiRequestContext.getCurrentInstance();
          prcontext.ignoreAJAXUpdateOnPortlets(true);
-         StatefulPortletContext portletContext = uiPortlet_.getPortletContext();
-
-         ExoPortletInvocationContext portletInvocationContext = new ExoPortletInvocationContext(prcontext, uiPortlet_);
-
-         List<Cookie> requestCookies = new ArrayList<Cookie>(Arrays.asList(prcontext.getRequest().getCookies()));
 
          PortletInvocation portletInvocation = uiPortlet_.create(RenderInvocation.class, prcontext);
          RenderInvocation renderInvocation = (RenderInvocation)portletInvocation;
@@ -166,16 +162,18 @@ public class UIPortletForm extends UIFormTabPane
          renderInvocation.setMode(Mode.create(PortletMode.EDIT.toString()));
          
          PortletInvocationResponse portletResponse = uiPortlet_.invoke(renderInvocation);
-         portletContent.append(uiPortlet_.generateRenderMarkup(portletResponse, prcontext).toString());
+         StringWriter writer = new StringWriter();
+         uiPortlet_.generateRenderMarkup(portletResponse, prcontext).writeTo(writer);
+         
+         return writer.toString();
       }
       catch (Throwable ex)
       {
          WebuiRequestContext webuiRequest = WebuiRequestContext.getCurrentInstance();
-         portletContent.append(webuiRequest.getApplicationResourceBundle().getString("UIPortlet.message.RuntimeError"));
          log.error("The portlet " + uiPortlet_.getName() + " could not be loaded. Check if properly deployed.",
             ExceptionUtil.getRootCause(ex));
+         return webuiRequest.getApplicationResourceBundle().getString("UIPortlet.message.RuntimeError");
       }
-      return portletContent.toString();
    }
 
    public void setValues(final UIPortlet uiPortlet) throws Exception
@@ -307,7 +305,7 @@ public class UIPortletForm extends UIFormTabPane
          {
             if (!width.endsWith("px"))
             {
-               width.concat("px");
+            	width = width.concat("px");
             }
             uiPortlet.setWidth(width);
          }
@@ -321,7 +319,7 @@ public class UIPortletForm extends UIFormTabPane
          {
             if (!height.endsWith("px"))
             {
-               height.concat("px");
+            	height = height.concat("px");
             }
             uiPortlet.setHeight(height);
          }

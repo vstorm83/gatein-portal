@@ -59,6 +59,11 @@
          <target name="copy-dependencies"/>
       </ant>
 
+      <!-- Override the guava.jar of weld deployer -->
+      <copy file="${com.google.guava:guava:jar}" tofile="${jbossas.target.dir}/server/default/deployers/weld.deployer/guava.jar"/>
+      <copy file="${com.google.guava:guava:jar}" tofile="${jbossas.target.dir}/server/all/deployers/weld.deployer/guava.jar"/>
+      <copy file="${com.google.guava:guava:jar}" tofile="${jbossas.target.dir}/server/standard/deployers/weld.deployer/guava.jar"/>
+
       <!-- Copy configuration non-xml first -->
       <copy todir="${jbossas.target.dir}" preservelastmodified="true" overwrite="true">
          <fileset dir="${maven.project.basedir}/src/main/resources/jboss">
@@ -80,6 +85,13 @@
       <copy file="${maven.project.basedir}/../../../component/common/src/main/java/conf/configuration-jboss.properties"
             tofile="${jbossas.target.dir}/server/default/conf/gatein/configuration.properties"
             preservelastmodified="true" overwrite="true"/>
+
+      <!-- Extract common config from packaging.common artifact to gatein/conf -->
+      <unzip src="${org.exoplatform.portal:exo.portal.packaging.common:jar}" dest="${jbossas.target.dir}/server/default/conf/gatein">
+        <patternset>
+          <exclude name="META-INF/"/>
+        </patternset>
+      </unzip>
 
       <!-- File permissions -->
       <!-- Excluded due to ARG_MAX limitation on Mac OS X -->

@@ -37,5 +37,6 @@
        <module name="javax.servlet.jsp.api" />
        <module name="javax.portlet.api" />
        <module name="javax.ccpp.api" />
+       <module name="org.apache.portals-bridges-common" />
     </dependencies>
 </module>

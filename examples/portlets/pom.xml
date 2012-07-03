@@ -5,7 +5,7 @@
    <parent>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.parent</artifactId>
-      <version>3.3.0-CR01-SNAPSHOT</version>
+      <version>3.4.0-GA-SNAPSHOT</version>
       <relativePath>../../pom.xml</relativePath>
    </parent>
 
@@ -16,6 +16,7 @@
 
    <modules>
       <module>api</module>
+      <module>jquery</module>
       <module>jsfhellouser</module>
       <module>jsphellouser</module>
       <module>simplesthelloworld</module>

@@ -39,109 +39,106 @@
          <fileset dir="${jbossas.dir}"/>
       </copy>
 
-      <!-- Copy configuration non-xml first -->
-      <!--copy todir="${jbossas.target.dir}" preservelastmodified="true" overwrite="true">
-         <fileset dir="${maven.project.basedir}/src/main/resources/jboss">
-            <exclude name="**/*.xml" />
-         </fileset>
-      </copy-->
-
-      <!-- Copy simple-portal -->
-      <!--copy todir="${jbossas.target.dir}/standalone/deployments/simple-portal.ear" preservelastmodified="true" overwrite="true">
-         <fileset dir="${maven.project.basedir}/../../portal/target/simple-portal-jboss7-ear/simple-portal.ear" />
-      </copy-->
-
       <!-- maven-ant integration - calling pom.xml dependencies as filesets -->
       <dependencyfilesets/>
 
       <!-- Copy deployment archives -->
 
-      <unzip dest="${jbossas.target.dir}/standalone/deployments/gatein.ear/eXoResources.war">
+      <unzip dest="${jbossas.target.dir}/gatein/deployments/gatein.ear/eXoResources.war">
          <fileset refid="org.exoplatform.portal:exo.portal.web.eXoResources:war"/>
       </unzip>
-      <unzip dest="${jbossas.target.dir}/standalone/deployments/gatein.ear/portal.war">
+      <unzip dest="${jbossas.target.dir}/gatein/deployments/gatein.ear/portal.war">
          <fileset refid="org.exoplatform.portal:exo.portal.web.portal:war"/>
       </unzip>
-      <copy tofile="${jbossas.target.dir}/standalone/deployments/gatein.ear/dashboard.war" >
+      <copy tofile="${jbossas.target.dir}/gatein/deployments/gatein.ear/dashboard.war" >
          <fileset refid="org.exoplatform.portal:exo.portal.portlet.dashboard:war"/>
       </copy>
-      <copy tofile="${jbossas.target.dir}/standalone/deployments/gatein.ear/exoadmin.war" >
+      <copy tofile="${jbossas.target.dir}/gatein/deployments/gatein.ear/exoadmin.war" >
          <fileset refid="org.exoplatform.portal:exo.portal.portlet.exoadmin:war"/>
       </copy>
-      <copy tofile="${jbossas.target.dir}/standalone/deployments/gatein.ear/eXoGadgets.war" >
+      <copy tofile="${jbossas.target.dir}/gatein/deployments/gatein.ear/eXoGadgets.war" >
          <fileset refid="org.exoplatform.portal:exo.portal.eXoGadgets:war"/>
       </copy>
-      <copy tofile="${jbossas.target.dir}/standalone/deployments/gatein.ear/eXoGadgetServer.war" >
+      <copy tofile="${jbossas.target.dir}/gatein/deployments/gatein.ear/eXoGadgetServer.war" >
          <fileset refid="org.exoplatform.portal:exo.portal.gadgets-server:war"/>
       </copy>
-      <copy tofile="${jbossas.target.dir}/standalone/deployments/gatein.ear/rest.war" >
+      <copy tofile="${jbossas.target.dir}/gatein/deployments/gatein.ear/rest.war" >
          <fileset refid="org.exoplatform.portal:exo.portal.web.rest:war"/>
       </copy>
-      <copy tofile="${jbossas.target.dir}/standalone/deployments/gatein.ear/web.war" >
+      <copy tofile="${jbossas.target.dir}/gatein/deployments/gatein.ear/web.war" >
          <fileset refid="org.exoplatform.portal:exo.portal.portlet.web:war"/>
       </copy>
 
 
-      <!--copy tofile="${jbossas.target.dir}/standalone/deployments/gatein-sample-portal.ear" >
+      <!--copy tofile="${jbossas.target.dir}/gatein/deployments/gatein-sample-portal.ear" >
          <fileset refid="org.exoplatform.portal:gatein-sample-portal:ear"/>
       </copy-->
-      <copy todir="${jbossas.target.dir}/standalone/deployments/gatein-sample-portal.ear/lib" >
+      <copy todir="${jbossas.target.dir}/gatein/deployments/gatein-sample-portal.ear/lib" >
          <fileset refid="org.exoplatform.portal:exo.portal.sample.portal.config:jar"/>
       </copy>
-      <copy todir="${jbossas.target.dir}/standalone/deployments/gatein-sample-portal.ear/lib" >
+      <copy todir="${jbossas.target.dir}/gatein/deployments/gatein-sample-portal.ear/lib" >
          <fileset refid="org.exoplatform.portal:exo.portal.sample.portal.jar:jar"/>
       </copy>
-      <copy tofile="${jbossas.target.dir}/standalone/deployments/gatein-sample-portal.ear/sample-portal.war" >
+      <copy tofile="${jbossas.target.dir}/gatein/deployments/gatein-sample-portal.ear/sample-portal.war" >
          <fileset refid="org.exoplatform.portal:exo.portal.sample.portal.war:war"/>
       </copy>
-      <copy tofile="${jbossas.target.dir}/standalone/deployments/gatein-sample-portal.ear/rest-sample-portal.war" >
+      <copy tofile="${jbossas.target.dir}/gatein/deployments/gatein-sample-portal.ear/rest-sample-portal.war" >
          <fileset refid="org.exoplatform.portal:exo.portal.sample.portal.rest-war:war"/>
       </copy>
 
 
-      <!--copy tofile="${jbossas.target.dir}/standalone/deployments/gatein-sample-extension.ear">
+      <!--copy tofile="${jbossas.target.dir}/gatein/deployments/gatein-sample-extension.ear">
          <fileset refid="org.exoplatform.portal:gatein-sample-extension:ear"/>
       </copy-->
-      <copy todir="${jbossas.target.dir}/standalone/deployments/gatein-sample-extension.ear/lib" >
+      <copy todir="${jbossas.target.dir}/gatein/deployments/gatein-sample-extension.ear/lib" >
          <fileset refid="org.exoplatform.portal:exo.portal.sample.extension.config:jar"/>
       </copy>
-      <copy todir="${jbossas.target.dir}/standalone/deployments/gatein-sample-extension.ear/lib" >
+      <copy todir="${jbossas.target.dir}/gatein/deployments/gatein-sample-extension.ear/lib" >
          <fileset refid="org.exoplatform.portal:exo.portal.sample.extension.jar:jar"/>
       </copy>
-      <copy tofile="${jbossas.target.dir}/standalone/deployments/gatein-sample-extension.ear/sample-ext.war" >
+      <copy tofile="${jbossas.target.dir}/gatein/deployments/gatein-sample-extension.ear/sample-ext.war" >
          <fileset refid="org.exoplatform.portal:exo.portal.sample.extension.war:war"/>
       </copy>
 
 
-      <copy tofile="${jbossas.target.dir}/standalone/deployments/gatein-sample-skin.war">
+      <copy tofile="${jbossas.target.dir}/gatein/deployments/gatein-sample-skin.war">
          <fileset refid="org.gatein.portal.examples.skins:gatein-sample-skin:war"/>
       </copy>
 
 
+      <!-- WSRP integration -->
+      <unzip dest="${jbossas.target.dir}/gatein/deployments/gatein-wsrp-integration.ear/extension-war.war">
+         <fileset refid="org.gatein.integration:extension-war:war"/>
+      </unzip>
+      <unzip dest="${jbossas.target.dir}/gatein/deployments/gatein-wsrp-integration.ear/wsrp-producer.war">
+         <fileset refid="org.gatein.wsrp:wsrp-producer:war"/>
+      </unzip>
+      <unzip dest="${jbossas.target.dir}/gatein/deployments/gatein-wsrp-integration.ear/wsrp-admin-gui.war">
+         <fileset refid="org.gatein.wsrp:wsrp-admin-gui:war"/>
+      </unzip>
+
       <!-- Deployment archives overrides -->
-      <!-- Copy configuration files -->
-      <copy todir="${jbossas.target.dir}/standalone" preservelastmodified="true" overwrite="true">
-         <fileset dir="${maven.project.basedir}/src/main/resources/jboss/standalone" />
+      <!-- Copy bin, modules, configuration files -->
+      <copy todir="${jbossas.target.dir}" preservelastmodified="true" overwrite="true">
+         <fileset dir="${maven.project.basedir}/src/main/resources/jboss" />
       </copy>
 
-      <!--copy file="${maven.project.basedir}/../../../component/common/src/main/java/conf/configuration-jboss.properties"
-            tofile="${jbossas.target.dir}/standalone/configuration/gatein/configuration-jboss.properties"
-            preservelastmodified="true" overwrite="true"/-->
-
-      <!-- Copy bin files -->
-      <copy todir="${jbossas.target.dir}/bin" preservelastmodified="true" overwrite="true">
-         <fileset dir="${maven.project.basedir}/src/main/resources/jboss/bin" />
-      </copy>
-
-      <!-- Copy modules overrides -->
-      <copy todir="${jbossas.target.dir}/modules" preservelastmodified="true" overwrite="true">
-         <fileset dir="${maven.project.basedir}/src/main/resources/jboss/modules" />
+      <!-- Copy version specific bin, modules, configuration files -->
+      <copy todir="${jbossas.target.dir}" preservelastmodified="true" overwrite="true">
+         <fileset dir="${maven.project.basedir}/src/main/resources/${version.jboss.as}" />
       </copy>
 
       <!-- Copy modules -->
       <copy todir="${jbossas.target.dir}/gatein" preservelastmodified="true" overwrite="true">
          <fileset dir="${maven.project.basedir}/../modules/target/${server.name}/gatein" />
       </copy>
+
+      <!-- Extract common config from packaging.common artifact to gatein/conf -->
+      <unzip src="${org.exoplatform.portal:exo.portal.packaging.common:jar}" dest="${jbossas.target.dir}/standalone/configuration/gatein">
+        <patternset>
+          <exclude name="META-INF/"/>
+        </patternset>
+      </unzip>
 
       <!-- File permissions -->
       <!-- Excluded due to ARG_MAX limitation on Mac OS X -->

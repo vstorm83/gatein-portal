@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.exoplatform.portal</groupId>
     <artifactId>exo.portal.packaging.tomcat</artifactId>
-    <version>3.3.0-CR01-SNAPSHOT</version>
+    <version>3.4.0-GA-SNAPSHOT</version>
   </parent>
   <artifactId>exo.portal.packaging.tomcat.pkg</artifactId>
   <packaging>pom</packaging>
@@ -476,6 +476,10 @@
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.gadgets-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.packaging.common</artifactId>
     </dependency>
     <!--
     <dependency>
