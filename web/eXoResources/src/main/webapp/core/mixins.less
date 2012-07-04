@@ -1,1 +1,146 @@
 @foo: foo;
+.ClearFix {
+  &:before,
+  &:after {
+    display: table;
+    content: "";
+  }
+  &:after {
+    clear: both;
+  }
+}
+
+*+html .ClearFix {
+  zoom: 1;
+}
+
+.gtnFoatLeft() {
+	.dir(@dir);
+	.dir(lt){
+		float: left;
+	   
+	}
+	.dir(rt){
+		float:right;   
+	}
+	.dir(n) {
+          float:none;
+    }
+}
+
+.gtnFoatRight() {
+	.dir(@dir);
+	.dir(lt){
+		float: right;
+	   
+	}
+	.dir(rt){
+		float:left;   
+	}
+	.dir(n) {
+          float:none;
+    }
+}
+
+.gtnTextAlign() {
+	.dir(ct) {
+	  text-align: center;
+	}	
+	.dir(jt) {
+	  text-align: justify;
+	}		
+}
+	
+.gtnTextAlignLeft() {
+	.dir(@dir);
+	.dir(lt)  {
+	  text-align: left;
+	}
+	.dir(rt) {
+	  text-align: right;
+	}
+}
+
+.gtnTextAlignRight() {
+	.dir(@dir);
+	.dir(lt)  {
+	  text-align: left;
+	}
+	.dir(rt) {
+	  text-align: right;
+	}
+}
+
+.gtnPadding(@top, @right, @bottom, @left) {
+	.dir(@dir);
+	.dir(lt){        
+		padding-top:@top;
+		padding-right: @right;
+		padding-bottom: @bottom;
+		padding-left: @left;
+    }
+	.dir(rt) {
+		padding-top:@top;
+		padding-right: @left;
+		padding-bottom: @bottom;
+		padding-left: @right;
+	}
+}
+
+.gtnMargin(@top, @right, @bottom, @left) {
+	.dir(@dir);
+	.dir(lt){        
+		margin-top:@top;
+		margin-right: @right;
+		margin-bottom: @bottom;
+		margin-left: @left;
+    }
+	.dir(rt) {
+		margin-top:@top;
+		margin-right: @left;
+		margin-bottom: @bottom;
+		margin-left: @right;
+	}
+}
+
+.gtnBordered(@top-color: #EEE, @right-color: #EEE, @bottom-color: #EEE, @left-color: #EEE) {
+	border-top: solid 1px @top-color;
+	border-left: solid 1px @left-color;
+	border-right: solid 1px @right-color;
+	border-bottom: solid 1px @bottom-color;
+}
+
+.gtnDropShadow(@x-axis: 0, @y-axis: 1px, @blur: 2px, @alpha: 0.1) {
+	box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
+}
+
+.gtnRounded(@radius: 10px) {
+	border-radius: @radius;
+	background-clip: padding-box; 
+}
+
+.gtnBorderRadius(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
+	border-top-right-radius: @topright;
+	border-bottom-right-radius: @bottomright;
+	border-bottom-left-radius: @bottomleft;
+	border-top-left-radius: @topleft;
+	background-clip: padding-box; 
+}
+
+.gtnOpacity(@opacity: 0.5) {
+	opacity: @opacity;
+}
+
+.gtnInnerShadow(@horizontal:0, @vertical:1px, @blur:2px, @alpha: 0.4) {
+	box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
+}
+
+.gtnBoxShadow(@arguments) {
+	box-shadow: @arguments;
+}
+
+.gtnBoxDecorator() {
+	.gtnBorderRadius();
+	.gtnPadding(10,10,10,10);
+	.gtnBordered();
+}
