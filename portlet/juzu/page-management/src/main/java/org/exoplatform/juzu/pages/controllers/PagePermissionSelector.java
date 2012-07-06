@@ -27,9 +27,9 @@ import javax.inject.Inject;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.MembershipType;
 import org.exoplatform.services.organization.OrganizationService;
-import org.juzu.Resource;
-import org.juzu.Response;
-import org.juzu.plugin.ajax.Ajax;
+import juzu.Resource;
+import juzu.Response;
+import juzu.plugin.ajax.Ajax;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>

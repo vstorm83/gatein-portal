@@ -27,12 +27,12 @@ import org.exoplatform.juzu.pages.Session;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.webui.page.PageQueryAccessList;
-import org.juzu.Path;
-import org.juzu.Resource;
-import org.juzu.Response;
-import org.juzu.View;
-import org.juzu.plugin.ajax.Ajax;
-import org.juzu.template.Template;
+import juzu.Path;
+import juzu.Resource;
+import juzu.Response;
+import juzu.View;
+import juzu.plugin.ajax.Ajax;
+import juzu.template.Template;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -48,6 +48,10 @@ public class PageManagement
    @Inject
    @Path("search.gtmpl")
    Template search;
+   
+   @Inject
+   @Path("modal.gtmpl")
+   Template modal;
    
    @Inject
    PageSettings settingController;

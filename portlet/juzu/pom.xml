@@ -25,51 +25,21 @@
 
   <properties>
     <maven.compiler.target>1.6</maven.compiler.target>
-    <maven.compiler.source>1.6</maven.compiler.source>
+		<maven.compiler.source>1.6</maven.compiler.source>
+		<juzu.version>0.6.0-SNAPSHOT</juzu.version>
   </properties>
 
-  <dependencies>
-    <!-- Application dependencies-->
-    <dependency>
-      <groupId>javax.portlet</groupId>
-      <artifactId>portlet-api</artifactId>
-      <scope>provided</scope>
-      <version>2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-      <version>2.5</version>
-    </dependency>
-    <dependency>
-      <groupId>javax.inject</groupId>
-      <artifactId>javax.inject</artifactId>
-      <scope>provided</scope>
-      <version>1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.juzu</groupId>
-      <artifactId>juzu-core</artifactId>
-      <scope>provided</scope>
-      <version>0.5-SNAPSHOT</version>
-    </dependency>
-
-    <!-- Dependencies for war overlay -->
-    <dependency>
-      <groupId>org.juzu</groupId>
-      <artifactId>juzu-overlay-gatein</artifactId>
-      <type>war</type>
-      <scope>provided</scope>
-      <version>0.5-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>org.juzu</groupId>
-      <artifactId>juzu-overlay-liferay</artifactId>
-      <type>war</type>
-      <scope>provided</scope>
-      <version>0.5-SNAPSHOT</version>
-    </dependency>
+	<dependencies>
+		<dependency>
+			<groupId>org.juzu</groupId>
+			<artifactId>juzu-builder</artifactId>
+			<version>${juzu.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.juzu</groupId>
+			<artifactId>juzu-plugins-portlet</artifactId>
+			<version>${juzu.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -100,8 +70,8 @@
           <artifactId>maven-compiler-plugin</artifactId>
           <version>2.3.2</version>
           <configuration>
-            <source>1.6</source>
-            <target>1.6</target>
+            <source>1.5</source>
+            <target>1.5</target>
           </configuration>
         </plugin>
       </plugins>

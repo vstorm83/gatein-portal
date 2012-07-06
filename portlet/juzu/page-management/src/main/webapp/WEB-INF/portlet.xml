@@ -5,26 +5,27 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd
    http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd">
    <portlet>
-     <portlet-name>PagesApplication</portlet-name>
+     <portlet-name>PagesPortlet</portlet-name>
      <display-name xml:lang="EN">Juzu Page management Portlet</display-name>
-     <portlet-class>org.juzu.portlet.JuzuPortlet</portlet-class>
+     <portlet-class>org.exoplatform.juzu.pages.PagesPortlet</portlet-class>
      <init-param>
        <name>juzu.app_name</name>
        <value>PagesApplication</value>
-     </init-param>
+		 </init-param>
      <init-param>
        <name>juzu.run_mode</name>
-       <value>dev</value>
+       <value>prod</value>
      </init-param>
      <init-param>
        <name>juzu.inject</name>
        <value>weld</value>
-      <!-- <value>spring</value>  -->
-     </init-param>
+		 </init-param>
+		 <!--
      <init-param>
        <name>juzu.src_path</name>
 	   <value>${source.path}</value>
-     </init-param>
+		 </init-param>
+		 -->
      <supports>
        <mime-type>text/html</mime-type>
        <portlet-mode>edit</portlet-mode>
