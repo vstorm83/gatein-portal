@@ -21,7 +21,7 @@ package org.exoplatform.juzu.pages;
 import javax.inject.Provider;
 
 import org.exoplatform.container.PortalContainer;
-import org.juzu.inject.ProviderFactory;
+import juzu.inject.ProviderFactory;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>

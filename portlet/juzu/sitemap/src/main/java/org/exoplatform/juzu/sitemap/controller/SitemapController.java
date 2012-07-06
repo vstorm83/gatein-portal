@@ -40,12 +40,12 @@ import org.exoplatform.portal.webui.navigation.TreeNode;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.juzu.Controller;
-import org.juzu.Path;
-import org.juzu.Resource;
-import org.juzu.Response;
-import org.juzu.View;
-import org.juzu.plugin.ajax.Ajax;
+import juzu.Controller;
+import juzu.Path;
+import juzu.Resource;
+import juzu.Response;
+import juzu.View;
+import juzu.plugin.ajax.Ajax;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -107,7 +107,7 @@ public class SitemapController extends Controller
          travelNode(node, nodeURL, b);
          return Response.ok(b.toString());
       }
-      return Response.status(404);
+      return Response.notFound("Content not found");
    }
    
    private UserNode updateNode(UserNode node) throws Exception

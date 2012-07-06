@@ -33,10 +33,10 @@ import org.exoplatform.portal.config.UserACL.Permission;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.webui.util.Util;
-import org.juzu.Resource;
-import org.juzu.Response;
-import org.juzu.impl.utils.Spliterator;
-import org.juzu.plugin.ajax.Ajax;
+import juzu.Resource;
+import juzu.Response;
+import juzu.impl.utils.Spliterator;
+import juzu.plugin.ajax.Ajax;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -92,7 +92,7 @@ public class PageSettings
       page.setFactoryId(selectedPage.getFactoryId());
       page.setModifiable(true);
       dataStorage.save(page);
-      return Response.ok();
+      return Response.ok("Save new page");
    }
 
    @Ajax

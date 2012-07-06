@@ -19,10 +19,11 @@
 package org.exoplatform.juzu.pages;
 
 import java.io.IOException;
+import java.util.Iterator;
 import java.util.Map;
 
-import org.juzu.Response;
-import org.juzu.io.Stream;
+import juzu.Response;
+import juzu.io.Stream;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -32,9 +33,9 @@ import org.juzu.io.Stream;
 public class Utils
 {
    
-   public static Response.Resource<Stream.Char> createJSON(final Map<String, String> data)
+   public static Response.Content<Stream.Char> createJSON(final Map<String, String> data)
    {
-      Response.Resource<Stream.Char> json = new Response.Resource<Stream.Char>(Stream.Char.class)
+      Response.Content<Stream.Char> json = new Response.Content<Stream.Char>(200, Stream.Char.class)
       {
 
          @Override
@@ -53,12 +54,17 @@ public class Utils
          public void send(Stream.Char stream) throws IOException
          {
             stream.append("{");
-            for (Map.Entry<String, String> entry : data.entrySet())
+            Iterator<Map.Entry<String, String>> i = data.entrySet().iterator();
+            while(i.hasNext())
             {
+               Map.Entry<String, String> entry = i.next();
                stream.append("\"" + entry.getKey() + "\"");
                stream.append(":");
                stream.append("\"" + entry.getValue() + "\"");
-               stream.append(",");
+               if(i.hasNext())
+               {
+                  stream.append(",");
+               }
             }
             stream.append("}");
          }

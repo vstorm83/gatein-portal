@@ -23,7 +23,7 @@ import javax.inject.Named;
 import org.exoplatform.portal.config.Query;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.webui.page.PageQueryAccessList;
-import org.juzu.SessionScoped;
+import juzu.SessionScoped;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>

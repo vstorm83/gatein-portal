@@ -25,9 +25,9 @@ import java.util.Set;
 import org.exoplatform.juzu.pages.Layouts;
 import org.exoplatform.juzu.pages.Layouts.Layout;
 import org.exoplatform.juzu.pages.Utils;
-import org.juzu.Resource;
-import org.juzu.Response;
-import org.juzu.plugin.ajax.Ajax;
+import juzu.Resource;
+import juzu.Response;
+import juzu.plugin.ajax.Ajax;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>

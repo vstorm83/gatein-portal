@@ -21,7 +21,7 @@ package org.exoplatform.juzu.sitemap;
 import javax.inject.Named;
 
 import org.exoplatform.portal.webui.navigation.TreeNode;
-import org.juzu.SessionScoped;
+import juzu.SessionScoped;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Nguyen Thanh Hai</a>

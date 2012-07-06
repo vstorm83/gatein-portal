@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -43,16 +44,16 @@ import org.exoplatform.webui.form.validator.NaturalLanguageValidator;
 import org.exoplatform.webui.form.validator.PasswordStringLengthValidator;
 import org.exoplatform.webui.form.validator.UsernameValidator;
 import org.exoplatform.webui.form.validator.Validator;
-import org.juzu.Action;
-import org.juzu.Controller;
-import org.juzu.Path;
-import org.juzu.Resource;
-import org.juzu.Response;
-import org.juzu.View;
-import org.juzu.io.Stream;
-import org.juzu.plugin.ajax.Ajax;
-import org.juzu.portlet.JuzuPortlet;
-import org.juzu.template.Template;
+import juzu.Action;
+import juzu.Controller;
+import juzu.Path;
+import juzu.Resource;
+import juzu.Response;
+import juzu.View;
+import juzu.io.Stream;
+import juzu.plugin.ajax.Ajax;
+import juzu.portlet.JuzuPortlet;
+import juzu.template.Template;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -107,12 +108,12 @@ public class RegisterController extends Controller
    public Response edit(String captcha) throws Exception {
    	preferences.setValue("captcha", captcha == null ? "false" : "true");
    	preferences.store();
-   	return RegisterController_.index().setProperty(JuzuPortlet.PORTLET_MODE, PortletMode.VIEW);
+   	return RegisterController_.index().with(JuzuPortlet.PORTLET_MODE, PortletMode.VIEW);
    }
    
-   private Response.Resource<Stream.Char> createJSON(final Map<String, String> data)
+   private Response.Content<Stream.Char> createJSON(final Map<String, String> data)
    {
-      Response.Resource<Stream.Char> json = new Response.Resource<Stream.Char>(Stream.Char.class)
+      Response.Content<Stream.Char> json = new Response.Content<Stream.Char>(200, Stream.Char.class)
       {
 
          @Override
@@ -122,21 +123,20 @@ public class RegisterController extends Controller
          }
 
          @Override
-         public Integer getStatus()
-         {
-            return 200;
-         }
-
-         @Override
          public void send(Stream.Char stream) throws IOException
          {
             stream.append("{");
-            for (Map.Entry<String, String> entry : data.entrySet())
+            Iterator<Map.Entry<String, String>> i = data.entrySet().iterator();
+            while(i.hasNext())
             {
+               Map.Entry<String, String> entry = i.next();
                stream.append("\"" + entry.getKey() + "\"");
                stream.append(":");
                stream.append("\"" + entry.getValue() + "\"");
-               stream.append(",");
+               if(i.hasNext())
+               {
+                  stream.append(",");
+               }
             }
             stream.append("}");
          }

@@ -20,7 +20,7 @@ package org.exoplatform.juzu.register;
 
 import javax.inject.Named;
 
-import org.juzu.FlashScoped;
+import juzu.FlashScoped;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
