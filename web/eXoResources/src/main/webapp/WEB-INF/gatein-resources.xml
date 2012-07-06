@@ -27,6 +27,12 @@
       <css-path>/skin/Stylesheet.css</css-path>
       <css-priority>0</css-priority>
    </portal-skin>
+   
+   <portal-skin>
+      <skin-name>GateinCommon</skin-name>
+      <css-path>/common/gatein-common.less</css-path>
+      <css-priority>0</css-priority>
+   </portal-skin>
 
    <!-- Simple window style -->
    <window-style>
