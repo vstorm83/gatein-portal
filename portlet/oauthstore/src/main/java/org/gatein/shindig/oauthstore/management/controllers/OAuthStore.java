@@ -23,15 +23,15 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.gadget.core.OAuthStoreConsumer;
 import org.exoplatform.portal.gadget.core.OAuthStoreConsumerService;
 import org.gatein.shindig.oauthstore.management.Session;
-import org.juzu.Action;
-import org.juzu.Controller;
-import org.juzu.Path;
-import org.juzu.Resource;
-import org.juzu.Response;
-import org.juzu.View;
-import org.juzu.impl.compiler.BaseProcessor;
-import org.juzu.impl.utils.Logger;
-import org.juzu.plugin.ajax.Ajax;
+import juzu.Action;
+import juzu.Controller;
+import juzu.Path;
+import juzu.Resource;
+import juzu.Response;
+import juzu.View;
+import juzu.impl.compiler.BaseProcessor;
+import juzu.impl.utils.Logger;
+import juzu.plugin.ajax.Ajax;
 
 import java.util.List;
 

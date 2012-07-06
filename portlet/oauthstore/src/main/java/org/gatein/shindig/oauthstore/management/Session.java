@@ -19,7 +19,7 @@
 package org.gatein.shindig.oauthstore.management;
 
 import org.exoplatform.portal.gadget.core.OAuthStoreConsumer;
-import org.juzu.SessionScoped;
+import juzu.SessionScoped;
 
 import java.io.Serializable;
 
