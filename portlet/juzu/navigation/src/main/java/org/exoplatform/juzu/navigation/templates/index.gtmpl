@@ -1,0 +1,9 @@
+#{param name=controller /}
+<%
+		String html = controller.render();
+%>
+<div>
+	<ul class="JuzuNavigation treeview">
+	${html}
+	</ul>
+</div>

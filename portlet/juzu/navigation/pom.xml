@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+		<groupId>org.exoplatform.portal</groupId>
+		<artifactId>exo.portal.portlet.juzu</artifactId>
+    <version>1.0-SNAPSHOT</version>
+  </parent>
+
+  <groupId>org.exoplatform.portal</groupId>
+	<artifactId>exo.portal.portlet.juzu.navigation</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>war</packaging>
+
+  <name>Juzu Navigation Application</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.portal</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+	<properties>
+		<source.path>${project.basedir}/src/main/java</source.path>
+	</properties>
+
+  <build>
+    <finalName>juzu-navigation</finalName>
+
+		<plugins>
+			<!--
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>maven-jetty-plugin</artifactId>
+				<version>6.1.10</version>
+				<configuration>
+					<scanIntervalSeconds>10</scanIntervalSeconds>
+					<stopKey>foo</stopKey>
+					<stopPort>9999</stopPort>
+					<webApp>target/juzu-navigation</webApp>
+					<contextPath>/</contextPath>
+				</configuration>
+			</plugin>
+			-->
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<configuration>
+					<webResources>
+						<resource>
+							<targetPath>WEB-INF</targetPath>
+							<directory>src/main/webapp/WEB-INF</directory>
+							<filtering>true</filtering>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <dependencies>
+          <dependency>
+            <groupId>org.juzu</groupId>
+            <artifactId>juzu-builder</artifactId>
+            <version>0.6.0-SNAPSHOT</version>
+          </dependency>
+        </dependencies>
+        <configuration>
+          <attach>true</attach>
+        </configuration>
+        <executions>
+          <execution>
+            <id>gatein</id>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <classifier>gatein</classifier>
+              <descriptorRefs>
+                <descriptorRef>gatein</descriptorRef>
+              </descriptorRefs>
+            </configuration>
+          </execution>
+          <execution>
+            <id>liferay</id>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <phase>package</phase>
+            <configuration>
+              <classifier>liferay</classifier>
+              <descriptorRefs>
+                <descriptorRef>liferay</descriptorRef>
+              </descriptorRefs>
+            </configuration>
+          </execution>
+        </executions>
+			</plugin>
+		</plugins>
+  </build>
+</project>

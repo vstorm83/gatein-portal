@@ -21,12 +21,13 @@
 		<module>register</module>
 		<module>sitemap</module>
 		<module>page-management</module>
+		<module>navigation</module>
 	</modules>
 
   <properties>
     <maven.compiler.target>1.6</maven.compiler.target>
 		<maven.compiler.source>1.6</maven.compiler.source>
-		<juzu.version>0.6.0-SNAPSHOT</juzu.version>
+		<juzu.version>0.5.1</juzu.version>
   </properties>
 
 	<dependencies>
