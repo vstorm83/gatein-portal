@@ -16,25 +16,27 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+@import "../../../../../eXoResources/core/gatein-core.less";
+
+@import "variables.less";
+@import "mixin.less";
 
 .UIFooterPortlet {
-  margin: 0;
+  .gtnMargin(0px,0px,0px,0px);
   background: #dedfdf;
-}
-	
-.UIFooterPortlet .RepeatFooter {
-	padding: 0px;
-	margin: 0px;
-}
-
-.UIFooterPortlet .FooterInfoContainer {
+  .RepeatFooter {
+	.gtnPadding(0px,0px,0px,0px);
+	.gtnMargin(0px,0px,0px,0px);
+  }
+  .FooterInfoContainer {
 	line-height: 25px;
-}
-
-.UIFooterPortlet .CopyrightInfo {
+  }
+  .CopyrightInfo {
 	text-align: center;
 	line-height: 30px;
 	height: 30px;
 	color:#5A5A5A;
 	font-weight:bold;
+  }
 }
+

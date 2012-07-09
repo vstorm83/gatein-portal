@@ -16,6 +16,11 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+ 
+@import "../../../../../eXoResources/core/gatein-core.less";
+
+@import "variables.less";
+@import "mixin.less";
 
 #banner {
 	border-top: 1px solid #b5b6b6;
@@ -27,90 +32,89 @@
 }
 
 .UIBannerPortlet .LeftBanner {
-	border-top: 1px solid #b5b6b6;
-	padding-left: 10px; /* orientation=lt */
-	padding-right: 10px; /* orientation=rt */
-}
-
-.UIBannerPortlet .RightBanner {
-	background: url('DefaultSkin/background/Logo.gif') no-repeat left 11px; /* orientation=lt */
-	background: url('DefaultSkin/background/Logo.gif') no-repeat right -39px; /* orientation=rt */
-}
-
-.UIBannerPortlet .MiddleBanner {
-	height: 43px;
+	.gtnBordered(#b5b6b6, #b5b6b6, #b5b6b6, #b5b6b6);
+	.dir(@dir);
+	.dir(lt){
+		.gtnPadding(0px, 0px, 0px, 10px);
+	}
+	.dir(rt){
+		.gtnPadding(0px, 10px, 0px, 0px);
+	}
+	.RightBanner {
+		.dir(@dir);
+		.dir(lt){
+			background: url('@{pathBackground}/Logo.gif') no-repeat left 11px;
+		}
+		.dir(rt){
+			background: url('@{pathBackground}/Logo.gif') no-repeat right -39px;
+		}
+		.MiddleBanner {
+			height: 43px;
+		}
+	}
 }
 
 .UIBannerPortlet .LeftLoginContainer {
-	float: right; /* orientation=lt */
-	float: left; /* orientation=rt */
-}
-
-.UIBannerPortlet .RightLoginContainer {
-}
-
-.UIBannerPortlet .MiddleLoginContainer {
-	padding: 5px 15px 1px;
-}
-
-.UIBannerPortlet .Signin {
-
+	.dir(@dir);
+	.dir(lt){
+		.gtnFloatRight;
+	}
+	.dir(rt){
+		.gtnFloatLeft;
+	}
+	.MiddleLoginContainer {
+		.gtnPadding(5px, 15px, 1px, 15px);
+		.Name {
+			.gtnTextAlignLeft; 
+			color: #666666;
+			.gtnMargin(6px, 0px, 0px, 0px);
+			line-height: 35px;
+			.gtnFloatLeft;
+		}
+		.Logout {
+			.gtnMargin(0px, 12px, 0px, 0px);
+			cursor: pointer;
+			.gtnFloatLeft;
+			font-weight: bold;
+			display: block;
+			line-height: 35px;
+			color: @white;
+		}
+		.Login {
+			.gtnMargin(0px, 12px, 0px, 0px);
+			cursor: pointer;
+			.gtnFloatLeft; 	
+			font-weight: bold;
+			display: block;
+			line-height: 35px;
+			color: @white;
+			background: none;
+		}
+		.Register {
+			.gtnMargin(0px, 12px, 0px, 0px);
+			cursor: pointer;
+			.gtnFloatLeft;	 	
+			font-weight: bold;
+			display: block;
+			line-height: 35px;
+			color: @white;
+			background: none;
+		}
+		.Language {
+			cursor: pointer;
+			font-weight: bold;
+			.gtnFloatLeft;
+			display: block;
+			line-height: 35px;
+			color: @white;
+		}
+	}
 }
 
 .UIBannerPortlet .MiddleLoginContainer a {
 	color: #0d62af;
 	outline: none;
-}
-
-.UIBannerPortlet .MiddleLoginContainer a:hover {
-	color: #e7e7e7;
-}
-
-.UIBannerPortlet .MiddleLoginContainer .Name {
-	text-align: left;	 
-	color: #666666;
-	margin-bottom: 6px;
-	line-height: 35px;
-	float: left;
-}
-
-.UIBannerPortlet .MiddleLoginContainer .Logout {
-	margin-right: 12px;
-	cursor: pointer;
-	float: left;	
-	font-weight: bold;
-	display: block;
-	line-height: 35px;
-	color: white;
-}
-
-.UIBannerPortlet .MiddleLoginContainer .Login {
-	margin-right: 12px;	
-	cursor: pointer;
-	float: left;	 	
-	font-weight: bold;
-	display: block;
-	line-height: 35px;
-	color: white;
-	background: none;
-}
-
-.UIBannerPortlet .MiddleLoginContainer .Register {
-	margin-right: 12px;	
-	cursor: pointer;
-	float: left;	 	
-	font-weight: bold;
-	display: block;
-	line-height: 35px;
-	color: white;
-	background: none;
-}
- 
-.UIBannerPortlet .MiddleLoginContainer .Language {
-	cursor: pointer;
-	font-weight: bold;
-	float: left;
-	display: block;
-	line-height: 35px;
-	color: white;
+	a:hover {
+		color: #e7e7e7;
+	}
 }

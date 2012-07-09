@@ -16,25 +16,20 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-@dir: ltr;
+@import "../../../../../eXoResources/core/gatein-core.less";
+
+@import "variables.less";
+@import "mixin.less";
 
 /**
 	This section should be moved to mixin.less file for reusing
 */
-.Float {
-	.Float(@dir);
-}
-.Float(ltr) {
-	float: left;
-}
-.Float(rtl) {
-	float: right;
-}
+
 /**/
 
 .UILogoPortlet {
 	zoom: 100%;
-	padding: 5px;
+	.gtnPadding(5px,5px,5px,5px);
 	line-height: 38px;
 	.Img img {
 		height: 38px;
@@ -42,7 +37,13 @@
 }
 
 .UILogoPortlet .Img,.UILogoPortlet .BannerTitle {
-	.Float;
+	.dir(@dir);
+	.dir(lt){
+		.gtnFloatLeft;
+	}
+	.dir(rt){
+		.gtnFloatRight;
+	}
 	color: #3c3c3c;
 	font-size: 17px;
 }
@@ -50,14 +51,20 @@
 .UILogoPortlet .Signin a,.UILogoPortlet .Signout a,
 .UILogoPortlet .Signout span {
 	display: block;
-	.Float;
+	.dir(@dir);
+	.dir(lt){
+		.gtnFloatLeft;
+	}
+	.dir(rt){
+		.gtnFloatRight;
+	}
 	cursor: pointer;
 }
 
 .UILogoPortlet a {
-	color: white;
+	color: @white;
 	outline: none;
-	margin: 0 8px;
+	.gtnMargin(0px, 8px, 0px, 8px);
 	font-weight: bold;
 }
 
@@ -66,8 +73,8 @@
 	font-weight: normal;
 }
 
-.UILogoPortlet a.User {
-	padding: 0 4px; 
+.UILogoPortlet a.User { 
+	.gtnPadding(0px,4px,0px,4px);
 	background: none;
 	color: #e66a1f;
 }
