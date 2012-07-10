@@ -18,7 +18,10 @@
  */
 package org.exoplatform.juzu.navigation.models;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -32,6 +35,8 @@ public class Node
    private Node parent;
    
    private LinkedList<Node> children = new LinkedList<Node>();
+   
+   private Map<String, String> attributes = new HashMap<String,String>();
 
    public Node(String name) {
       this.name = name;
@@ -68,6 +73,29 @@ public class Node
    
    public Node getParent() {
       return parent;
+   }
+   
+   public Iterator<Map.Entry<String, String>> getAttributes() {
+      return attributes.entrySet().iterator();
+   }
+   
+   public void setAttributes(String[] attributes) {
+      for(String attr : attributes){
+         int index = attr.indexOf('=');
+         if(index > 0) {
+            this.attributes.put(attr.substring(0, index), attr.substring(index + 1));
+         } else {
+            this.attributes.put(attr, "");
+         }
+      }
+   }
+   
+   public void setAttribute(String key, String value) {
+      attributes.put(key, value);
+   }
+   
+   public String getAttribute(String key) {
+      return attributes.get(key);
    }
    
    public Node add(Node ... nodes) {

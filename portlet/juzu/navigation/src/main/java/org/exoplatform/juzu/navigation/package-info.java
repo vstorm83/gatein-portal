@@ -6,10 +6,15 @@
       @Script(id = "jquery", src = "public/javascripts/jquery-1.7.1.min.js"),
       @Script(src = "public/javascripts/jquery.treeview.js", depends="jquery"),
       @Script(src = "public/javascripts/jquery.treeview.edit.js", depends="jquery"),
+      @Script(src = "public/javascripts/bootstrap-transition.js", depends="jquery"),
+      @Script(src = "public/javascripts/bootstrap-collapse.js", depends="jquery"),
+      @Script(src = "public/javascripts/bootstrap-carousel.js", depends="jquery"),
       @Script(src = "public/javascripts/navigation.js", depends="juzu.ajax")
    },
    stylesheets = {
-      @Stylesheet(src = "public/jquery.treeview.css")
+      @Stylesheet(src = "public/bootstrap.css"),
+      @Stylesheet(src = "public/jquery.treeview.css"),
+      @Stylesheet(src = "public/navigation.css")
    }
 )
 

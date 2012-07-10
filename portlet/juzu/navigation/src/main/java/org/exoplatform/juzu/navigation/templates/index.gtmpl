@@ -1,9 +1,66 @@
 #{param name=controller /}
 <%
-		String html = controller.render();
+   String html = controller.render();
 %>
-<div>
-	<ul class="JuzuNavigation treeview">
-	${html}
-	</ul>
+
+<!-- <div id="myCarousel" class="carousel slide">
+   <div class="carousel-inner"> -->
+      <!-- <div>
+         <ul class="JuzuNavigation treeview">${html}</ul>
+      </div> --!>
+      <!-- <div style="padding-left: 100px;" class="item"><p>Edit layout</p></div>
+      <div style="padding-left: 100px;" class="item"><p>Edit page</p></div>
+   </div>
+   <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+   <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+</div> -->
+<div style="padding-top: 20px;" class="container-fluid">
+   <div class="row-fluid">
+      <div class="span3">
+         <div class="well">
+            <ul class="nav nav-list">
+               <li class="nav-header">Site operator</li>
+               <li class="divider"></li>
+               <li><a href="#!/edit-layout"><i class="icon-edit"></i> 
+                     Edit Layout</a></li>
+               <li><a href="#!/edit-site-config"><i class="icon-cog"></i>
+                     Edit Site's Config</a></li>
+               <li><a href="#!/add-new-site"><i class="icon-plus"></i>
+                     Add New Site</a></li>
+               <li class="nav-header">Node operator</li>
+               <li class="divider"></li>
+               <li><a href="#!/add-new-node"><i class="icon-plus-sign"></i>
+                     Add New Node</a></li>
+               <li><a href="#!/edit-node-page"><i class="icon-edit"></i>
+                     Edit Node's Page</a></li>
+               <li><a href="#!/edit-node"><i class="icon-pencil"></i> Edit Node</a></li>
+               <li><a href="#!/copy-node"><i class="icon-file"></i> Copy Node</a></li>
+               <li><a href="#!/clone-node"><i class="icon-tags"></i> Clone Node</a></li>
+               <li><a href="#!/cut-node"><i class="icon-move"></i> Cut Node</a></li>
+               <li><a href="#!/delete-node"><i class="icon-trash"></i> Delete Node</a></li>
+               <li><a href="#!/move-up"><i class="icon-arrow-up"></i> Move Up</a></li>
+               <li><a href="#!/move-down"><i class="icon-arrow-down"></i> Move Down</a></li>
+            </ul>
+         </div>
+      </div>
+      <div class="span9">
+         <div class="border">
+            <!--  <ul class="JuzuNavigation treeview">${html}</ul> -->
+            <div id="myCarousel" class="carousel">
+               <!-- Carousel items -->
+               <div class="carousel-inner">
+                  <div class="active item">
+                     <ul class="JuzuNavigation treeview">${html}</ul>
+                  </div>
+                  <div class="item"><p>Page 2</p></div>
+                  <div class="item"><p>Page 3</p></div>
+               </div>
+            </div>
+            <div class="pagination">
+               <a class="previous">Previous</a>
+               <a class="next">Next</a>
+            </div>
+         </div>
+      </div>
+   </div>
 </div>
