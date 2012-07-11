@@ -1,0 +1,38 @@
+<div class="JuzuNav well">
+   <ul class="nav nav-list">
+      <li class="nav-header">Site operator</li>
+      <li class="divider"></li>
+      <li class="site-operator"><a href="#!/edit-layout"><i class="icon-edit"></i>
+            Edit Layout</a></li>
+      <li class="site-operator"><a href="#!/edit-site-config"><i class="icon-cog"></i>
+            Edit Site's Config</a></li>
+      <li class="site-operator"><a href="#!/add-new-site"><i class="icon-plus"></i>
+            Add New Site</a></li>
+      
+      <li class="nav-header">Node operator</li>
+      <li class="divider"></li>
+      <li class="node-operator step1"><a href="#!/add-new-node"><i class="icon-plus-sign"></i>
+            Add New Node</a></li>
+      <li class="node-operator step2"><a href="#!/edit-node-page"><i class="icon-edit"></i>
+            Edit Node's Page</a></li>
+      <li class="node-operator step2"><a href="#!/edit-node"><i class="icon-pencil"></i>
+            Edit Node</a></li>
+      <li class="node-operator step2 motion"><a href="#!/copy-node"><i class="icon-file"></i> Copy
+            Node</a></li>
+      <li class="node-operator step2 motion"><a href="#!/clone-node"><i class="icon-tags"></i>
+            Clone Node</a></li>
+      <li class="node-operator step2 motion"><a href="#!/cut-node"><i class="icon-move"></i> Cut
+            Node</a></li>
+      <li class="node-operator step2 motion"><a href="#!/delete-node"><i class="icon-trash"></i>
+            Delete Node</a></li>
+      <li class="node-operator step2 arrow-up"><a href="#!/move-up"><i class="icon-arrow-up"></i>
+            Move Up</a></li>
+      <li class="node-operator step2 arrow-down"><a href="#!/move-down"><i class="icon-arrow-down"></i>
+            Move Down</a></li>
+      <li class="node-operator step3"><a href="#!/paste-node"><i
+            class="icon-download-alt"></i> Paste Node</a></li>
+      <li class="node-operator step3 divider"></li>
+      <li class="node-operator step3 save"><a href="#!/save"><i class="icon-inbox"></i>
+            Save</a></li>
+   </ul>
+</div>

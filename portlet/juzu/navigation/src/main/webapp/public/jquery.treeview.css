@@ -32,6 +32,10 @@
 	background-color: #eee;
 }
 
+.treeview span.selected {
+	background-color: #eee;
+}
+
 #treecontrol { margin: 1em 0; display: none; }
 
 .treeview .hover { color: red; cursor: pointer; }
