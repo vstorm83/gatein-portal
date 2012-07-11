@@ -73,7 +73,7 @@
 
         <module name="javax.annotation.api"/>
         <module name="org.jboss.msc"/>
-       <module name="org.jboss.dmr"/>
+        <module name="org.jboss.dmr"/>
 
         <module name="org.picocontainer" />
         <module name="org.apache.commons-fileupload" />

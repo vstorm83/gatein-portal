@@ -377,6 +377,12 @@
             <artifactId>gatein-management-rest</artifactId>
             <version>${org.gatein.mgmt.version}</version>
          </dependency>
+         <!-- GateIn Mgmt uses jboss-dmr for model impl -->
+         <dependency>
+            <groupId>org.jboss</groupId>
+            <artifactId>jboss-dmr</artifactId>
+            <version>1.1.1.Final</version>
+         </dependency>
          <!-- WSRP -->
          <dependency>
             <groupId>org.gatein.wsrp</groupId>
