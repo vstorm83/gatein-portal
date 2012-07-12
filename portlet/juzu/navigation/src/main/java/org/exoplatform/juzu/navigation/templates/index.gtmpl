@@ -3,17 +3,6 @@
    String html = controller.render();
 %>
 
-<!-- <div id="myCarousel" class="carousel slide">
-   <div class="carousel-inner"> -->
-      <!-- <div>
-         <ul class="JuzuNavigation treeview">${html}</ul>
-      </div> --!>
-      <!-- <div style="padding-left: 100px;" class="item"><p>Edit layout</p></div>
-      <div style="padding-left: 100px;" class="item"><p>Edit page</p></div>
-   </div>
-   <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
-   <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
-</div> -->
 <div style="padding-top: 20px;" class="container-fluid">
    <div class="row-fluid">
       <div class="span3">
@@ -29,7 +18,7 @@
                      <ul class="JuzuNav treeview">${html}</ul>
                   </div>
                   <div class="item treenode-modify">
-                     <div class="alert alert-info">Clipboard: /home/home1/home1.1</div>
+                     <div class="alert alert-info"></div>
                      <ul class="JuzuNav treeview">${html}</ul>
                   </div>
                   <div class="item edit-node"><p>Page 3</p></div>
@@ -38,6 +27,8 @@
             <div class="JuzuNav step">
                <a class="btn back">Back</a>
             </div>
+            <div class="JuzuNav clipboard" style="display: none;"></div>
+            <div class="JuzuNav target" style="display: none;"></div>
          </div>
       </div>
    </div>

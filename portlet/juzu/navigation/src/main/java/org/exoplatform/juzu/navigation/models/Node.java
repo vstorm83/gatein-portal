@@ -32,6 +32,8 @@ public class Node
 {
    private String name;
    
+   private String id;
+   
    private Node parent;
    
    private LinkedList<Node> children = new LinkedList<Node>();
@@ -67,6 +69,14 @@ public class Node
       return name;
    }
    
+   public String getId() {
+      StringBuilder sb = new StringBuilder();
+      sb.append(parent != null ? parent.getId() : "");
+      sb.append("root".equals(name) ? "" : "/").append(name);
+      id = sb.toString();
+      return id;
+   }
+   
    public void setName(String name) {
       this.name = name;
    }
@@ -100,12 +110,14 @@ public class Node
    
    public Node add(Node ... nodes) {
       for(Node node : nodes) {
+         node.parent = this;
          children.addLast(node);
       }
       return this;
    }
    
    public Node add(Node node) {
+      node.parent = this;
       children.addLast(node);
       return node;
    }
@@ -118,21 +130,36 @@ public class Node
       return children != null ? children.size() > 0 : false;
    }
    
-   public Node getSibling() {
+   public Node previous() {
       if(parent == null) return null;
-      LinkedList<Node> child = parent.getChildren();
-      if(child != null) {
-         while(true) {
-            Node node = child.peek();
-            if(node == null) return null;
-            else if(node == this) return child.peek();
+      LinkedList<Node> children = parent.getChildren();
+      for(int i = 0; i < children.size(); i++) {
+         Node sel = children.get(i);
+         if(sel.equals(this)) return i == 0 ? null : children.get(i - 1);
+      }
+      return null;
+   }
+   
+   public Node next() {
+      if(parent == null) return null;
+      LinkedList<Node> children = parent.getChildren();
+      for(int i = 0; i < children.size(); i++) {
+         Node sel = children.get(i);
+         if(sel == this) {
+            return i == children.size() - 1 ? null : children.get(i + 1);
          }
       }
       return null;
    }
    
+   @Override
+   public boolean equals(Object obj) {
+      Node that = (Node)obj;
+      return this.getId().equals(that.getId());
+   }
+   
    public static Node createMock(int level) {
-      Node root = new Node("..", new Node[] {
+      Node root = new Node("root", new Node[] {
          new Node("home", new Node[] {
             new Node("home1"),
             new Node("home2"),
@@ -167,7 +194,7 @@ public class Node
    
    private static void foo(Node node, int deep) {
       if(deep == 0) return;
-      Node added = node.add(new Node(node.name + ".1"));
+      Node added = node.add(new Node(node.name + "_1"));
       foo(added, --deep);
    }
 }

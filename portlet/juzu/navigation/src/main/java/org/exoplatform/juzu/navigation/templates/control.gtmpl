@@ -9,30 +9,30 @@
       <li class="site-operator"><a href="#!/add-new-site"><i class="icon-plus"></i>
             Add New Site</a></li>
       
-      <li class="nav-header">Node operator</li>
-      <li class="divider"></li>
-      <li class="node-operator step1"><a href="#!/add-new-node"><i class="icon-plus-sign"></i>
+      <li class="node-operator step1 nav-header">Node Modify</li>
+      <li class="node-operator step1 divider"></li>
+      <li class="node-operator step1 add"><a href="#!/add-new-node"><i class="icon-plus-sign"></i>
             Add New Node</a></li>
-      <li class="node-operator step2"><a href="#!/edit-node-page"><i class="icon-edit"></i>
+      <li class="node-operator step1"><a href="#!/edit-node-page"><i class="icon-edit"></i>
             Edit Node's Page</a></li>
-      <li class="node-operator step2"><a href="#!/edit-node"><i class="icon-pencil"></i>
+      <li class="node-operator step1 edit"><a href="#!/edit-node"><i class="icon-pencil"></i>
             Edit Node</a></li>
-      <li class="node-operator step2 motion"><a href="#!/copy-node"><i class="icon-file"></i> Copy
+      <li class="node-operator step1 nav-header">Node Motion</li>
+      <li class="node-operator step1 divider"></li>
+      <li class="node-operator step1 nextstep2 copy"><a href="#!/copy-node"><i class="icon-file"></i> Copy
             Node</a></li>
-      <li class="node-operator step2 motion"><a href="#!/clone-node"><i class="icon-tags"></i>
+      <li class="node-operator step1 nextstep2 clone"><a href="#!/clone-node"><i class="icon-tags"></i>
             Clone Node</a></li>
-      <li class="node-operator step2 motion"><a href="#!/cut-node"><i class="icon-move"></i> Cut
+      <li class="node-operator step1 nextstep2 cut"><a href="#!/cut-node"><i class="icon-move"></i> Cut
             Node</a></li>
-      <li class="node-operator step2 motion"><a href="#!/delete-node"><i class="icon-trash"></i>
+      <li class="node-operator step1 delete"><a href="#!/delete-node"><i class="icon-trash"></i>
             Delete Node</a></li>
-      <li class="node-operator step2 arrow-up"><a href="#!/move-up"><i class="icon-arrow-up"></i>
+      <li class="node-operator step1 arrow-up"><a href="#!/move-up"><i class="icon-arrow-up"></i>
             Move Up</a></li>
-      <li class="node-operator step2 arrow-down"><a href="#!/move-down"><i class="icon-arrow-down"></i>
+      <li class="node-operator step1 arrow-down"><a href="#!/move-down"><i class="icon-arrow-down"></i>
             Move Down</a></li>
-      <li class="node-operator step3"><a href="#!/paste-node"><i
-            class="icon-download-alt"></i> Paste Node</a></li>
-      <li class="node-operator step3 divider"></li>
-      <li class="node-operator step3 save"><a href="#!/save"><i class="icon-inbox"></i>
-            Save</a></li>
+      <li class="node-operator step2 divider"></li>
+      <li class="node-operator step2 paste"><a href="#!/paste-node"><i class="icon-download-alt"></i> 
+            Paste Node</a></li>
    </ul>
 </div>

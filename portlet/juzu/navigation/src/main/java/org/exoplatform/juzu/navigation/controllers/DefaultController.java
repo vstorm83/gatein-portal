@@ -23,10 +23,14 @@ import java.util.LinkedList;
 import javax.inject.Inject;
 
 import juzu.Path;
+import juzu.Resource;
+import juzu.Response;
 import juzu.View;
+import juzu.plugin.ajax.Ajax;
 
 import org.exoplatform.juzu.navigation.Session;
 import org.exoplatform.juzu.navigation.models.Node;
+import org.exoplatform.juzu.navigation.models.NodeUtil;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -63,21 +67,37 @@ public class DefaultController
       LinkedList<Node> children = node.getChildren();
       int length = children.size();
       for(int i = 0; i < length; i++) {
-         Node child = children.get(i);
-         if(child.hasChild()) {
+         Node sel = children.get(i);
+         if(sel.hasChild()) {
             sb.append("<li ").append(i == length - 1 ? "class='expandable lastExpandable'>" : "class='expandable'>");
             sb.append("<div ").append(i == length - 1 ? "class='hitarea expandable-hitarea lastExpandable-hitarea'>" : "class='hitarea expandable-hitarea'>");
             sb.append("</div>");
-            sb.append("<span>").append(child.getName()).append("</span>");
+            sb.append("<span id='").append(sel.getId().replace('/', '-')).append("' node-id='").append(sel.getId()).append("'>").append(sel.getName()).append("</span>");
             sb.append("<ul style='display: none;'>");
-            render(child, sb);
+            render(sel, sb);
             sb.append("</ul>");
             sb.append("</li>");
          } else {
             sb.append("<li ").append(i == length - 1 ? "class='last'>" : ">");
-            sb.append("<span>").append(child.getName()).append("</span>");
+            sb.append("<span id='").append(sel.getId().replace('/', '-')).append("' node-id='").append(sel.getId()).append("'>").append(sel.getName()).append("</span>");
             sb.append("</li>");
          }
       }
+   }
+   
+   @Ajax
+   @Resource
+   public Response moveUp(String nodeId) {
+      Node root = NodeUtil.moveUp(session.getRootNode(), nodeId);
+      session.setRootNode(root);
+      return Response.content(200, render());
+   }
+   
+   @Ajax
+   @Resource
+   public Response moveDown(String nodeId) {
+      Node root = NodeUtil.moveDown(session.getRootNode(), nodeId);
+      session.setRootNode(root);
+      return Response.content(200, render());
    }
 }
