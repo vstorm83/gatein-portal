@@ -35,6 +35,7 @@ import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.gatein.api.exception.ApiException;
+import org.gatein.api.exception.EntityAlreadyExistsException;
 import org.gatein.api.exception.EntityNotFoundException;
 import org.gatein.api.portal.Label;
 import org.gatein.api.portal.Node;
@@ -106,7 +107,10 @@ public class NodeImpl implements Node
    {
       try
       {
-         return context.removeNode();
+         NodeContext<Node> parent = context.getParent();
+         boolean removed = context.removeNode();
+         gateIn.getNavigationService().saveNode(parent, null);
+         return removed;
       }
       catch (IllegalStateException e)
       {
@@ -140,6 +144,8 @@ public class NodeImpl implements Node
    public Node addChild(String name)
    {
       loadChildren(context);
+
+      if (context.get(name) != null) throw new EntityAlreadyExistsException("Child node " + name + " already exists for node " + this);
 
       Node node = context.add(null, name).getNode();
       gateIn.getNavigationService().saveNode(context, null);

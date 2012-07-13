@@ -22,6 +22,7 @@
 
 package org.gatein.api.management.portal;
 
+import org.gatein.api.exception.EntityAlreadyExistsException;
 import org.gatein.api.i18n.Localized;
 import org.gatein.api.portal.Label;
 import org.gatein.api.portal.Navigation;
@@ -88,10 +89,18 @@ public class NavigationManagementResource
    public ModelObject addNode(@MappedPath("path") String path,
                               @ManagedContext ModelObject model)
    {
-      Node node = navigation.addNode(path.split("/"));
-      populateModel(node, model);
 
-      return model;
+      try
+      {
+         Node node = navigation.addNode(path.split("/"));
+         populateModel(node, model);
+
+         return model;
+      }
+      catch (EntityAlreadyExistsException e)
+      {
+         throw new OperationException(OperationNames.ADD_RESOURCE, e.getMessage());
+      }
    }
 
    private void populateModel(Navigation navigation, ModelObject model, PathAddress address)
