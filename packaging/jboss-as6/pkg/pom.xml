@@ -441,11 +441,7 @@
       <!-- GateIn -->
       <dependency>
          <groupId>org.exoplatform.portal</groupId>
-         <artifactId>exo.portal.component.api.java</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.exoplatform.portal</groupId>
-         <artifactId>exo.portal.component.api.rest</artifactId>
+         <artifactId>exo.portal.component.api</artifactId>
       </dependency>
       <dependency>
          <groupId>org.exoplatform.portal</groupId>

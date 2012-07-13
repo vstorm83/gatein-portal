@@ -229,18 +229,6 @@ public class FilteredNavigationExportResource
          this.failureDescription = failureDescription;
       }
 
-      @Override
-      public Model completed()
-      {
-         throw new UnsupportedOperationException();
-      }
-
-      @Override
-      public Model failed()
-      {
-         throw new UnsupportedOperationException();
-      }
-
       public Object getResult()
       {
          return result;

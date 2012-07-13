@@ -649,6 +649,12 @@
          <artifactId>staxnav.core</artifactId>
       </dependency>
 
+      <!-- GateIn API -->
+      <dependency>
+         <groupId>org.gatein.api</groupId>
+         <artifactId>gatein-java-api</artifactId>
+      </dependency>
+
       <!-- Gatein common -->
       <dependency>
          <groupId>org.gatein.common</groupId>
@@ -808,6 +814,10 @@
       <!-- GateIn -->
       <dependency>
          <groupId>org.exoplatform.portal</groupId>
+         <artifactId>exo.portal.component.api</artifactId>
+      </dependency>
+      <dependency>
+         <groupId>org.exoplatform.portal</groupId>
          <artifactId>exo.portal.component.application-registry</artifactId>
       </dependency>
       <dependency>
@@ -886,23 +896,6 @@
          <groupId>org.exoplatform.portal</groupId>
          <artifactId>exo.portal.gadgets-core</artifactId>
       </dependency>
-
-
-     <!-- API -->
-      <dependency>
-         <groupId>org.exoplatform.portal</groupId>
-         <artifactId>exo.portal.component.api.java</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.exoplatform.portal</groupId>
-         <artifactId>exo.portal.component.api.rest</artifactId>
-      </dependency>
-      <dependency>
-         <groupId>org.gatein.api</groupId>
-         <artifactId>gatein-java-api</artifactId>
-      </dependency>
-
-
 
       <!-- Provided -->
       <dependency>
