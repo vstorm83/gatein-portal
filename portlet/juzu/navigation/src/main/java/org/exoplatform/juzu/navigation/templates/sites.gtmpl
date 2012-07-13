@@ -6,13 +6,9 @@
       </tr>
    </thead>
    <tbody>
-      <tr>
+      <tr class="site-selector">
          <td><img alt="" src="/exoadmin/skin/navigation/webui/component/background/PlImg.gif"></td>
-         <td><a class="site-selector" href="#!/site:classic">Classic</a></td>
-      </tr>
-      <tr>
-         <td><img alt="" src="/exoadmin/skin/navigation/webui/component/background/PlImg.gif"></td>
-         <td><a class="site-selector" href="#!/site:test">Test</a></td>
+         <td><a href="#!/site:classic">Classic</a></td>
       </tr>
    </tbody>
 </table>

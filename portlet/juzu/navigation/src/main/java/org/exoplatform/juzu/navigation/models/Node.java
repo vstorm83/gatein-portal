@@ -18,9 +18,11 @@
  */
 package org.exoplatform.juzu.navigation.models;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +44,7 @@ public class Node
 
    public Node(String name) {
       this.name = name;
+      this.id = getId();
    }
    
    public Node(String name, Node parent, LinkedList<Node> children) 
@@ -122,8 +125,12 @@ public class Node
       return node;
    }
    
-   public LinkedList<Node> getChildren() {
-      return children;
+   public List<Node> getChildren() {
+      return Collections.unmodifiableList(children);
+   }
+   
+   public void setChildren(LinkedList<Node> children) {
+      this.children = children;
    }
    
    public boolean hasChild() {
@@ -132,7 +139,7 @@ public class Node
    
    public Node previous() {
       if(parent == null) return null;
-      LinkedList<Node> children = parent.getChildren();
+      List<Node> children = parent.getChildren();
       for(int i = 0; i < children.size(); i++) {
          Node sel = children.get(i);
          if(sel.equals(this)) return i == 0 ? null : children.get(i - 1);
@@ -142,7 +149,7 @@ public class Node
    
    public Node next() {
       if(parent == null) return null;
-      LinkedList<Node> children = parent.getChildren();
+      List<Node> children = parent.getChildren();
       for(int i = 0; i < children.size(); i++) {
          Node sel = children.get(i);
          if(sel == this) {
@@ -152,49 +159,79 @@ public class Node
       return null;
    }
    
+   public boolean delete() {
+      return parent.children.remove(this);
+   }
+   
+   public void moveUp() {
+      Node prevNode = previous();
+      if(prevNode == null) return;
+      
+      List<Node> children = parent.getChildren();
+      LinkedList<Node> holder = new LinkedList<Node>();
+      for(Node sel : children) {
+         if(sel.equals(prevNode)) {
+            holder.addLast(this);
+            continue;
+         } else if(sel.equals(this)) {
+            holder.addLast(prevNode);
+            continue;
+         }
+         holder.addLast(sel);
+      }
+      parent.setChildren(holder);
+   }
+   
+   public void moveDown() {
+      Node nextNode = next();
+      if(nextNode == null) return;
+      
+      List<Node> children = parent.getChildren();
+      LinkedList<Node> holder = new LinkedList<Node>();
+      for(Node sel : children) {
+         if(sel.equals(this)) {
+            holder.addLast(nextNode);
+            continue;
+         } else if(sel.equals(nextNode)) {
+            holder.addLast(this);
+            continue;
+         }
+         holder.addLast(sel);
+      }
+      parent.setChildren(holder);
+   }
+   
+   @Override
+   public Node clone() {
+      Node node = new Node(this.name, this.parent, this.children);
+      return node;
+   }
+   
+   @Override
+   public String toString() {
+      return getId();
+   }
+   
+   public Node clone(Node dest) {
+      Node node = this.clone();
+      dest.add(node);
+      return dest;
+   }
+   
+   public Node copy(Node dest) {
+      return clone(dest);
+   }
+   
+   public Node cut(Node dest) {
+      if(this.delete()) {
+         dest.add(this);
+      }
+      return dest;
+   }
+   
    @Override
    public boolean equals(Object obj) {
       Node that = (Node)obj;
       return this.getId().equals(that.getId());
-   }
-   
-   public static Node createMock(int level) {
-      Node root = new Node("root", new Node[] {
-         new Node("home", new Node[] {
-            new Node("home1"),
-            new Node("home2"),
-            new Node("home3"),
-         }),
-         new Node("group", new Node[] {
-            new Node("group1"),
-            new Node("group2"),
-            new Node("group3")
-         }),
-         
-         new Node("empty1"),
-         
-         new Node("user", new Node[] {
-            new Node("user1"),
-            new Node("user2"),
-            new Node("user3")
-         }),
-         new Node("empty2")
-      });
-      
-      if(level > 2) {
-         LinkedList<Node> child = root.children;
-         for(Node node : child) {
-            for(Node sel : node.children) {
-               foo(sel, level - 2);
-            }
-         }
-      }
-      return root;
-   }
-   
-   private static void foo(Node node, int deep) {
-      if(deep == 0) return;
-      Node added = node.add(new Node(node.name + "_1"));
-      foo(added, --deep);
    }
 }

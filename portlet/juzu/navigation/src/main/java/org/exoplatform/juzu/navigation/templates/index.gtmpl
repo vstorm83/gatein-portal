@@ -6,30 +6,33 @@
 <div style="padding-top: 20px;" class="container-fluid">
    <div class="row-fluid">
       <div class="span3">
-         #{include path=control.gtmpl/}
+         #{include path=left.gtmpl /}
       </div>
       <div class="span9">
-         <div>
-            <div class="JuzuNav carousel">
-               <!-- Carousel items -->
-               <div class="carousel-inner">
-                  <div class="item active site-grip">#{include path=sites.gtmpl/}</div>
-                  <div class="item treenode">
-                     <ul class="JuzuNav treeview">${html}</ul>
-                  </div>
-                  <div class="item treenode-modify">
-                     <div class="alert alert-info"></div>
-                     <ul class="JuzuNav treeview">${html}</ul>
-                  </div>
-                  <div class="item edit-node"><p>Page 3</p></div>
+         <div class="JuzuNav carousel">
+            <!-- Carousel items -->
+            <div class="carousel-inner">
+               <div class="item active site-grip">
+                  #{include path=sites.gtmpl/}
                </div>
+               <div class="item treenode">
+                  <div style="float: left;">
+                     <ul class="JuzuNav treeview">${html}</ul>
+                  </div>
+                  <div style="float: right;">
+                     #{include path=right.gtmpl /}
+                  </div>
+               </div>
+               <div class="item treenode-modify">
+                  <div class="alert alert-info"></div>
+                  <ul class="JuzuNav treeview">${html}</ul>
+               </div>
+               <div class="item edit-node"><p>Page 3</p></div>
             </div>
-            <div class="JuzuNav step">
-               <a class="btn back">Back</a>
-            </div>
-            <div class="JuzuNav clipboard" style="display: none;"></div>
-            <div class="JuzuNav target" style="display: none;"></div>
          </div>
+         <div class="JuzuNav clipboard" style="display: none;"></div>
+         <div class="JuzuNav target" style="display: none;"></div>
+         <div class="JuzuNav method" style="display: none;"></div>
       </div>
    </div>
 </div>

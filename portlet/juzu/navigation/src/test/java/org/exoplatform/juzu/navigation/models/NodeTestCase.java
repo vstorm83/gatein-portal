@@ -30,14 +30,14 @@ public class NodeTestCase extends TestCase
 {
 
    public void testFindNodeById() {
-      Node root = Node.createMock(0);
+      Node root = NodeUtil.createMock(0);
       Node home = NodeUtil.findNode(root, "root/home");
       assertNotNull(home);
       assertEquals("root/home", home.getId());
    }
    
    public void testPrevNode() {
-      Node root = Node.createMock(0);
+      Node root = NodeUtil.createMock(0);
       Node group = NodeUtil.findNode(root, "root/group");
       assertNotNull(group);
       Node home = group.previous();
@@ -46,7 +46,7 @@ public class NodeTestCase extends TestCase
    }
    
    public void testNextNode() {
-      Node root = Node.createMock(0);
+      Node root = NodeUtil.createMock(0);
       Node user = NodeUtil.findNode(root, "root/user");
       assertNotNull(user);
       Node empty2 = user.next();
@@ -56,9 +56,9 @@ public class NodeTestCase extends TestCase
    }
    
    public void testMoveUp() {
-      Node root = Node.createMock(0);
+      Node root = NodeUtil.createMock(0);
       Node empty2 = NodeUtil.findNode(root, "root/empty2");
-      NodeUtil.moveUp(root, empty2);
+      empty2.moveUp();
       Node user = empty2.next();
       assertNotNull(user);
       assertEquals("root/user", user.getId());
@@ -66,17 +66,30 @@ public class NodeTestCase extends TestCase
    }
    
    public void testModeDown() {
-      Node root = Node.createMock(0);
+      Node root = NodeUtil.createMock(0);
       Node user = NodeUtil.findNode(root, "root/user");
-      NodeUtil.moveDown(root, user);
+      user.moveDown();
       Node empty2 = user.previous();
       assertNotNull(empty2);
       assertEquals("root/empty2", empty2.getId());
       assertNull(user.next());
    }
    
-   public void test() {
-      Node root = Node.createMock(15);
-      Node node = NodeUtil.findNode(root, "");
+   public void testDelete() {
+      Node root = NodeUtil.createMock(0);
+      Node node = NodeUtil.findNode(root, "root/home");
+      assertTrue(node.delete());
+      assertNull(NodeUtil.findNode(root, "root/home"));
+   }
+   
+   public void testCopy() {
+      Node root = NodeUtil.createMock(0);
+      Node home = NodeUtil.findNode(root, "root/home");
+      Node user = NodeUtil.findNode(root, "root/user");
+      home.copy(user);
+      assertNotNull(NodeUtil.findNode(user, "root/user/home"));
+   }
+   
+   public void testCut() {
    }
 }

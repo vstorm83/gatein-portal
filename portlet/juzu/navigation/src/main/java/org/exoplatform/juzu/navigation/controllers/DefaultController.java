@@ -18,7 +18,7 @@
  */
 package org.exoplatform.juzu.navigation.controllers;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -48,7 +48,7 @@ public class DefaultController
    @View
    public void index() 
    {
-      if(session.getRootNode() == null)session.setRootNode(Node.createMock(15));
+      if(session.getRootNode() == null)session.setRootNode(NodeUtil.createMock(15));
       index.with().controller(this).render();
    }
    
@@ -64,7 +64,7 @@ public class DefaultController
    }
    
    void render(Node node, StringBuilder sb) {
-      LinkedList<Node> children = node.getChildren();
+      List<Node> children = node.getChildren();
       int length = children.size();
       for(int i = 0; i < length; i++) {
          Node sel = children.get(i);
@@ -88,16 +88,52 @@ public class DefaultController
    @Ajax
    @Resource
    public Response moveUp(String nodeId) {
-      Node root = NodeUtil.moveUp(session.getRootNode(), nodeId);
-      session.setRootNode(root);
+      Node node = NodeUtil.findNode(session.getRootNode(), nodeId);
+      node.moveUp();
       return Response.content(200, render());
    }
    
    @Ajax
    @Resource
    public Response moveDown(String nodeId) {
-      Node root = NodeUtil.moveDown(session.getRootNode(), nodeId);
-      session.setRootNode(root);
+      Node node = NodeUtil.findNode(session.getRootNode(), nodeId);
+      node.moveDown();
+      return Response.content(200, render());
+   }
+   
+   @Ajax
+   @Resource
+   public Response delete(String nodeId) {
+      Node node = NodeUtil.findNode(session.getRootNode(), nodeId);
+      node.delete();
+      return Response.content(200, render());
+   }
+   
+   @Ajax
+   @Resource
+   public Response copy(String srcId, String destId) {
+      System.out.println(srcId + " -> " + destId);
+      Node src = NodeUtil.findNode(session.getRootNode(), srcId);
+      Node dest = NodeUtil.findNode(session.getRootNode(), destId);
+      src.copy(dest);
+      return Response.content(200, render());
+   }
+   
+   @Ajax
+   @Resource
+   public Response clone(String srcId, String destId) {
+      Node src = NodeUtil.findNode(session.getRootNode(), srcId);
+      Node dest = NodeUtil.findNode(session.getRootNode(), destId);
+      src.clone(dest);
+      return Response.content(200, render());
+   }
+   
+   @Ajax
+   @Resource
+   public Response cut(String srcId, String destId) {
+      Node src = NodeUtil.findNode(session.getRootNode(), srcId);
+      Node dest = NodeUtil.findNode(session.getRootNode(), destId);
+      src.cut(dest);
       return Response.content(200, render());
    }
 }

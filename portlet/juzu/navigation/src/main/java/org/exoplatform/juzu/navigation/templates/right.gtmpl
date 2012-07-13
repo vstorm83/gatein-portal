@@ -1,0 +1,26 @@
+<div class="JuzuNav right well">
+   <ul class="nav nav-list">
+      <li class="node-operator nav-header">Node Modify</li>
+      <li class="node-operator divider"></li>
+      <li class="node-operator add"><a href="#!/add-new-node"><i class="icon-plus-sign"></i>
+            Add New Node</a></li>
+      <li class="node-operator"><a href="#!/edit-node-page"><i class="icon-edit"></i>
+            Edit Node's Page</a></li>
+      <li class="node-operator edit"><a href="#!/edit-node"><i class="icon-pencil"></i>
+            Edit Node</a></li>
+      <li class="node-operator nav-header">Node Motion</li>
+      <li class="node-operator divider"></li>
+      <li class="node-operator nextstep2 copy"><a href="#!/copy-node"><i class="icon-file"></i> Copy
+            Node</a></li>
+      <li class="node-operator nextstep2 clone"><a href="#!/clone-node"><i class="icon-tags"></i>
+            Clone Node</a></li>
+      <li class="node-operator nextstep2 cut"><a href="#!/cut-node"><i class="icon-move"></i> Cut
+            Node</a></li>
+      <li class="node-operator delete"><a href="#!/delete-node"><i class="icon-trash"></i>
+            Delete Node</a></li>
+      <li class="node-operator arrow-up"><a href="#!/move-up"><i class="icon-arrow-up"></i>
+            Move Up</a></li>
+      <li class="node-operator arrow-down"><a href="#!/move-down"><i class="icon-arrow-down"></i>
+            Move Down</a></li>
+   </ul>
+</div>
