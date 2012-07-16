@@ -23,10 +23,24 @@
       <artifactId>exo.portal.webui.portal</artifactId>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+			<groupId>org.gatein.api</groupId>
+			<artifactId>gatein-java-api</artifactId>
+			<version>${version.gatein.api}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.exoplatform.kernel</groupId>
+			<artifactId>exo.kernel.container</artifactId>
+			<version>${version.kernel}</version>
+			<scope>provided</scope>
+		</dependency>
   </dependencies>
 
 	<properties>
 		<source.path>${project.basedir}/src/main/java</source.path>
+		<version.gatein.api>1.0.0-Beta04-SNAPSHOT</version.gatein.api>
+		<version.kernel>2.3.6-GA</version.kernel>
 	</properties>
 
   <build>
@@ -65,7 +79,7 @@
           <dependency>
             <groupId>org.juzu</groupId>
             <artifactId>juzu-builder</artifactId>
-            <version>0.6.0-SNAPSHOT</version>
+            <version>${juzu.version}</version>
           </dependency>
         </dependencies>
         <configuration>
@@ -82,19 +96,6 @@
               <classifier>gatein</classifier>
               <descriptorRefs>
                 <descriptorRef>gatein</descriptorRef>
-              </descriptorRefs>
-            </configuration>
-          </execution>
-          <execution>
-            <id>liferay</id>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <phase>package</phase>
-            <configuration>
-              <classifier>liferay</classifier>
-              <descriptorRefs>
-                <descriptorRef>liferay</descriptorRef>
               </descriptorRefs>
             </configuration>
           </execution>

@@ -28,9 +28,13 @@ import juzu.Response;
 import juzu.View;
 import juzu.plugin.ajax.Ajax;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.juzu.navigation.Session;
 import org.exoplatform.juzu.navigation.models.Node;
 import org.exoplatform.juzu.navigation.models.NodeUtil;
+import org.gatein.api.GateIn;
+import org.gatein.api.portal.Site;
+import org.gatein.api.portal.SiteQuery;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -49,7 +53,14 @@ public class DefaultController
    public void index() 
    {
       if(session.getRootNode() == null)session.setRootNode(NodeUtil.createMock(15));
-      index.with().controller(this).render();
+      SiteQuery<Site> sq = getGateIn().createSiteQuery().setType(Site.Type.SITE);
+      List<Site> sites = sq.execute();
+      index.with().controller(this).sites(sites).render();
+   }
+   
+   private GateIn getGateIn()
+   {
+      return (GateIn) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(GateIn.class);
    }
    
    String render() {

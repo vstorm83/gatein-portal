@@ -18,7 +18,7 @@
 		 </init-param>
      <init-param>
        <name>juzu.src_path</name>
-	   <value>${source.path}</value>
+	   <value>/home/kiennguyen/java/eXoProjects/gatein/gatein-portal/portlet/juzu/navigation/src/main/java</value>
 		 </init-param>
      <supports>
        <mime-type>text/html</mime-type>
