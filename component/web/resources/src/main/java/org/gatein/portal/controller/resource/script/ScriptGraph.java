@@ -128,6 +128,7 @@ public class ScriptGraph
       {
          if (mode != null && !resource.fetchMode.equals(mode))
          {
+            log.debug("Can't find resource {} with fetchMode {}", id, mode);
             return null;
          }
          else
@@ -161,6 +162,7 @@ public class ScriptGraph
       }
       else
       {
+         log.debug("Can't find resource {}", id);
          return null;
       }
    }
