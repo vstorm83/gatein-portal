@@ -18,6 +18,7 @@
  */
 package org.exoplatform.juzu.navigation.controllers;
 
+import java.io.PrintWriter;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -30,14 +31,16 @@ import juzu.plugin.ajax.Ajax;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.juzu.navigation.Session;
-import org.exoplatform.juzu.navigation.models.Node;
-import org.exoplatform.juzu.navigation.models.NodeUtil;
 import org.gatein.api.GateIn;
+import org.gatein.api.exception.EntityNotFoundException;
+import org.gatein.api.portal.Navigation;
+import org.gatein.api.portal.Node;
 import org.gatein.api.portal.Site;
 import org.gatein.api.portal.SiteQuery;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
+ * @author <a href="mailto:nguyenanhkien2a@gmail.com">Kien Nguyen</a>
  * @version $Id$
  *
  */
@@ -45,6 +48,9 @@ public class DefaultController
 {
    @Inject @Path("index.gtmpl") 
    org.exoplatform.juzu.navigation.templates.index index;
+
+   @Inject @Path("navigation.gtmpl") 
+   org.exoplatform.juzu.navigation.templates.navigation navGtmpl;
    
    @Inject
    Session session;
@@ -52,99 +58,127 @@ public class DefaultController
    @View
    public void index() 
    {
-      if(session.getRootNode() == null)session.setRootNode(NodeUtil.createMock(15));
+      session.setSite(getGateIn().getDefaultSite());
+      
       SiteQuery<Site> sq = getGateIn().createSiteQuery().setType(Site.Type.SITE);
       List<Site> sites = sq.execute();
       index.with().controller(this).sites(sites).render();
    }
    
-   private GateIn getGateIn()
+   public GateIn getGateIn()
    {
       return (GateIn) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(GateIn.class);
    }
    
-   String render() {
-      StringBuilder sb = new StringBuilder();
-      Node root = session.getRootNode();
-      if(root.hasChild()) {
-         render(root, sb);
-      } else {
-         sb.append("<li class='last'>").append(root.getName()).append("</li>");
+   public void render(Navigation nav, StringBuilder sb)
+   {
+      for (Node node : nav)
+      {
+         render(node, sb);
       }
-      return sb.toString();
    }
    
-   void render(Node node, StringBuilder sb) {
-      List<Node> children = node.getChildren();
-      int length = children.size();
-      for(int i = 0; i < length; i++) {
-         Node sel = children.get(i);
-         if(sel.hasChild()) {
-            sb.append("<li ").append(i == length - 1 ? "class='expandable lastExpandable'>" : "class='expandable'>");
-            sb.append("<div ").append(i == length - 1 ? "class='hitarea expandable-hitarea lastExpandable-hitarea'>" : "class='hitarea expandable-hitarea'>");
-            sb.append("</div>");
-            sb.append("<span id='").append(sel.getId().replace('/', '-')).append("' node-id='").append(sel.getId()).append("'>").append(sel.getName()).append("</span>");
-            sb.append("<ul style='display: none;'>");
-            render(sel, sb);
-            sb.append("</ul>");
-            sb.append("</li>");
-         } else {
-            sb.append("<li ").append(i == length - 1 ? "class='last'>" : ">");
-            sb.append("<span id='").append(sel.getId().replace('/', '-')).append("' node-id='").append(sel.getId()).append("'>").append(sel.getName()).append("</span>");
-            sb.append("</li>");
+   public void render(Node node, StringBuilder sb)
+   {
+      int size = node.getChildCount();
+      boolean isLeaf = size == 0;
+
+      if (size > 0)
+      {
+         sb.append("<li ").append(isLeaf ? "class='expandable lastExpandable'>" : "class='expandable'>");
+         sb.append("<div ").append(isLeaf ? "class='hitarea expandable-hitarea lastExpandable-hitarea'>" : "class='hitarea expandable-hitarea'>");
+         sb.append("</div>");
+      }
+      else
+      {
+         sb.append("<li class='last'>");
+      }
+      
+      sb.append("<span id='").append(node.getId().getPathAsString().replace('/', '-')).append("' node-id='").append(node.getId().getPathAsString()).append("'>").append(node.getName()).append("</span>");
+      if (size != 0)
+      {
+         sb.append("<ul style='display: none;'>");
+         for (Node child : node)
+         {
+            render(child, sb);
          }
+         sb.append("</ul>");
       }
+
+      sb.append("</li>");
    }
    
    @Ajax
    @Resource
-   public Response moveUp(String nodeId) {
-      Node node = NodeUtil.findNode(session.getRootNode(), nodeId);
-      node.moveUp();
-      return Response.content(200, render());
+   public void loadNavigation(String nodeId) {
+      session.setSite(getGateIn().getSite(Site.Type.SITE, nodeId));
+      navGtmpl.with().controller(this).render();
    }
    
    @Ajax
    @Resource
-   public Response moveDown(String nodeId) {
-      Node node = NodeUtil.findNode(session.getRootNode(), nodeId);
-      node.moveDown();
-      return Response.content(200, render());
+   public void moveUp(String nodeId) {
+      System.out.println("Not implemented");
+      navGtmpl.with().controller(this).render();
    }
    
    @Ajax
    @Resource
-   public Response delete(String nodeId) {
-      Node node = NodeUtil.findNode(session.getRootNode(), nodeId);
-      node.delete();
-      return Response.content(200, render());
+   public void moveDown(String nodeId) {
+      System.out.println("Not implemented");
+      navGtmpl.with().controller(this).render();
    }
    
    @Ajax
    @Resource
-   public Response copy(String srcId, String destId) {
-      System.out.println(srcId + " -> " + destId);
-      Node src = NodeUtil.findNode(session.getRootNode(), srcId);
-      Node dest = NodeUtil.findNode(session.getRootNode(), destId);
-      src.copy(dest);
-      return Response.content(200, render());
+   public void delete(String nodeId) {
+      try
+      {
+         session.getSite().getNavigation(false).removeNode(nodeId);
+      }
+      catch (EntityNotFoundException e)
+      {
+         System.out.println("Fail to delete node with error " + e.getMessage());
+      }
+      
+      navGtmpl.with().controller(this).render();
    }
    
    @Ajax
    @Resource
-   public Response clone(String srcId, String destId) {
-      Node src = NodeUtil.findNode(session.getRootNode(), srcId);
-      Node dest = NodeUtil.findNode(session.getRootNode(), destId);
-      src.clone(dest);
-      return Response.content(200, render());
+   public void copy(String srcId, String destId) {
+      Navigation nav = session.getSite().getNavigation(false);
+      Node src = nav.getNode(srcId);
+      Node dest = nav.getNode(destId);
+      dest.addChild(srcId);
+      navGtmpl.with().controller(this).render();
    }
    
    @Ajax
    @Resource
-   public Response cut(String srcId, String destId) {
-      Node src = NodeUtil.findNode(session.getRootNode(), srcId);
-      Node dest = NodeUtil.findNode(session.getRootNode(), destId);
-      src.cut(dest);
-      return Response.content(200, render());
+   public void clone(String srcId, String destId) {
+      Navigation nav = session.getSite().getNavigation(false);
+      Node src = nav.getNode(srcId);
+      Node dest = nav.getNode(destId);
+      dest.addChild(srcId);
+      navGtmpl.with().controller(this).render();
+   }
+   
+   @Ajax
+   @Resource
+   public void cut(String srcId, String destId) {
+      Navigation nav = session.getSite().getNavigation(false);
+      Node src = nav.getNode(srcId);
+      Node dest = nav.getNode(destId);
+      if (src != null && dest != null)
+      {
+         dest.addChild(srcId);
+         nav.removeNode(srcId);
+      }
+      else
+      {
+         System.out.println("Source or Destination node is not found!");
+      }
+      navGtmpl.with().controller(this).render();
    }
 }

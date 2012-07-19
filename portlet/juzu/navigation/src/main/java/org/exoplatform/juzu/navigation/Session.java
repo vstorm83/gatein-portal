@@ -18,10 +18,10 @@
  */
 package org.exoplatform.juzu.navigation;
 
-import javax.inject.Named;
+import org.gatein.api.portal.Site;
 
+import javax.inject.Named;
 import juzu.SessionScoped;
-import org.exoplatform.juzu.navigation.models.Node;
 
 /**
  * @author <a href="mailto:haithanh0809@gmail.com">Hai Thanh Nguyen</a>
@@ -33,13 +33,13 @@ import org.exoplatform.juzu.navigation.models.Node;
 @SessionScoped
 public class Session
 {
-   private Node root;
-   
-   public void setRootNode(Node root) {
-      this.root = root;
+   private Site site;
+
+   public void setSite(Site site) {
+      this.site = site;
    }
    
-   public Node getRootNode() {
-      return root;
+   public Site getSite() {
+      return site;
    }
 }

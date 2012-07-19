@@ -1,10 +1,6 @@
 #{param name=controller /}
 #{param name=sites /}
 
-<%
-   String html = controller.render();
-%>
-
 <div style="padding-top: 20px;" class="container-fluid">
    <div class="row-fluid">
       <div class="span3">
@@ -19,7 +15,9 @@
                </div>
                <div class="item treenode">
                   <div style="float: left;">
-                     <ul class="JuzuNav treeview">${html}</ul>
+                     <ul class="JuzuNav treeview">
+                        #{include path=navigation.gtmpl /}
+                     </ul>
                   </div>
                   <div style="float: right;">
                      #{include path=right.gtmpl /}
@@ -27,7 +25,9 @@
                </div>
                <div class="item treenode-modify">
                   <div class="alert alert-info"></div>
-                  <ul class="JuzuNav treeview">${html}</ul>
+                  <ul class="JuzuNav treeview">
+                     #{include path=navigation.gtmpl /}
+                  </ul>
                </div>
                <div class="item edit-node"><p>Page 3</p></div>
             </div>

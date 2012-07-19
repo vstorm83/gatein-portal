@@ -16,7 +16,7 @@ import org.gatein.api.portal.Node;
    <%
       for (def site : sites) {
    %>
-      <tr class="site-selector">
+      <tr class="site-selector" site-id="${site.getName()}">
          <td><img alt="" src="/exoadmin/skin/navigation/webui/component/background/PlImg.gif"></td>
          <td><a href="#!/site:${site.getName()}">${site.getLabel().getValue(true)}</a></td>
       </tr>

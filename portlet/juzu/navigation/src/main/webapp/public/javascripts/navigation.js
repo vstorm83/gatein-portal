@@ -120,6 +120,8 @@ $(function() {
 	});
 
 	$('.JuzuNav.table .site-selector').on('click', function() {
+		$('.JuzuNav.clipboard').text($(this).attr('site-id'));
+		load("DefaultController.loadNavigation()");
 		step1();
 		show('.JuzuNav.left .edit');
 	});

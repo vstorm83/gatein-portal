@@ -1,0 +1,18 @@
+#{param name=controller /}
+
+<%
+import org.gatein.api.portal.Navigation;
+%>
+
+<%
+   StringBuilder sb = new StringBuilder();
+   Navigation nav = session.getSite().getNavigation(false);
+   if(nav.getNodeCount() > 0) {
+      controller.render(nav, sb);
+   } else {
+      sb.append("<div>Site has no node in navigation!</div>");
+   }
+%>
+<div>Site: <strong>${session.getSite().getLabel().getValue(true)}</strong></div>
+<br />
+${sb.toString()}
