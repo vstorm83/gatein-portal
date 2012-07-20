@@ -18,6 +18,8 @@
  */
 package org.exoplatform.juzu.navigation.controllers;
 
+import juzu.Action;
+
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -48,9 +50,12 @@ public class DefaultController
 {
    @Inject @Path("index.gtmpl") 
    org.exoplatform.juzu.navigation.templates.index index;
-
+   
    @Inject @Path("navigation.gtmpl") 
    org.exoplatform.juzu.navigation.templates.navigation navGtmpl;
+   
+   @Inject @Path("site.gtmpl") 
+   org.exoplatform.juzu.navigation.templates.site siteGtmpl;
    
    @Inject
    Session session;
@@ -82,7 +87,7 @@ public class DefaultController
    {
       int size = node.getChildCount();
       boolean isLeaf = size == 0;
-
+      
       if (size > 0)
       {
          sb.append("<li ").append(isLeaf ? "class='expandable lastExpandable'>" : "class='expandable'>");
@@ -106,6 +111,30 @@ public class DefaultController
       }
 
       sb.append("</li>");
+   }
+   
+   @Action
+   public Response submitAddSite(String name, String label, String description)
+   {
+      System.out.println("addSite: " + name);
+      try
+      {
+         Site site = getGateIn().addSite(Site.Id.site(name));
+         site.getLabel().setValue(label);
+         site.setDescription(description);
+      }
+      catch (Exception e)
+      {
+         e.printStackTrace();
+      }
+      return DefaultController_.index();
+   }
+   
+   @Ajax
+   @Resource
+   public void viewAddSite()
+   {
+      siteGtmpl.render();
    }
    
    @Ajax

@@ -2,7 +2,7 @@
    <ul class="nav nav-list">
       <li class="nav-header">Site operator</li>
       <li class="divider"></li>
-      <li class="site-operator"><a href="#!/add-new-site"><i class="icon-plus"></i>
+      <li class="site-operator add"><a href="#!/add-new-site"><i class="icon-plus"></i>
             Add New Site</a></li>
       <li class="site-operator edit"><a href="#!/edit-layout"><i class="icon-edit"></i>
             Edit Layout</a></li>

@@ -1,4 +1,8 @@
 $(function() {
+	$('.JuzuNav.left .add').on('click', function() {
+		load("DefaultController.viewAddSite()");
+	});
+	
 	$(".JuzuNav.treeview").treeview({
 		collapsed : true,
 		animated : "fast",
