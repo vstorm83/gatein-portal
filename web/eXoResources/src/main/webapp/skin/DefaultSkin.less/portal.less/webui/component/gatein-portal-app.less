@@ -16,8 +16,100 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
-
 @import 'control/control.less';
 @import 'customization/customization.less';
 @import 'view/view.less';
 @import 'widget/widget.less';
+
+html {
+	.gtnResetDimensions();
+	*overflow-x: hidden;
+}
+
+body {
+	background: @gtnColorBg;
+	.gtnResetDimensions();
+	font-size: @gtnBaseFontSize;
+	font-family: @fontFamily; 
+	overflow-x: hidden;
+}
+
+div, table, tr, td,img,form {
+	.gtnResetDimensions();
+	font-size: @gtnBaseFontSize;
+	font-family: @fontFamily; 
+}
+
+p,h1,h2,h3,h4,h5,h6 {
+	margin: 10px 0;
+}
+
+table {
+  width: 100%;
+	border-spacing:	0px;
+	border-collapse: collapse;
+}
+
+th, td {
+	vertical-align: top;
+	font-family: @fontFamily;  
+}
+
+input, textarea {
+	font-family: @fontFamily; 
+}
+
+img {
+	border: none; vertical-align: middle;
+}
+
+a {
+	text-decoration: none;
+	color: @gtnColorLink;
+}
+
+/*###############################################################################################*/
+
+.OverflowContainer {	
+	.gtnOverflow(100%,hidden);
+}
+
+
+.InlineContainer {
+	overflow: hidden;
+}
+
+.AjaxLoadingMask {
+  .gtnWidthHeight(180px,110px);
+  background: @gtnColorBgPortlet;
+  border: 1px solid #66667e;
+  .gtnPadding(1px,1px,1px,1px);
+}
+
+.AjaxLoadingMask .LoadingContainer {
+  height: 108px;
+  background: @gtnColorBgPortlet;
+  border: solid 1px #a8a9bb;
+}
+
+.AjaxLoadingMask .LoadingText {
+  text-align: center;
+  .gtnPadding(10px,0px,5px,0px);
+}
+
+.AjaxLoadingMask .LoadingProgressBar {
+  .gtnAlginCenterBlock(32px,40px);
+  background: url('../../../background/LoadingProgress.gif') no-repeat center;  
+}
+
+.FL {
+	.gtnFloatLeft()
+}
+
+.FR {
+	.gtnFloatRight() 
+}
+
+.UIVirtualList {
+	height: 300px;
+}

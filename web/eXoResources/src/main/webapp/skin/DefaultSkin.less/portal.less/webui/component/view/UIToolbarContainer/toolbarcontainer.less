@@ -1,0 +1,279 @@
+/**
+ * Copyright (C) 2009 eXo Platform SAS.
+ * 
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
+ .UIToolbarContainer {	
+	padding: 0px;
+	height: auto;	
+	ul {
+		.gtnResetDimensions();
+		list-style:none;
+	}
+	.UserInfoPortletTDContainer {
+		.gtnFloatLeft();
+	}
+	 .LAYOUT-CONTAINER {
+		overflow: hidden;
+	}
+	.LAYOUT-BLOCK .UIRowContainer {	
+		.gtnVerticalAlginCenter(auto,inherit);
+		border: none;
+		background: none;
+	}
+	
+	.ToolbarContainer .TRContainer {
+		height: 32px;
+	}
+	.UIContainer {
+		padding: 0px;
+	}
+	.UITableColumnContainer {
+		margin: 0px;
+	}
+	.NormalContainerBlock .ToolbarContainer {	
+		background: url('background/ToolbarContainer.gif') repeat-x left top;	
+		height: 32px;
+		border-left: 1px solid @gtnColorBgPortlet;
+		border-right: 1px solid @gtnColorBgPortlet;
+	}
+	.UITab a:hover {
+		color: #058ee6;
+	}
+	
+	.MenuItemContainer {	
+		position: absolute;
+		.gtnBordered(#9e9fa3,#9e9fa3,#9e9fa3,#9e9fa3);
+		display: none;
+		z-index: 1;   
+		li{		
+			display:block;
+		}
+	}
+}
+
+.UIToolbarContainer {
+	*position:relative;
+	*z-index:1000;
+}
+
+.UIToolbarContainer .UIHorizontalTabs  {	 
+		.dir(@gtnDir);
+		.dir(lt){        
+			height: 32px;
+			float: left;
+		}
+		.dir(rt) {
+			height: auto;
+			float: none;
+		}
+		.UITab {
+			.gtnTextAlignLeft();	
+			float: none;
+			.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat right -32px, url('background/ToolbarContainer-rt.gif') no-repeat left -32px);			
+			.dir(@gtnDir);
+			.dir(lt){
+				padding-right: 2px;
+			}
+			.dir(rt) {				
+				padding-left: 2px;
+				*float: left;
+			}	
+		}
+	}
+
+
+.UIToolbarContainer .ToolbarContainer .TBIcon {
+	display: block;
+	.gtnPadding(0px,5px,0px,35px);	
+	white-space: nowrap;
+	color: #3e3e3e;
+}
+
+
+
+.UserToolBarSitePortletTDContainer ,.UserToolBarGroupPortletTDContainer ,
+.UserToolBarGroupPortletTDContainer ,.UserToolBarDashboardPortletTDContainer ,.AdminToolBarPortletTDContainer {
+	position: relative;
+}
+
+
+
+.UIToolbarContainer .TitleBar {
+	background: #cdd7e0;
+	.gtnVerticalAlginCenter(23px,23px);	
+	color: #474747;
+	font-weight: bold;
+	padding: 0px 5px;
+	white-space: nowrap;
+	.gtnOpacity(0.9); 
+}
+
+
+.UIToolbarContainer  .ArrowIcon {
+	.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat right -452px,url('background/ToolbarContainer-rt.gif') no-repeat -5px -452px);	
+}
+
+.UIToolbarContainer .MenuItem {	
+	background-color: #f5f9fa;	
+	.gtnVerticalAlginCenter(28px,28px,100%);
+	.gtnOpacity(0.9);
+	.MenuItemHover {
+		background-color: #a4a4a4;
+	}
+	a {	
+		display: block;
+		.gtnPadding(0px,25px,0px,35px);	
+		white-space: nowrap;
+		color: #3e3e3e;
+	}
+}
+
+.UIToolbarContainer .MenuItem {
+	*height: auto;
+	*width: auto;
+}
+
+
+/**********************************/
+
+.UIToolbarContainer {
+	.ItemIcon {			
+		.gtnControlBgPositionDir(10px center, 95% center);		
+	}
+	.DashboardIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat 5px -64px,url('background/ToolbarContainer.gif') no-repeat 100% -64px);		
+	}
+	.SiteIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat 5px -98px, url('background/ToolbarContainer.gif') no-repeat 100% -98px);		
+	}
+	
+	.SitesIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat 5px -96px,url('background/ToolbarContainer.gif') no-repeat 100% -96px);			
+	}
+	
+	.GroupIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat left -128px,url('background/ToolbarContainer.gif') no-repeat 100% -128px);	
+		.dir(@gtnDir);
+		.dir(lt){
+			margin-left: 10px;
+		}
+		.dir(rt) {
+			margin-right: 10px; 
+		} 
+	}
+	
+	.EditorIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat 5px -161px,url('background/ToolbarContainer.gif') no-repeat 100% -161px);		
+	}
+	
+	.AddPageIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat 5px -320px,url('background/ToolbarContainer.gif') no-repeat 100% -320px);		
+	}
+	
+	.EditPageIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat 5px -352px,  url('background/ToolbarContainer.gif') no-repeat 100% -352px);		
+	}
+	
+	.EditSiteIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat 5px -384px, url('background/ToolbarContainer.gif') no-repeat 100% -384px);		
+	}
+
+	.ChangeLanguageIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat 5px -192px,url('background/ToolbarContainer.gif') no-repeat 100% -192px);		
+	}
+
+	.ChangeSkinIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat 5px -224px,url('background/ToolbarContainer.gif') no-repeat 100% -224px);		
+	}
+
+	.AccountSettingIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat 5px -256px,url('background/ToolbarContainer.gif') no-repeat 100% -256px);		
+	}
+	
+	.SignOutIcon {
+		.gtnControlBgDir(url('background/ToolbarContainer.gif') no-repeat 5px -288px,url('background/ToolbarContainer.gif') no-repeat 100% -288px);		
+	}
+	
+	.Name a {
+		.gtnControlBgDir(url('background/UseIcon.png') no-repeat left center,url('background/UseIcon.png') no-repeat right center);		
+		.gtnPadding(0px,10px,0px,25px);		
+		color: #e66a1f; 
+		font-weight:bold; 
+		cursor:pointer;
+		display: block;
+		line-height: 32px;
+		&:hover {
+			color: #058ee6;
+		}
+	}
+
+}
+
+/***************UIStarToolBarPortlet*****************/
+
+.UIStarToolBarPortlet {
+	.gtnControlBgDir(url('background/GateinLogo.gif') no-repeat 10px 6px,url('background/GateinLogo.gif') no-repeat 23px 5px);	
+	.gtnWidthHeight(64px,32px);
+	.UITab {
+		height: 30px;
+		.dir(@gtnDir);	
+		.dir(lt) {
+			
+		}  
+		.dir(rt) {
+			float: none; 
+		} 
+	}		
+}
+
+/***************UIUserToolBarPortlet*****************/
+
+.UIUserToolbarPortlet .MenuItemContainer .SelectedItem {
+	line-height: 24px;
+	width: auto; 
+	background: #c7c7c7;
+	color: #3e8df0;
+}
+
+.UIToolbarContainer .UIAdminToolbarPortlet {
+	.UITab {
+		background: none;
+		padding: 0px;
+	}
+	.UIHorizontalTabs .UITab {
+		.dir(@gtnDir);
+		.dir(lt){        
+			
+		}	
+		.dir(rt) {
+			float: none; 
+		}  
+	}
+}
+
+
+.UIUserToolBarSitePortlet .ItemIcon {	
+	.dir(@gtnDir);	
+	.dir(lt){       
+		
+    }	
+	.dir(rt) {
+		background-position: 97% center; 
+	}  
+}
+
