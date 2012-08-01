@@ -22,20 +22,23 @@
 @import 'widget/widget.less';
 
 html {
-	.gtnResetDimensions();
+	margin: 0;
+	pading: 0;
 	*overflow-x: hidden;
 }
 
 body {
 	background: @gtnColorBg;
-	.gtnResetDimensions();
+	margin: 0;
+	pading: 0;
 	font-size: @gtnBaseFontSize;
 	font-family: @fontFamily; 
 	overflow-x: hidden;
 }
 
 div, table, tr, td,img,form {
-	.gtnResetDimensions();
+	margin: 0;
+	pading: 0;
 	font-size: @gtnBaseFontSize;
 	font-family: @fontFamily; 
 }
@@ -71,7 +74,8 @@ a {
 /*###############################################################################################*/
 
 .OverflowContainer {	
-	.gtnOverflow(100%,hidden);
+	width: 100%;
+	overflow: hidden;
 }
 
 
@@ -80,16 +84,16 @@ a {
 }
 
 .AjaxLoadingMask {
-  .gtnWidthHeight(180px,110px);
+  .gtnSize(180px,110px);
   background: @gtnColorBgPortlet;
-  border: 1px solid #66667e;
+  .gtnBordered(#66667e,#66667e,#66667e,#66667e);
   .gtnPadding(1px,1px,1px,1px);
 }
 
 .AjaxLoadingMask .LoadingContainer {
   height: 108px;
   background: @gtnColorBgPortlet;
-  border: solid 1px #a8a9bb;
+  .gtnBordered(#a8a9bb,#a8a9bb,#a8a9bb,#a8a9bb);
 }
 
 .AjaxLoadingMask .LoadingText {
@@ -98,8 +102,10 @@ a {
 }
 
 .AjaxLoadingMask .LoadingProgressBar {
-  .gtnAlginCenterBlock(32px,40px);
-  background: url('../../../background/LoadingProgress.gif') no-repeat center;  
+	.gtnSize(32px,40px);
+	margin:0 auto;
+	display:block;
+	background: url('../../../background/LoadingProgress.gif') no-repeat center;  
 }
 
 .FL {

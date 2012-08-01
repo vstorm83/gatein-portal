@@ -1,0 +1,8 @@
+.skinIcon16x16(@imagename,@width:16px , @height: 16px) {
+	.gtnSize (@width,@height);
+	background: url('@{icon16x16Path}/@{imagename}');
+}
+.skinIcon16x16Auto(@imagename,@width:16px , @height: 16px,@margin: auto) {
+	.skinIcon16x16(@imagename,@width , @height) ;
+	margin: @margin;
+}

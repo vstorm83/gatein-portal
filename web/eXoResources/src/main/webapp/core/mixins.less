@@ -1,16 +1,17 @@
-.ClearFix {
-  &:before,
+.ClearFix { 
   &:after {
-    display: table;
-    content: "";
-  }
-  &:after {
-    clear: both;
-  }
+	content: "";
+	display: block;
+	height: 0;
+	clear: both;
+	visibility: hidden;
+  } 
 }
 
 .ClearFix {
+  *display: inline-block;
   *zoom: 1;
+  *display: block
 }
 
 .gtnFloatLeft() {
@@ -34,16 +35,7 @@
 		float:left;   
 	}
 }
-/*
-.gtnTextAlign() {
-	.dir(ct) {
-	  text-align: center;
-	}	
-	.dir(jt) {
-	  text-align: justify;
-	}		
-}
-*/	
+
 .gtnTextAlignLeft() {
 	.dir(@gtnDir);
 	.dir(lt)  {
@@ -80,6 +72,10 @@
 	}
 }
 
+.gtnPadding(@values) {
+	padding: @values;
+}
+
 .gtnMargin(@top, @right, @bottom, @left) {
 	.dir(@gtnDir);
 	.dir(lt){        
@@ -96,6 +92,10 @@
 	}
 }
 
+.gtnMargin(@values) {
+	margin: @values;
+}
+
 .gtnBordered(@top-color: #EEE, @right-color: #EEE, @bottom-color: #EEE, @left-color: #EEE) {
 	border-top: solid 1px @top-color;
 	border-left: solid 1px @left-color;
@@ -103,16 +103,15 @@
 	border-bottom: solid 1px @bottom-color;
 }
 
+.gtnBorderedAll(@borderColor) {
+	border:solid 1px  @borderColor;
+} 
+
 .gtnDropShadow(@x-axis: 0, @y-axis: 1px, @blur: 2px, @alpha: 0.1) {
 	box-shadow: @x-axis @y-axis @blur rgba(0, 0, 0, @alpha);
 }
 
-.gtnRounded(@radius: 10px) {
-	border-radius: @radius;
-	background-clip: padding-box; 
-}
-
-.gtnBorderRadius(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
+.gtnBorderRadius(@topright: @gtnDecoratorRadius, @bottomright: @gtnDecoratorRadius, @bottomleft: @gtnDecoratorRadius, @topleft: @gtnDecoratorRadius) {
 	border-top-right-radius: @topright;
 	border-bottom-right-radius: @bottomright;
 	border-bottom-left-radius: @bottomleft;
@@ -120,12 +119,16 @@
 	background-clip: padding-box; 
 }
 
+.gtnBorderRadiusAll(@values) {
+	border-radius: @values;
+}
+
 .gtnOpacity(@opacity: 0.5) {
 	opacity: @opacity;
 	filter: alpha(opacity=@opacity);
 }
 
-.gtnInnerShadow(@horizontal:0, @vertical:1px, @blur:2px, @alpha: 0.4) {
+.gtnInnerShadow(@horizontal: 0, @vertical: 1px, @blur: 2px, @alpha: 0.4) {
 	box-shadow: inset @horizontal @vertical @blur rgba(0, 0, 0, @alpha);
 }
 
@@ -133,40 +136,35 @@
 	box-shadow: @arguments;
 }
 
-.gtnBoxDecorator(@topright: 10px, @bottomright: 10px, @bottomleft: 10px, @topleft: 10px,@top-color: #EEE, @right-color: #EEE, @bottom-color: #EEE, @left-color: #EEE) {
-	.gtnBorderRadius(@topright, @bottomright, @bottomleft, @topleft);
-	.gtnPadding(10px,10px,10px,10px);
-	.gtnBordered(@top-color, @right-color, @bottom-color, @left-color);
+.gtnBackgroundImageDir(@backgroundImageleft,@backgroundImageRight) {	
+	.dir(@gtnDir);
+	.dir(lt){
+		background-image: url(@backgroundImageleft);
+	}
+	.dir(rt) {
+		background-image: url(@backgroundImageRight);
+	}	
+	background-repeat: no-repeat;
 }
-
-
-.gtnControlBgDir(@backgroundLeft,@backgroundRight) {
+	
+.gtnBackgroundPositionDir(@positionLeft,@positionRight) {
 	.dir(@gtnDir);
 	.dir(lt){        
-		background: @backgroundLeft; 
-    }
+		background-position: ~'@{positionLeft}'; 
+	}
 	.dir(rt) {
-		background: @backgroundRight; 
+		background-position: ~'@{positionRight}'; 
 	}  
 }
 
-.gtnControlBgPositionDir(@backgroundLeft,@backgroundRight) {
-	.dir(@gtnDir);
-	.dir(lt){        
-		background-position: @backgroundLeft; 
-    }
-	.dir(rt) {
-		background-position: @backgroundRight; 
-	}  
+.gtnBackgroundImage(@backgroundImageleft,@backgroundImageRight,@repeat: no-repeat,@positionLeft: 'center center' ,@positionRight: 'center center',@backgroundColor: transparent) {	
+	.gtnBackgroundImageDir(@backgroundImageleft,@backgroundImageRight);	
+	.gtnBackgroundPositionDir(@positionLeft,@positionRight);
+	background-repeat: @repeat;
+	background-color: @backgroundColor;
 }
 
-
-.gtnResetDimensions() {
-	padding:0;
-	margin:0;
-}
-
-.gtnWidthHeight (@width,@height){
+.gtnSize (@width: auto,@height: auto){
 	width: @width;
 	height: @height;
 }
@@ -176,22 +174,12 @@
 	line-height: @line-height;
 }
 
-.gtnVerticalAlginCenter (@height,@line-height,@width) {
-	.gtnWidthHeight (@width,@height);
-	line-height: @line-height;
-}
-.gtnAlginCenterBlock (@width,@height){
-	.gtnWidthHeight(@width,@height);
-	margin:0 auto;
-	display:block;
-}
 
-.gtnOverflow (@width,@overflow) {
-	width: @width;
-	overflow: @overflow;
-}
-
-.gtnOverflow (@width,@height,@overflow) {
-	.gtnWidthHeight(@width,@height);
-	overflow: @overflow;
+.gtnBoxDecorator(@border-color : @gtnColorBorder,@padding : 10px ,@margin: auto,@borderRadius: @gtnDecoratorRadius,@width: auto ,@height: auto,@background: transparent) {
+	.gtnBorderRadiusAll(@borderRadius);
+	.gtnPadding(@padding);
+	.gtnMargin(@margin);
+	.gtnBorderedAll(@border-color);
+	.gtnSize (@width,@height);
+	background: @background;
 }

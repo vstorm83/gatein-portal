@@ -1,0 +1,33 @@
+.UITabsystem {				
+	.tabStyle(@lineHeight,@color: #202020,@fontWeight: normal) {
+		line-height: @lineHeight; 
+		color: @color; 
+		font-weight: @fontWeight;
+	}	
+	.leftTabPaddingLeft(@paddingLeft,@paddingRight,@lineHeight) {
+		.dir(@gtnDir);	
+		.dir(lt) {
+			padding-left: @paddingLeft;
+		}  
+		.dir(rt) {
+			padding-left: @paddingRight;
+		} 
+		line-height: @lineHeight;		
+	}		
+	.rightTabPaddingRight(@paddingLeft,@paddingRight,@lineHeight){
+		.dir(@gtnDir);	
+		.dir(lt) {
+			padding-right: @paddingLeft;
+		}  
+		.dir(rt) {
+			padding-right: @paddingRight;
+		} 
+		line-height: @lineHeight;
+	}	
+	.middleTab(@lineHeight,@color: black,@fontWeight: normal){
+		line-height: @lineHeight;
+		color: @color; 
+		font-weight: @fontWeight;	
+		cursor: pointer;
+	}
+}
