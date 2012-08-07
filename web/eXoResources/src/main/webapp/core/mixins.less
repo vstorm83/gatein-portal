@@ -49,10 +49,10 @@
 .gtnTextAlignRight() {
 	.dir(@gtnDir);
 	.dir(lt)  {
-	  text-align: left;
+	  text-align: right;
 	}
 	.dir(rt) {
-	  text-align: right;
+	  text-align: left;
 	}
 }
 
@@ -72,6 +72,28 @@
 	}
 }
 
+.gtnPaddingRight(@paddingRight){
+	.dir(@gtnDir);
+	.dir(lt){        
+		padding-right: @paddingRight;
+    }
+	.dir(rt) {		
+		padding-left: @paddingRight;
+	}
+}
+
+
+.gtnPaddingLeft(@paddingLeft){
+	.dir(@gtnDir);
+	.dir(lt){        
+		padding-left: @paddingLeft;
+    }
+	.dir(rt) {		
+		padding-right: @paddingLeft;
+	}
+}
+
+
 .gtnPadding(@values) {
 	padding: @values;
 }
@@ -89,6 +111,27 @@
 		margin-right: @left;
 		margin-bottom: @bottom;
 		margin-left: @right;
+	}
+}
+
+.gtnMarginLeft(@marginLeft){
+	.dir(@gtnDir);
+	.dir(lt){        
+		margin-left: @marginLeft;
+    }
+	.dir(rt) {		
+		margin-right: @marginLeft;
+	}
+}
+
+
+.gtnMarginRight(@marginRight){
+	.dir(@gtnDir);
+	.dir(lt){        
+		margin-right: @marginRight;
+    }
+	.dir(rt) {		
+		margin-left: @marginRight;
 	}
 }
 

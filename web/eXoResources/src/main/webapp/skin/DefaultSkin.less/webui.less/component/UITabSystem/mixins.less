@@ -25,9 +25,18 @@
 		line-height: @lineHeight;
 	}	
 	.middleTab(@lineHeight,@color: black,@fontWeight: normal){
-		line-height: @lineHeight;
-		color: @color; 
-		font-weight: @fontWeight;	
+		.tabStyle(@lineHeight,@color,@fontWeight);	
 		cursor: pointer;
+	}	
+	.uiTabPaneHorizontalLayout(@borderColor,@backgroundColor,@padding) when (iscolor(@borderColor)) {
+		border: 1px solid @borderColor;
+		border-top: none;
+		background: @backgroundColor;
+		padding: @padding;
+	}
+	.uiTabPaneHorizontalLayout(@borderColor,@backgroundColor,@padding) when (@borderColor=none){
+		border: none;
+		background: @backgroundColor;
+		padding: @padding;
 	}
 }

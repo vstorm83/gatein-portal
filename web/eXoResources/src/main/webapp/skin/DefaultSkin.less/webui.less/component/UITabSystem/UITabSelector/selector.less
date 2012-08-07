@@ -1,0 +1,122 @@
+/**
+ * Copyright (C) 2009 eXo Platform SAS.
+ * 
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
+/***************************FlatTabStyle************************************/
+
+.UITabSelector {
+	padding: 5px;
+
+}
+
+.UITabSelector .UIHorizontalTabs {
+	height: 31px;
+	 .LeftHorizontalTabs{
+		background: url('@{UITabSelectorPath}/TabSelector.gif') no-repeat left top;
+		padding-left: 2px;
+	}
+	 .RightHorizontalTabs{
+		background: url('@{UITabSelectorPath}/TabSelector.gif') no-repeat right top;
+		padding-right: 2px;
+	}
+	.CenterHorizontalTabs {
+		height: 31px;
+		background: url('@{UITabSelectorPath}/TabSelector.gif') repeat-x left -31px;
+		padding: 0px;
+	}
+	.TabsContainer {
+		overflow: hidden;
+		line-height: 29px;
+		height: 29px;
+	}
+	.UITab {
+		.gtnFloatLeft();
+	}
+	.LineSeparator {
+		.gtnFloatLeft();
+		background: url('@{UITabSelectorPath}/TabSelector.gif') no-repeat left -91px;
+		.gtnSize(2px,29px);
+		line-height: 29px;
+		margin-top: 2px;
+	}
+}
+
+/*
+	minh.js.exo
+*/
+.UITabSelector .FlatTabStyle .NormalTab {
+	.UITabsystem .tabStyle(29px,#202020);
+	margin: 2px 0px 0px 0px;
+	.MiddleTab {
+		.UITabsystem .middleTab(29px);
+		padding: 0px 6px;
+	}
+}
+
+.UITabSelector .FlatTabStyle .TabIcon {
+	.gtnMargin(1px,4px,0px,0px);
+	.gtnSize(auto,auto);
+	.gtnPaddingLeft(25px);
+}
+
+.UITabSelector .FlatTabStyle .UIPermissionSelector24x24Icon {
+	.gtnBackgroundImage('@{UITabSkin24x24Path}/IconEditPermission.gif','@{UITabSkin24x24Path}/IconEditPermission-rt.gif',no-repeat, 'right center','left right');	
+}
+
+.UITabSelector .FlatTabStyle .UIListPermissionSelector24x24Icon {
+	.gtnBackgroundImage('@{UITabSkin24x24Path}/IconAccessPermission.gif','@{UITabSkin24x24Path}/IconAccessPermission-rt.gif',no-repeat, 'left center','right center');
+}
+
+.UITabSelector .FlatTabStyle	a.Title {
+	margin: 0px;
+	.UITabsystem .tabStyle(28px,gray,bold);
+}
+
+.UITabSelector .FlatTabStyle	a.Title:hover {
+	color: #058ee6; 
+}
+
+/*
+	minh.js.exo
+*/
+
+.UITabSelector .FlatTabStyle .SelectedTab {
+	.UITabsystem .tabStyle(29px,#307dcc);
+	margin: 2px 0px 0px 0px;
+	.MiddleTab {
+		.UITabsystem .middleTab(29px);
+		background: url('@{UITabSelectorPath}/TabSelector.gif') repeat-x left -62px;
+		padding: 0px 6px;
+	}
+}
+
+/************************************ List Permission Selector *******************************/
+
+.UIAccessGroup {
+	padding: 10px;
+}
+
+.UIAccessGroup .UIGrid {
+	width: 95%;
+	margin: auto;
+}
+
+.UIAccessGroup .UIPageIterator {
+	width: 95%;
+	margin: 5px auto 0px auto;
+}

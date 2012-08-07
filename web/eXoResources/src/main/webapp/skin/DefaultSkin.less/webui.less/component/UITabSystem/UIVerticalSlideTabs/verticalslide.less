@@ -1,0 +1,232 @@
+/**
+ * Copyright (C) 2009 eXo Platform SAS.
+ * 
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
+/*#######################-VTabSimpleStyle VerticalSlideTabs-######################*/
+	
+.UIVerticalSlideTabs .VTabSimpleStyle .NormalTab{
+	cursor: pointer;
+	line-height: 26px;
+	background: #fafafa url('@{UIVerticalslideTabsPath}/BottomVTabSimpleStyle224x1.gif') no-repeat bottom right;
+	height: 26px;
+	.LeftIcon {
+		.gtnFloatLeft();
+		.gtnSize(16px,16px);
+		background: url('@{UIVerticalslideTabsPath}/BlueNextArrow.gif') no-repeat;
+		margin: 6px 0px 0px 3px;
+	}
+	.TabLabel {
+		.gtnFloatLeft();
+		height: 22px;
+		.UITabsystem .tabStyle(22px,#606060,bold);
+		text-transform: capitalize;
+	}
+}
+
+
+/***-SelectedTab VTabSimpleStyle VerticalSlideTabs-***/
+
+.UIVerticalSlideTabs .VTabSimpleStyle .SelectedTab {
+	cursor: pointer;
+	background: #e5e5e5 url('@{UIVerticalslideTabsPath}/BottomVTabSimpleStyle224x1.gif') no-repeat bottom right;
+	height: 26px;
+	.LeftIcon {
+		.gtnFloatLeft();
+		.gtnSize(16px,16px);
+		background: url('@{UIVerticalslideTabsPath}/BlueDownArrow.gif') no-repeat;
+		margin: 4px 0px 0px 3px;
+	}
+	.TabLabel {
+		.gtnFloatLeft();
+		height: 26px; 
+		.UITabsystem .tabStyle(26px,#058ee6,bold);		
+		text-transform: capitalize;
+	}
+	.ControlContainer {
+		.gtnFloatRight();
+		padding-right: 2px;
+	}
+	.ControlIcon {
+		.gtnFloatLeft();
+		margin: 4px 2px 0px 2px;
+	}
+	.EditIcon{
+		.gtnSize(16px,17px);
+		background: url('@{UITabSkin16x16Path}/EditIcon.gif') no-repeat;
+	}
+	.DeleteIcon{
+		.gtnSize(20px,17px);
+		background: url('@{UITabSkin16x16Path}/DustBin.gif') no-repeat;
+	}
+}
+
+.UIVerticalSlideTabs .VTabSimpleStyle .UIVTabContent {
+	background: #ffffff url('@{UIVerticalslideTabsPath}/BottomVTabSimpleStyle224x1.gif') no-repeat bottom right;
+	padding: 10px;
+	margin: 1px 0px 1px 1px;
+	text-transform: capitalize;
+}
+
+
+/*#######################-VTabStyle3 VerticalSlideTabs-######################*/
+
+.UIVerticalSlideTabs .VTabStyle3 {
+	cursor: pointer;
+}
+
+.UIVerticalSlideTabs .VTabStyle3 .NormalTab  {
+	.TabLeft {
+		padding-left: 4px;
+		background: url('@{UIVerticalslideTabsPath}/VTabStyle3.gif') no-repeat left top;
+	}
+	.TabRight {
+		padding-right: 4px;
+		background: url('@{UIVerticalslideTabsPath}/VTabStyle3.gif') no-repeat right top;
+	}
+	.TabRepeat {
+		height: 26px;
+		background: url('@{UIVerticalslideTabsPath}/VTabStyle3.gif') repeat-x left -26px;
+	}
+	.LeftIcon {
+		.gtnFloatLeft();
+		.gtnSize(16px,16px);
+		.gtnBackgroundImageDir('@{UITabSkin16x16Path}/BlueNextArrow.gif','@{UITabSkin16x16Path}/BlueNextArrow-rt.gif');		
+		margin: 6px 5px 0px 5px;
+	}
+	.TabLabel {
+		.gtnFloatLeft();
+		height: 26px; line-height: 26px;
+	}
+	.SwitchButton {
+		.gtnFloatRight();
+		.gtnSize(16px,16px);		
+		.gtnMargin(6px,3px,0px,0px);
+		background: url('@{UITabSkin16x16Path}/BlueNextArrow.gif') no-repeat;
+		cursor: pointer;
+	}
+	.UIVTabContent {
+		background: @gtnColorBgPortlet;
+		.gtnBorderedAll(#b2b1b1);
+		padding: 5px;
+		margin: 1px 0px;
+	}	
+}
+
+/***-SeltectedTab VerticalSlideTabs-***/
+
+.UIVerticalSlideTabs .VTabStyle3 .SelectedTab {
+	.TabLeft {
+		padding-left: 3px;
+		background: url('@{UIVerticalslideTabsPath}/VTabStyle3.gif') no-repeat left -52px;
+	}
+	.TabRight {
+		padding-right: 3px;
+		background: url('@{UIVerticalslideTabsPath}/VTabStyle3.gif') no-repeat right -52px;
+	}
+	.TabRepeat {
+		height: 26px;
+		background: url('@{UIVerticalslideTabsPath}/VTabStyle3.gif') repeat-x bottom;
+	}
+	.LeftIcon {
+		.gtnFloatLeft();
+		.gtnSize(16px,16px);
+		background: url('@{UITabSkin16x16Path}/BlueDownArrow.gif') no-repeat;
+		margin: 6px 5px 0px 5px;
+	}
+	.TabLabel {
+		.gtnFloatLeft();
+		height: 26px;
+		.UITabsystem .tabStyle(26px,blue);
+	}
+	.SwitchButton {
+		.gtnFloatRight();
+		.gtnSize(16px,16px);
+		background: url('@{UITabSkin16x16Path}/BlueDownArrow.gif') no-repeat;
+		.gtnMargin(6px,3px,0px,0px);
+	}
+	.UIVTabContent {
+		background: @gtnColorBgPortlet;
+		.gtnBorderedAll(#b2b1b1);
+		margin: 1px 0px;
+		padding: 5px;
+	}
+}
+
+/************************************************/
+
+.UIVerticalSlideTabs .VTabStyle4 {
+	.gtnBorderedAll(#b8babf);
+	margin-bottom: 2px;
+}
+
+.UIVerticalSlideTabs .VTabStyle4 .NormalTab	{
+	background: #dadada url('@{UIVerticalslideTabsPath}/VTabStyle4.gif') repeat-x left top;
+	line-height: 21px;
+	padding: 0px 0px 0px 8px;
+	.gtnTextAlignLeft(); 
+	.TabLabel {
+		overflow: hidden;
+		color: @gtnColorTxt;
+		text-transform: capitalize;
+		cursor: pointer;
+	}
+	.LabelTab {
+		color: #6d6d6d;
+		font-weight: bold;
+		margin-bottom: 5px;
+	}
+	.LableText {
+		color: #6d6d6d;
+	}
+}
+
+.UIVerticalSlideTabs .VTabStyle4 .SelectedTab {
+	background: #dadada url('@{UIVerticalslideTabsPath}/VTabStyle4.gif') repeat-x left top;
+	line-height: 21px;
+	padding: 0px 0px 0px 8px;
+	cursor: pointer;
+	margin-bottom: 1px;
+	.gtnTextAlignLeft();
+	.TabLabel {
+		color: @gtnColorTxt;
+		text-transform: capitalize;
+	}
+}
+
+.UIVerticalSlideTabs .VTabStyle4 .UIVTabContent	{
+	background: @gtnColorBgPortlet;
+	padding: 0px;
+	.TabLable {
+		overflow: hidden;
+		width: 70%;
+	}
+}
+
+.UIVerticalSlideTabs .VTabStyle4 .VTabContentBG {
+	background: url('@{UIVerticalslideTabsPath}/VTabContentBG.gif') repeat-x left top;
+	padding: 7px;
+	img {
+		.gtnFloatLeft();
+		.gtnMargin(0px,4px,0px,0px);
+		width: 80px;
+	}
+	.ContentInfo {
+		padding-top: 15px;
+	}
+}
+
