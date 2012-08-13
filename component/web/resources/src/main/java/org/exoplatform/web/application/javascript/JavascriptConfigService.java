@@ -225,12 +225,22 @@ public class JavascriptConfigService extends AbstractResourceService implements 
       }      
    }   
 
-   @SuppressWarnings("unchecked")
    public String generateURL(
       ControllerContext controllerContext,
       ResourceId id,
       boolean minified,
       Locale locale) throws IOException
+   {
+      return generateURL(controllerContext, id, minified, locale, PortalContainer.getInstance().getPortalContext().getContextPath());
+   }
+   
+   @SuppressWarnings("unchecked")
+   public String generateURL(
+      ControllerContext controllerContext,
+      ResourceId id,
+      boolean minified,
+      Locale locale,
+      String contextPath) throws IOException
    {      
       @SuppressWarnings("rawtypes")
       BaseScriptResource resource = null;
@@ -242,7 +252,7 @@ public class JavascriptConfigService extends AbstractResourceService implements 
       {
          resource = getResource(id);            
       }
-             
+
       //
       if (resource != null)
       {         
@@ -258,10 +268,7 @@ public class JavascriptConfigService extends AbstractResourceService implements 
          }
          
          StringBuilder buffer = new StringBuilder();
-         URIWriter writer = new URIWriter(buffer);
-         
-         // Append portal context path
-         String contextPath = PortalContainer.getInstance().getPortalContext().getContextPath();
+         URIWriter writer = new URIWriter(buffer);         
          writer.append(contextPath);
          controllerContext.renderURL(resource.getParameters(minified, locale), writer);
          return buffer.toString();            
@@ -278,6 +285,11 @@ public class JavascriptConfigService extends AbstractResourceService implements 
    }
    
    public JSONObject getJSConfig(ControllerContext controllerContext, Locale locale) throws Exception 
+   {
+      return getJSConfig(controllerContext, locale, PortalContainer.getInstance().getPortalContext().getContextPath());
+   }
+
+   public JSONObject getJSConfig(ControllerContext controllerContext, Locale locale, String contextPath) throws Exception 
    {
       JSONObject paths = new JSONObject();
       JSONObject shim = new JSONObject();      
@@ -312,13 +324,13 @@ public class JavascriptConfigService extends AbstractResourceService implements 
                url = groupURLs.get(grpId);
                if (url == null)
                {
-                  url = buildURL(grpId, controllerContext, locale);
+                  url = buildURL(grpId, controllerContext, locale, contextPath);
                   groupURLs.put(grpId, url);
                }
             }
             else
             {
-               url = buildURL(resource.getId(), controllerContext, locale);                                    
+               url = buildURL(resource.getId(), controllerContext, locale, contextPath);                                    
             }
             paths.put(name, url);
          }         
@@ -374,9 +386,9 @@ public class JavascriptConfigService extends AbstractResourceService implements 
       return null;
    }
    
-   private String buildURL(ResourceId id, ControllerContext context, Locale locale) throws Exception
+   private String buildURL(ResourceId id, ControllerContext context, Locale locale, String contextPath) throws Exception
    {      
-      String url = generateURL(context, id, !PropertyManager.isDevelopping(), locale);         
+      String url = generateURL(context, id, !PropertyManager.isDevelopping(), locale, contextPath);         
       
       if (url != null && url.endsWith(".js"))
       {            
