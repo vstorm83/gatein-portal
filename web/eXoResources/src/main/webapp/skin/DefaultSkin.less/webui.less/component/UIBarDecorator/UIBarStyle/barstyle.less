@@ -1,0 +1,84 @@
+/**
+ * Copyright (C) 2009 eXo Platform SAS.
+ * 
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
+/*###########################-BarStyle2-###########################*/
+
+.UIBarStyle .BarStyle2 {
+	height: 39px;
+	LeftBar {
+		.uIBarStyle .leftBar('@{UIBarStylePath}/BarStyle2.gif',6px);
+	}
+	.RightBar {
+		.uIBarStyle .rightBar('@{UIBarStylePath}/BarStyle2.gif',6px);
+	}
+	.MiddleBar {
+		.uIBarStyle .middleBar(39px,39px,'@{UIBarStylePath}/BarStyle2.gif');
+	}
+}
+
+/*###########################-SmoothNavy40Style-###########################*/
+
+.UIBarStyle .SmoothNavy40Style {
+	height: 40px;
+	.LeftBar {	
+		.uIBarStyle .leftBar('@{UIBarStylePath}/SmoothNavy40Style.gif',13px);
+	}
+	.RightBar {
+		.uIBarStyle .rightBar('@{UIBarStylePath}/SmoothNavy40Style.gif',14px);
+	}
+	.MiddleBar {	
+		.uIBarStyle .middleBar(40px,40px,'@{UIBarStylePath}/SmoothNavy40Style.gif');
+		vertical-align: middle;
+	}
+
+}
+
+/*============================== Title Bar ========================================*/
+
+.UIBarStyle .TitleBar {
+	.LeftBar {	
+		.uIBarStyle .leftBar('@{UIBarStylePath}/TitleBar.gif',11px);
+	}
+	RightBar {
+		.uIBarStyle .rightBar('@{UIBarStylePath}/TitleBar.gif',11px);
+	}
+	.MiddleBar {
+		padding-left: 8px;
+		.uIBarStyle .middleBar(30px,30px,'@{UIBarStylePath}/TitleBar.gif');
+		color: #058ee6;
+		font-weight: bold;
+		font-size: @gtnBaseFontSize+3;
+		font-family: arial;
+	}	
+}
+
+/*======================================== NormalBarStyle ==================================*/
+
+.UIBarStyle .NormalBarStyle {
+	height: 38px;
+	.LeftBar {
+		.uIBarStyle .leftBar('@{UIBarStylePath}/NormalBarStyle.gif',6px);
+	}
+	.RightBar {
+		.uIBarStyle .rightBar('@{UIBarStylePath}/NormalBarStyle.gif',6px);
+	}
+	.MiddleBar {
+		.uIBarStyle .middleBar(38px,38px,'@{UIBarStylePath}/NormalBarStyle.gif');
+	}
+}

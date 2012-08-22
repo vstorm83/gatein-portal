@@ -1,0 +1,73 @@
+.uibarDecoratior {				
+	.uiActionButtonStyle(@background,@lineHeight,@padding,@borderColor: @gtnColorBorder,@borderRadius: @gtnDecoratorRadius) {
+		line-height: @lineHeight;			
+		.gtnBorderedAll(@borderColor);
+		.gtnBorderRadiusAll(@borderRadius);
+		.gtnPadding(@padding);
+		background: transparent url('@{UIActionPath}/@{background}') repeat-x center;
+		text-align: center;	
+		white-space: nowrap;
+		font-weight: normal;
+	}
+	.simpleStyle1Icon(@background)  {
+		.gtnPaddingLeft(22px);		
+		.gtnBackgroundImage('@{UIActionPath}/@{background}','@{UIActionPath}/@{background}',no-repeat,'left','right');
+		white-space: nowrap;
+		line-height: 20px;
+	}
+}
+
+.uIBarStyle {
+	.leftBar(@background,@padding){
+		background: url('@{background}') no-repeat left top;
+		padding-left: @padding;
+	}
+	.rightBar(@background,@padding){
+		background: url('@{background}') no-repeat right top;
+		padding-right: @padding;
+	}
+	.middleBar(@height,@lineHeight,@background){
+		background: url('@{background}') repeat-x bottom;
+		.gtnVerticalAlginCenter(@height,@lineHeight);
+	}
+}
+
+.uIBarDecotator {	
+	.topLeft(@background,@padding){
+		background: url('@{UIBoxDecoratorPath}/@{background}') no-repeat left top;
+		padding-left: @padding;
+	}
+	.topRight(@background,@padding){
+		background: url('@{UIBoxDecoratorPath}/@{background}') no-repeat right top;
+		padding-right: @padding;
+	}
+	.topCenter(@background,@height:auto){
+		background: url('@{UIBoxDecoratorPath}/@{background}') repeat-x center -8px;
+		height: @height;
+	}
+	.middleLeft(@background,@padding){		
+		background: url('@{UIBoxDecoratorPath}/@{background}') repeat-y  left; 
+		padding-left:@padding;
+	}
+	.middleRight(@background,@padding){
+		background: url('@{UIBoxDecoratorPath}/@{background}') repeat-y  right; 
+		padding-right:@padding;
+	}
+	.middleCenter(@background,@height:auto){
+		background:@background;
+		height: @height;
+	}
+	.bottomLeft(@background,@padding){
+		background: url('@{UIBoxDecoratorPath}/@{background}') no-repeat left bottom; 
+		padding-left:@padding;
+	}
+	.bottomRight(@background,@padding){
+		background: url('@{UIBoxDecoratorPath}/@{background}') no-repeat right bottom; 
+		padding-right:@padding;
+	}
+	.bottomCenter(@background,@height:auto){
+		background: url('@{UIBoxDecoratorPath}/@{background}') repeat-x center -16px;
+		height: @height;
+	}
+	
+}
