@@ -36,7 +36,6 @@ import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationServiceImpl;
 import org.exoplatform.portal.mop.navigation.NavigationState;
 import org.exoplatform.portal.mop.navigation.Scope;
-import org.exoplatform.portal.mop.user.UserNodeFilterConfig.Builder;
 import org.exoplatform.portal.pom.config.POMDataStorage;
 import org.exoplatform.portal.pom.config.POMSessionManager;
 import org.exoplatform.services.listener.Event;
@@ -597,7 +596,7 @@ public class TestUserPortal extends AbstractPortalTest
       }.execute("demo");
    }
 
-   public void testPathResolutionPerNavigation()
+   public void testPathResolutionWithLoadingPages()
    {
       new UnitTest()
       {
@@ -605,28 +604,47 @@ public class TestUserPortal extends AbstractPortalTest
          {
             UserPortalConfig userPortalCfg = userPortalConfigSer_.getUserPortalConfig("classic", getUserId());
             UserPortal userPortal = userPortalCfg.getUserPortal();
-            UserNavigation navigation = userPortal.getNavigation(SiteKey.group("/platform/administrators"));
+            UserNavigation navigation = userPortal.getNavigation(SiteKey.portal("classic"));
 
-            //
-            UserNode path = userPortal.resolvePath(navigation, null, "/");
-            assertNull(path);
-
-            //
-            path = userPortal.resolvePath(navigation, null, "/foo");
-            assertNull(path);
-
-            //
-            path = userPortal.resolvePath(navigation, null, "/administration");
-            assertNotNull(path);
-            assertEquals("administration", path.getName());
-
-            //
-            path = userPortal.resolvePath(navigation, null, "/administration/communityManagement");
-            assertNotNull(path);
-            assertEquals("communityManagement", path.getName());
+            // Find a default node which is available to the current user
+            UserNodeFilterConfig.Builder builder = UserNodeFilterConfig.builder();
+            builder.withReadCheck(); // Check permission of the page.
+            UserNodeFilterConfig filterConfig = builder.build();
+            
+            // The #resolvePath method load nodes with a Scope that its depth is "/home".split("/").length(),
+            // then it does filter on all the loaded nodes which causes loading/checking pages permission.
+            userPortal.resolvePath(navigation, filterConfig, "/home");
+            assertTrue(filterConfig.loadedPages.contains("portal::classic::homepage"));
+            assertFalse(filterConfig.loadedPages.contains("portal::classic::webexplorer")); // the filter should not perform on this sibling nodes of /home
          }
       }.execute("root");
    }
+
+   public void testDefaultNodeResolutionWithLoadingPages()
+   {
+      new UnitTest()
+      {
+         public void doExecute() throws Exception
+         {
+            UserPortalConfig userPortalCfg = userPortalConfigSer_.getUserPortalConfig("classic", getUserId());
+            UserPortal userPortal = userPortalCfg.getUserPortal();
+            UserNavigation navigation = userPortal.getNavigation(SiteKey.portal("classic"));
+
+            // Find a default node which is available to the current user
+            UserNodeFilterConfig.Builder builder = UserNodeFilterConfig.builder();
+            builder.withReadCheck();
+            UserNodeFilterConfig filterConfig = builder.build();
+            
+            // The #getDefaultPath method load all children of the root node,
+            // then does filter on all of those.
+            userPortal.getDefaultPath(navigation, filterConfig);
+            assertTrue(filterConfig.loadedPages.contains("portal::classic::homepage"));
+            assertFalse(filterConfig.loadedPages.contains("portal::classic::webexplorer")); // the filter should not perform on this sibling nodes of /home
+         }
+      }.execute("root");
+   }
+
+   
 
    public void testLabel()
    {

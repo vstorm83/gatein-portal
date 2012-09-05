@@ -61,6 +61,7 @@ class UserNodeFilter implements NodeFilter
       {
          try
          {
+            config.loadedPages.add(pageRef); // Just for testing
             Page page = userPortal.service.getPage(pageRef);
             if (page != null)
             {

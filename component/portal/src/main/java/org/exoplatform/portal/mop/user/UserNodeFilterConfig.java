@@ -22,8 +22,10 @@ package org.exoplatform.portal.mop.user;
 import org.exoplatform.commons.utils.Safe;
 import org.exoplatform.portal.mop.Visibility;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -50,6 +52,9 @@ public class UserNodeFilterConfig
 
    /** . */
    final boolean temporalCheck;
+
+   // Just for testing
+   public List<String> loadedPages = new ArrayList<String>();
 
    public UserNodeFilterConfig(Builder builder)
    {
