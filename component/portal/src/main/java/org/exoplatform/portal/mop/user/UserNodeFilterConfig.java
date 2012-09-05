@@ -53,6 +53,9 @@ public class UserNodeFilterConfig
    /** . */
    final boolean temporalCheck;
 
+   /** An optional path restricting what should be seen, this is not exposed outside this API (!!!). */
+   String[] path;
+
    // Just for testing
    public List<String> loadedPages = new ArrayList<String>();
 
@@ -67,6 +70,7 @@ public class UserNodeFilterConfig
       this.visibility = Safe.unmodifiableSet(builder.withVisibility);
       this.authorizationMode = builder.withAuthorizationMode;
       this.temporalCheck = builder.withTemporalCheck;
+      this.path = null;
    }
 
    public Set<Visibility> getVisibility()
@@ -106,11 +110,15 @@ public class UserNodeFilterConfig
       /** . */
       private boolean withTemporalCheck;
 
+      /** . */
+      private String[] path;
+
       private Builder()
       {
          this.withVisibility = null;
          this.withAuthorizationMode = AUTH_NO_CHECK;
          this.withTemporalCheck = false;
+         this.path = null;
       }
 
       private Builder(UserNodeFilterConfig predicate)
@@ -118,6 +126,7 @@ public class UserNodeFilterConfig
          this.withVisibility = predicate.visibility;
          this.withAuthorizationMode = predicate.authorizationMode;
          this.withTemporalCheck = predicate.temporalCheck;
+         this.path = predicate.path;
       }
 
       public Builder withVisibility(Visibility first, Visibility... rest)
