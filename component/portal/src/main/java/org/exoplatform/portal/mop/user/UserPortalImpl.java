@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -126,9 +127,10 @@ public class UserPortalImpl implements UserPortal
             // Add group navigations
             if(service.getUserACL().getSuperUser().equals(userName))
             {
-               List<NavigationContext> navCtxs = service.getNavigationService().loadNavigations(SiteType.GROUP);
-               for(NavigationContext navCtx : navCtxs)
+               Iterator<NavigationContext> navCtxs = service.getNavigationService().findNavigations(0, -1, SiteType.GROUP, null).iterator();
+               while(navCtxs.hasNext())
                {
+                  NavigationContext navCtx = navCtxs.next();
                   if(!navCtx.getKey().getName().equals(service.getUserACL().getGuestsGroup()))
                   {
                      navigations.add(new UserNavigation(this, navCtx, true));

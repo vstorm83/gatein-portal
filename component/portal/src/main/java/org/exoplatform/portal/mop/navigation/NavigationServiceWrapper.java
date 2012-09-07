@@ -21,6 +21,7 @@ package org.exoplatform.portal.mop.navigation;
 
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.exoplatform.portal.mop.EventType;
+import org.exoplatform.portal.mop.QueryResult;
 import org.exoplatform.portal.mop.SiteKey;
 
 import org.exoplatform.portal.mop.SiteType;
@@ -102,9 +103,9 @@ public class NavigationServiceWrapper implements NavigationService, Startable
    }
 
    @Override
-   public List<NavigationContext> loadNavigations(SiteType type) throws NullPointerException, NavigationServiceException
+   public QueryResult<NavigationContext> findNavigations(int offset, int limit, SiteType siteType, String siteName) throws NavigationServiceException
    {
-      return service.loadNavigations(type);
+      return service.findNavigations(offset, limit, siteType, siteName);
    }
 
    public void saveNavigation(NavigationContext navigation) throws NullPointerException, NavigationServiceException

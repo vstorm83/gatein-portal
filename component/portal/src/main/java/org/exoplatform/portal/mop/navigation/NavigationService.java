@@ -19,6 +19,7 @@
 
 package org.exoplatform.portal.mop.navigation;
 
+import org.exoplatform.portal.mop.QueryResult;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.SiteType;
 import java.util.List;
@@ -49,15 +50,7 @@ public interface NavigationService
     */
    NavigationContext loadNavigation(SiteKey key) throws NullPointerException, NavigationServiceException;
 
-   /**
-    * Find and returns navigations of a given type. Method use discretion is advised
-    *
-    * @param type the navigation type
-    * @return all navigations matching type
-    * @throws NullPointerException if the key is null
-    * @throws NavigationServiceException
-    */
-   List<NavigationContext> loadNavigations(SiteType type) throws NullPointerException, NavigationServiceException;
+   QueryResult<NavigationContext> findNavigations(int offset, int limit, SiteType siteType, String siteName) throws NavigationServiceException;
 
    /**
     * Create, update a navigation. When the navigation state is not null, the navigation

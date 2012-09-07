@@ -20,6 +20,7 @@
 package org.exoplatform.portal.mop.navigation;
 
 import org.exoplatform.portal.mop.Described;
+import org.exoplatform.portal.mop.QueryResult;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.Utils;
@@ -97,28 +98,31 @@ public class NavigationServiceImpl implements NavigationService
    }
 
    @Override
-   public List<NavigationContext> loadNavigations(SiteType type) throws NullPointerException, NavigationServiceException
+   public QueryResult<NavigationContext> findNavigations(int offset, int limit, SiteType siteType, String siteName) throws NavigationServiceException
    {
-      if(type == null)
-      {
-         throw new NullPointerException();
-      }
-
       POMSession session = manager.getSession();
-      ObjectType<Site> objectType = objectType(type);
+      ObjectType<Site> objectType = objectType(siteType);
       Collection<Site> sites = session.getWorkspace().getSites(objectType);
-
+      if(limit < 0)
+      {
+         limit = sites.size();
+      }
+      int count = -1;
       List<NavigationContext> navigations = new LinkedList<NavigationContext>();
       for(Site site : sites)
       {
-         Navigation defaultNavigation = site.getRootNavigation().getChild("default");
-         if(defaultNavigation != null)
+         count++;
+         if (count >= offset && count < limit)
          {
-            SiteKey key = new SiteKey(type, site.getName());
-            navigations.add(new NavigationContext(new NavigationData(key, defaultNavigation)));
+            Navigation defaultNavigation = site.getRootNavigation().getChild("default");
+            if (defaultNavigation != null)
+            {
+               SiteKey key = new SiteKey(siteType, site.getName());
+               navigations.add(new NavigationContext(new NavigationData(key, defaultNavigation)));
+            }
          }
       }
-      return navigations;
+      return new QueryResult<NavigationContext>(0, offset, limit - offset, navigations);
    }
 
    public void saveNavigation(NavigationContext navigation) throws NullPointerException, NavigationServiceException
