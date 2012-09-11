@@ -136,7 +136,7 @@ public abstract class AbstractDataImportTest extends AbstractGateInTest
       bootstrap.boot();
       PortalContainer container = bootstrap.getContainer();
       afterFirstBoot(container);
-      bootstrap.dispose();
+      bootstrap.dispose(false);
 
       //
       setSystemProperty("import.portal.1", getConfig2());
@@ -163,7 +163,7 @@ public abstract class AbstractDataImportTest extends AbstractGateInTest
       bootstrap.boot();
       PortalContainer container = bootstrap.getContainer();
       afterFirstBoot(container);
-      bootstrap.dispose();
+      bootstrap.dispose(false);
 
       //
       setSystemProperty("import.portal.1", getConfig2());
@@ -201,7 +201,7 @@ public abstract class AbstractDataImportTest extends AbstractGateInTest
       mgr.getSession().save();
       RequestLifeCycle.end();
       
-      bootstrap.dispose();
+      bootstrap.dispose(false);
 
       //
       setSystemProperty("import.portal.1", getConfig2());
@@ -250,7 +250,7 @@ public abstract class AbstractDataImportTest extends AbstractGateInTest
       mgr.getSession().save();
       RequestLifeCycle.end();
       
-      bootstrap.dispose();
+      bootstrap.dispose(false);
 
       //
       setSystemProperty("import.portal.1", getConfig2());

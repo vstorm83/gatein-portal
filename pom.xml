@@ -936,6 +936,18 @@
                         <name>exo.profiles</name>
                         <value>${surefire.exo.profiles}</value>
                      </property>
+                     <property>
+                        <name>gatein.test.jdbc.host</name>
+                        <value>localhost</value>
+                     </property>
+                     <property>
+                        <name>gatein.test.jdbc.host.username</name>
+                        <value>root</value>
+                     </property>
+                     <property>
+                        <name>gatein.test.jdbc.host.password</name>
+                        <value>root</value>
+                     </property>
                   </systemProperties>
                </configuration>
             </plugin>

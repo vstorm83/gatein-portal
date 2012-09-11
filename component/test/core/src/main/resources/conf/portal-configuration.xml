@@ -67,9 +67,9 @@
           <name>ref-addresses</name>
           <description>ref-addresses</description>
           <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
-          <property name="url" value="jdbc:mysql://10.37.129.4/jdbcjcr?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8"/>
-          <property name="username" value="root"/>
-          <property name="password" value=""/>
+          <property name="url" value="jdbc:mysql://${gatein.test.jdbc.host}/${gatein.test.database.tmp}?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8"/>
+          <property name="username" value="${gatein.test.jdbc.host.username}"/>
+          <property name="password" value="${gatein.test.jdbc.host.password}"/>
         </properties-param>
       </init-params>
     </component-plugin>

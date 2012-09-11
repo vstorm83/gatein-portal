@@ -110,7 +110,7 @@ public abstract class AbstractImportTest extends AbstractGateInTest
       NodeContext<?> root = service.loadNode(Node.MODEL, nav, Scope.ALL, null);
       afterTwoPhasesBoot(root);
       RequestLifeCycle.end();
-      bootstrap.dispose();
+      bootstrap.dispose(false);
 
       //
       System.setProperty("import.portal.1", getConfig2());
@@ -147,7 +147,7 @@ public abstract class AbstractImportTest extends AbstractGateInTest
       NodeContext<?> root = service.loadNode(Node.MODEL, nav, Scope.ALL, null);
       afterTwoPhasesBoot(root);
       RequestLifeCycle.end();
-      bootstrap.dispose();
+      bootstrap.dispose(false);
 
       //
       System.setProperty("import.portal.1", getConfig2());
@@ -164,7 +164,7 @@ public abstract class AbstractImportTest extends AbstractGateInTest
       workspace.adapt(Imported.class).setStatus(Status.WANT_REIMPORT.status());
       mgr.getSession().save();
       RequestLifeCycle.end();
-      bootstrap.dispose();
+      bootstrap.dispose(false);
 
       //
       bootstrap.boot();

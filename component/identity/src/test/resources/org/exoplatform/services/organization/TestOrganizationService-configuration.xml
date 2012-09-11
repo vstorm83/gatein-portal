@@ -177,7 +177,7 @@
     <jmx-name>database:type=HibernateService</jmx-name>
     <type>org.exoplatform.services.database.impl.HibernateServiceImpl</type>
     <init-params>
-      <properties-param>
+      <properties-param profiles="hsqldb">
         <name>hibernate.properties</name>
         <description>Default Hibernate Service</description>
         <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
@@ -196,6 +196,31 @@
         <property name="hibernate.connection.username" value="sa"/>
         <property name="hibernate.connection.password" value=""/>
         <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect"/>
+        <property name="hibernate.c3p0.min_size" value="5"/>
+        <property name="hibernate.c3p0.max_size" value="20"/>
+        <property name="hibernate.c3p0.timeout" value="1800"/>
+        <property name="hibernate.c3p0.max_statements" value="50"/>
+      </properties-param>
+      
+      <properties-param profiles="mysql">
+        <name>hibernate.properties</name>
+        <description>Default Hibernate Service</description>
+        <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
+        <!--<property name="hibernate.show_sql" value="true"/>-->
+        <!--<property name="hibernate.use_sql_comments" value="true"/>-->
+        <!--<property name="hibernate.format_sql" value="true"/>-->
+        <property name="hibernate.current_session_context_class" value="thread"/>
+        <property name="hibernate.jdbc.batch_size" value="0"/>
+        <property name="hibernate.cache.use_second_level_cache" value="true"/>
+        <property name="hibernate.cache.use_query_cache" value="true"/>
+        <!--CHANGEME HashtableCacheProvider shold not be used in production env-->
+        <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider"/>
+        <property name="hibernate.connection.url" value="jdbc:mysql://${gatein.test.jdbc.host}/${gatein.test.database.tmp}?createDatabaseIfNotExist=true&amp;useUnicode=true&amp;characterEncoding=utf-8"/>
+        <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
+        <property name="hibernate.connection.autocommit" value="true"/>
+        <property name="hibernate.connection.username" value="${gatein.test.jdbc.host.username}"/>
+        <property name="hibernate.connection.password" value="${gatein.test.jdbc.host.password}"/>
+        <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5Dialect"/>
         <property name="hibernate.c3p0.min_size" value="5"/>
         <property name="hibernate.c3p0.max_size" value="20"/>
         <property name="hibernate.c3p0.timeout" value="1800"/>

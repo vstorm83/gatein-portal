@@ -32,7 +32,6 @@ import javax.jcr.Session;
 @ConfiguredBy({@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/exo.portal.component.test.jcr-configuration.xml")})
 public class BootstrapTestCase extends AbstractKernelTest
 {
-
    public void testWorkspace() throws Exception
    {
       PortalContainer container = PortalContainer.getInstance();
