@@ -23,9 +23,9 @@ import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValueParam;
-import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.web.ControllerContext;
 import org.exoplatform.web.WebAppController;
 
@@ -60,22 +60,20 @@ public class StandaloneAppRequestHandler extends PortalRequestHandler
    }
    
    @Override
-   public boolean execute(ControllerContext controllerContext) throws Exception
+   public boolean execute(ControllerContext controllerContext, HttpServletRequest request, HttpServletResponse response) throws Exception
    {
-      HttpServletRequest req = controllerContext.getRequest();
-      HttpServletResponse res = controllerContext.getResponse();
-
-      log.debug("Session ID = " + req.getSession().getId());
-      res.setHeader("Cache-Control", "no-cache");
+      log.debug("Session ID = " + request.getSession().getId());
+      response.setHeader("Cache-Control", "no-cache");
 
       //
-      String siteName = req.getRemoteUser();
+      String siteName = request.getRemoteUser();
       String requestPath = controllerContext.getParameter(REQUEST_PATH);
 
-      StandaloneApplication app = controllerContext.getController().getApplication(StandaloneApplication.STANDALONE_APPLICATION_ID);
-      StandaloneAppRequestContext context = new StandaloneAppRequestContext(app, controllerContext, siteName == null ? "" : siteName, requestPath);
+      WebAppController controller = (WebAppController) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WebAppController.class);
+      StandaloneApplication app = controller.getApplication(StandaloneApplication.STANDALONE_APPLICATION_ID);
+      StandaloneAppRequestContext context = new StandaloneAppRequestContext(app, controllerContext, siteName == null ? "" : siteName, request, response, requestPath);      
       
-      if (req.getRemoteUser() == null)
+      if (request.getRemoteUser() == null)
       {
          context.requestAuthenticationLogin();
       }
