@@ -1,0 +1,131 @@
+/**
+ * Copyright (C) 2009 eXo Platform SAS.
+ * 
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+@import "variables.less";
+@import "mixins.less";
+.UIGrid {
+	border: 1px solid @UIGridBorder;
+	border-collapse: collapse;
+	padding-left: 1px;
+	margin: auto;
+	table-layout: fixed;
+	thead {
+		border: 1px solid @UIGridBorder;
+	}
+	th {
+		line-height: 19px;
+		border: 1px solid @UIGridBorder;
+		background: #d2ddf1 url('@{UIGirdPath}/ThGridRepeatBg1x19.jpg') repeat-x;
+		font-weight: normal;
+		padding: 0px 4px;
+		vertical-align: middle;
+	}
+	tbody {
+		padding-bottom: 1px;
+	}
+	td {
+		.gtnVerticalAlginCenter(20px,20px);
+		.gtnBordered(@gtnColorBgPortlet, #cccccc,transparent, #cccccc);		
+		border-bottom: none;
+		padding: 4px;
+	}
+
+}
+
+.UIGrid .OddRow {
+	background: @OddRow;
+}
+
+.UIGrid .EvenRow {
+	background: @EvenRow ;
+}
+
+.UIGrid .ActionContainer {
+	white-space: nowrap;
+	text-align: center;
+	a {
+		margin: 0px 4px;
+		color: #024369;
+	}
+	img {
+		margin: 0px 4px;
+		.gtnSize(20px,20px);
+		background-position: center;
+		background-repeat: no-repeat;
+		float: none; 
+		cursor: pointer;
+	}
+}
+
+.UIGrid {
+	.Text {
+		overflow: hidden;
+	}
+	.Number {
+		text-align: center;
+	}
+	.ValueWithIcon {
+		.gtnFloatLeft();
+		text-align: right;
+	}
+	.ViewIcon {
+		.UIGridIcons('LightBulbOn.gif');
+	}
+	.DeleteIcon {
+		.UIGridIcons('DustBin.gif');
+	}
+	.EditInfoIcon {
+		.UIGridIcons('EditIcon.gif');
+	}
+	 .ExcuteIcon {
+		.UIGridIcons('PageYellowLight.gif');
+	}
+}
+
+.UIGrid.UIGrid .AddNewIcon {	
+	.UIGridIcons('BlueCirclePlus.gif');
+}
+
+/*###################### UIListUsers Icon ######################*/
+
+.UIGrid {
+	.DeleteUserIcon {
+		.UIGridIcons('DustBin.gif');
+		margin: auto;
+	}
+	.ViewUserInfoIcon {
+		.UIGridIcons('EditIcon.gif');
+		margin: auto;
+	}
+}
+
+/*###################### UIListMembershipType Icon ######################*/
+
+.UIGrid {
+	.DeleteMembershipIcon {
+		.UIGridIcons('DustBin.gif');
+		margin: auto;
+	}
+	.EditMembershipIcon {
+		.UIGridIcons('EditIcon.gif');
+		margin: auto;
+	}
+	input.checkbox {
+		.gtnSize(15px,15px);
+	}
+}

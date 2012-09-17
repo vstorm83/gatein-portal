@@ -1,14 +1,14 @@
 .calendarTimeBox {
 	.leftBox(@background,@padding) {
-		background:url('@{UICalendar}/@background') no-repeat top left;
+		background:url('@{UICalendar}/@{background}') no-repeat top left;
 		padding-left: @padding;
 	}
 	.rightBox(@background,@padding) {
-		background:url('@{UICalendar}/@background') no-repeat top right;
+		background:url('@{UICalendar}/@{background}') no-repeat top right;
 		padding-right: @padding;
 	}
 	.middleBox(@background){
-		background:url('@{UICalendar}/@background') repeat-x left -101px;
+		background:url('@{UICalendar}/@{background}') repeat-x left -101px;
 		.gtnVerticalAlginCenter(21px,21px);		
 		vertical-align: bottom;
 	}

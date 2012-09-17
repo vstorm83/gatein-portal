@@ -29,7 +29,7 @@
 
 .UICalendarComponent {
 	position: absolute;
-	background-color: @UICalendarBackground;
+	background-color: @UICalendarBackgroundColor;
 	margin: 0;
 	padding: 0;
 	display: none;
@@ -37,7 +37,7 @@
 }
 
 .BlockCalendar {
-	background: #e0e5f7 url('/eXoResources/skin/DefaultSkin/portal/webui/component/view/UIWidgets/background/WidgetDragArea2x2.gif') repeat scroll;
+	background: #e0e5f7 url('@{BlockCalendar}/WidgetDragArea2x2.gif') repeat scroll;
 	padding-top: 12px;
 	cursor: move;
 	-moz-user-select: none;
@@ -78,7 +78,7 @@
 	}
 	td {
 		padding: 0px;
-		background-color: @UICalendarBackground;
+		background-color: @UICalendarBackgroundColor;
 	}
 	 a {
 		.gtnSize(20px,20px);
@@ -122,7 +122,7 @@
 
 .UICalendar .CalendarGrid {
 	padding: 4px;
-	background-color: @UICalendarBackground;
+	background-color: @UICalendarBackgroundColor;
 	.gtnBorderedAll(#cfcfcf);
 	td {
 		.gtnBorderedAll(white);
