@@ -1,0 +1,99 @@
+/**
+ * Copyright (C) 2009 eXo Platform SAS.
+ * 
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+
+@import "variables.less";
+@import "mixins.less";
+
+.UIPageIterator {	
+	margin: 5px auto 0px auto;
+	width: 99%;
+}
+
+.UIPageIterator a {
+	.gtnFloatRight();
+	color: #333333;
+	display: block;
+}
+
+.UIPageIterator .Number {
+	border: 1px solid #DFDFDF;
+	padding: 0 5px;
+	.gtnMarginLeft(3px);
+	cursor: pointer;
+	line-height: 15px;
+	&:hover {
+		color: #0183F1;
+		border: 1px solid #B6B6B6;
+	}
+}
+
+.UIPageIterator .PageSelected {
+	color: #F16701;
+	font-weight: bold;
+}
+
+.UIPageIterator .Icon {
+	.gtnMarginLeft(3px);
+	.gtnSize(18px,17px);
+	cursor: pointer;
+}
+
+.UIPageIterator .PagesTotalNumber {
+	color: #0183F1;
+	.gtnMargin(0,10px,0,5px);
+	line-height: 19px;	
+	font-size: @gtnBaseFontSize+1;
+}
+
+.UIPageIterator .TotalPages {
+	font-size: @gtnBaseFontSize+1;
+	line-height: 19px;
+}
+
+.UIPageIterator  {
+	.LastTopPageIcon {
+		.UIPageIteratorIcons('left -17px','right -17px');
+	}
+	 .NextTopPageIcon {
+		.UIPageIteratorIcons('left -51px','right -52px');
+	}
+	.LastPageIcon {
+		.UIPageIteratorIcons('left -119px','right -119px');
+	}
+	.NextPageIcon {
+		.UIPageIteratorIcons('left -85px','right -85px');
+	}
+	 .DisableLastTopPageIcon {
+		.UIPageIteratorIcons('left top','right top');
+	}
+	.DisableLastPageIcon {
+		.UIPageIteratorIcons('left -102px','right -102px');
+	}
+	.DisableNextPageIcon {
+		.UIPageIteratorIcons('left -68px','right -68pxpx');
+	}
+	
+}
+
+.UIPageIterator.UIPageIterator .DisableNextTopPageIcon {
+	.UIPageIteratorIcons('left -34px','right -34px');
+}
+
+
+
