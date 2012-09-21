@@ -28,7 +28,6 @@ import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.SiteType;
-import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationService;
 import org.exoplatform.portal.mop.user.UserNavigation;
 import org.exoplatform.portal.mop.user.UserNode;
@@ -45,7 +44,6 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,8 +77,7 @@ public class UIPageActionListener
             if (pcontext.getRemoteUser() == null && (siteKey.getType().equals(SiteType.GROUP) || siteKey.getType().equals(SiteType.USER)))
             {
                NavigationService service = uiPortalApp.getApplicationComponent(NavigationService.class);
-               NavigationContext navContext = service.loadNavigation(siteKey);
-               if (navContext != null)
+               if (siteKey.getType().equals(SiteType.USER) || (siteKey.getType().equals(SiteType.GROUP) && service.loadNavigation(siteKey) != null))
                {
                   uiPortalApp.setLastRequestNavData(null);
                   pcontext.requestAuthenticationLogin();
