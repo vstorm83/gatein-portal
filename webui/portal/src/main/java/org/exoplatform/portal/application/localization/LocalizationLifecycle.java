@@ -168,6 +168,7 @@ public class LocalizationLifecycle implements ApplicationRequestPhaseLifecycle<W
       }
       reqCtx.setLocale(locale);
       calculatedLocale.set(locale);
+      resetOrientation(reqCtx, locale);
    }
 
    /**
@@ -207,12 +208,15 @@ public class LocalizationLifecycle implements ApplicationRequestPhaseLifecycle<W
             saveLocale(reqCtx, loc);
          }
 
-         //
-         resetOrientation(refreshNeeded, reqCtx, loc);
+         if (refreshNeeded)
+         {
+            resetOrientation(reqCtx, loc);
+         }
+
          savePreviousLocale(reqCtx, loc);
       }
    }
-   
+
    /**
     * @see org.exoplatform.web.application.ApplicationLifecycle#onEndRequest
     */
@@ -329,7 +333,7 @@ public class LocalizationLifecycle implements ApplicationRequestPhaseLifecycle<W
       saveSessionLocale(context, loc);
    }
 
-   private void resetOrientation(boolean refreshNeeded, PortalRequestContext context, Locale loc)
+   private void resetOrientation(PortalRequestContext context, Locale loc)
    {
       ExoContainer container = context.getApplication().getApplicationServiceContainer();
       LocaleConfigService localeConfigService = (LocaleConfigService)
@@ -341,13 +345,8 @@ public class LocalizationLifecycle implements ApplicationRequestPhaseLifecycle<W
             log.warn("Locale changed to unsupported Locale during request processing: " + loc);
          return;
       }
-      
-      //
-      UIPortalApplication app = ((UIPortalApplication) context.getUIApplication());
-      if(refreshNeeded || app.getOrientation() != localeConfig.getOrientation())
-      {
-         app.setOrientation(localeConfig.getOrientation());
-      }
+      // we presume PortalRequestContext, and UIPortalApplication
+      ((UIPortalApplication) context.getUIApplication()).setOrientation(localeConfig.getOrientation());
    }
 
    private void saveSessionLocale(PortalRequestContext context, Locale loc)
