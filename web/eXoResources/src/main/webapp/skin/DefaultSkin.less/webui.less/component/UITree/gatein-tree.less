@@ -1,0 +1,105 @@
+/**
+ * Copyright (C) 2009 eXo Platform SAS.
+ * 
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+@import "variables.less";
+
+.UITrees {
+	border: 1px solid @UITreeBorder;
+	background: @UITreeBgColor;
+}
+
+.UITrees .TreeContainer {
+	overflow-y: auto;
+	overflow-x: hidden;
+	width: 99.5%;
+}
+
+.UITrees a {
+	display: block;
+	&:hover {
+		color: #058ee6;
+	}
+} 
+
+.UITrees .LevelUpArrowIcon {
+	height: 20px;
+	.gtnMarginLeft(10px);
+	.gtnBackgroundImage('@{UISearch24x24Path}/BlueUpLevelArrow.gif','@{UISearch24x24Path}/BlueUpLevelArrow-rt.gif',no-repeat,'0 center','0 center');
+	&:hover {
+		.gtnBackgroundImage('@{UISearch24x24Path}/OverBlueUpLevelArrow.gif','@{UISearch24x24Path}/OverBlueUpLevelArrow-rt.gif',no-repeat,'0 center','0 center');
+		.gtnMarginLeft(10px);
+	}
+}
+
+
+.UITrees .Node {
+	line-height: 19px;
+	padding-top: 7px;
+	.gtnMarginLeft(15px);
+	white-space: nowrap;
+	.gtnBackgroundImage('@{UITreePath}/Dotted.gif','@{UITreePath}/Dotted-rt.gif',repeat-y,'left center','right center');	
+	width: 100%;
+}
+
+.UITrees .LastNode {
+	.gtnBackgroundImage('@{UITreePath}/Dotted.gif','@{UITreePath}/Dotted-rt.gif', no-repeat,'left top','right top');	
+}
+
+.UITrees .Node {
+	.NodeIcon {
+		.gtnBackgroundPositionDir('left top','right top');
+		.gtnPaddingLeft(20px);
+		.gtnSize(100%,auto);
+	}
+	.ExpandIcon {
+		.gtnPaddingLeft(18px);
+		.gtnBackgroundImage('@{UITreePath}/SmallGrayMinus.gif','@{UITreePath}/SmallGrayMinus-rt.gif', no-repeat,'left top','right top');	
+		.gtnSize(100%,auto);
+	}
+	.CollapseIcon {
+		.gtnPaddingLeft(18px);
+		.gtnBackgroundImage('@{UITreePath}/SmallGrayPlus.gif','@{UITreePath}/SmallGrayPlus-rt.gif', no-repeat,'left top','right top');	
+		.gtnSize(100%,auto);
+	}
+	 .NodeSelected {
+		font-weight: bold;
+		color: #058ee6;
+		cursor: pointer;
+	}
+	.NullItemIcon {
+		.gtnPaddingLeft(18px);
+		.gtnBackgroundImage('@{UITreePath}/NullItemIcon.gif','@{UITreePath}/NullItemIcon-rt.gif', no-repeat,'6px top','98.5% top');
+		.gtnSize(100%,auto);
+	}
+}
+
+
+/** ################# Icons ###################*/
+
+.UITrees .TreeContainer {
+	.GroupAdminIcon {
+		.gtnBackgroundImage('@{UISearch24x24Path}/NormalGroup.gif','@{UISearch24x24Path}/NormalGroup-rt.gif', no-repeat,'left top','right top');
+		.gtnPaddingLeft(25px);
+	}
+	 .PortalIcon {
+		.gtnBackgroundImage('@{UISearch24x24Path}/SelectedGroup.gif','@{UISearch24x24Path}/SelectedGroup.gif', no-repeat,'left top','right top');
+		.gtnPaddingLeft(25px);
+	}
+}
+
+
