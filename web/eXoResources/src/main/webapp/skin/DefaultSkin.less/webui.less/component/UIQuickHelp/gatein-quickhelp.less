@@ -1,0 +1,142 @@
+/**
+ * Copyright (C) 2009 eXo Platform SAS.
+ * 
+ * This is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU Lesser General Public License as
+ * published by the Free Software Foundation; either version 2.1 of
+ * the License, or (at your option) any later version.
+ * 
+ * This software is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this software; if not, write to the Free
+ * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+ * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
+ */
+@import "variables.less";
+.UIQuickHelp {	
+}
+
+.UIQuickHelp .TopBar {
+	height: 22px;
+	.TopBarLeft {
+		padding-left: 7px;
+		background: url('@{UIQuickHelpPath}/QuickHelp.gif') no-repeat left top;
+	}
+	.TopBarRight {
+		padding-right: 9px;
+		background: url('@{UIQuickHelpPath}/QuickHelp.gif') no-repeat right top;
+	}
+	.TopBarMiddle {
+		height: 22px;
+		background: url('@{UIQuickHelpPath}/QuickHelp.gif') repeat-x left -22px;
+	}
+}
+
+.UIQuickHelp .TopBar .TopBarMiddle .TitleBar {
+	.gtnFloatLeft();
+	.gtnSize(130px,20px);
+	.BarLeft {
+		padding-left: 1px;
+		background: url('@{UIQuickHelpPath}/QuickHelp.gif') no-repeat left -64px;
+	}
+	.BarRight {
+		padding-right: 16px;
+		margin-top: 1px;
+		background: url('@{UIQuickHelpPath}/QuickHelp.gif') no-repeat right -44px;
+	}
+	.BarMiddle {
+		.gtnVerticalAlginCenter(20px,20px);
+		background: url('@{UIQuickHelpPath}/QuickHelp.gif') repeat-x left -64px;
+	}
+	.Title {
+		.gtnVerticalAlginCenter(20px,20px);
+		vertical-align: middle;
+		font-weight: bold;
+	}
+	.Icon {
+		.gtnFloatLeft();
+		.gtnSize(16px,16px);
+		.gtnMargin(2px,7px,0px,3px);
+	}
+}
+
+.UIQuickHelp .ContentContainer {
+	background-color: @gtnColorBgPortlet;
+	border-right: solid #5f90ba 1px;
+	border-left: solid #5f90ba 1px;
+}
+
+.UIQuickHelp .Content {
+	padding: 3px;
+}
+
+.UIQuickHelp .ContentContainer .Content .ScrollArea {
+	overflow: auto;
+	border:	solid 1px #6aa4d5;
+}
+
+.UIQuickHelp .ContentContainer .Content .ScrollArea .UIQuickHelpContentContainer {
+	padding: 8px;
+}
+
+.UIQuickHelp .BottomBar {
+	height: 22px;
+	border: none;
+	.BottomBarLeft {
+		padding-left: 3px;
+		background: url('@{UIQuickHelpPath}/QuickHelp.gif') no-repeat left -84px;
+	}
+	.BottomBarRight {
+		padding-right: 3px;
+		background: url('@{UIQuickHelpPath}/QuickHelp.gif') no-repeat right -84px;
+	}
+	.BottomBarMiddle {
+		height: 22px;
+		background: url('@{UIQuickHelpPath}/QuickHelp.gif') repeat-x left -106px;
+	}
+}
+
+.UIQuickHelp .BottomBar .ButtonBar {
+	.gtnMarginLeft(auto);
+	.gtnSize(80px,20px);
+	.ButtonBarLeft {
+		height: 20px;
+		padding-left: 16px;
+		background: url('@{UIQuickHelpPath}/QuickHelp.gif') no-repeat left -128px;
+	}
+	.ButtonBarRight {
+		height: 20px;
+		padding-right: 1px;
+		background: url('@{UIQuickHelpPath}/QuickHelp.gif') repeat-x bottom;
+	}
+}
+
+.UIQuickHelp .BottomBar {
+	 .BackButton {
+		.gtnFloatLeft();
+		.gtnMargin(3px,7px,0px,5px);
+	}
+	.ForwardButton {
+		.gtnFloatLeft();
+		.gtnMargin(3px,7px,0px,5px);
+	}
+}
+
+.UIQuickHelp .UIQuickHelpContentPage {
+	.Icon {
+		.gtnFloatLeft();
+	}
+	ul {
+		list-style-image: url('@{UIQuickHelpPath}/BlueSquareBg.gif');
+	}
+	li {
+		.gtnMargin(10px,0px,0,-20px)
+	}
+	 a{
+		font-weight: bold;
+	}
+}
