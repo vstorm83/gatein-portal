@@ -42,7 +42,7 @@
             <modules>
                 <module>common</module>
                 <module>tomcat</module>
-                <!--<module>jetty</module>-->
+                <module>jetty8</module>
                 <module>jboss-as7</module>
           </modules>
         </profile>
@@ -73,16 +73,16 @@
             </modules>
         </profile>
         <profile>
-            <id>pkg-jetty</id>
+            <id>pkg-jetty8</id>
             <activation>
                 <property>
                     <name>gatein.dev</name>
-                    <value>jetty</value>
+                    <value>jetty8</value>
                 </property>
             </activation>
             <modules>
                 <module>common</module>
-                <!--<module>jetty</module>-->
+                <module>jetty8</module>
             </modules>
         </profile>
         <profile>

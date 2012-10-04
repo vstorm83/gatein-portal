@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="package" xmlns:mvn="http://maven.apache.org/POM/4.0.0">
+
+   <target name="package">
+
+      <echo>Using Jetty at: ${jetty.dir}</echo>
+
+      <!-- Copy the dependencies -->
+      <dependencyfilesets />
+      <xslt basedir="${maven.project.basedir}" destdir="${maven.project.build.directory}" includes="pom.xml" extension=".xml" style="${maven.project.basedir}/transform.xsl">
+         <param name="lib.dir" expression="${maven.project.build.directory}/jetty8/lib/ext" />
+         <param name="webapps.dir" expression="${maven.project.build.directory}/jetty8/webapps" />
+         <mapper type="glob" from="pom.xml" to="copy-dependencies.xml" />
+      </xslt>
+      <ant antfile="${maven.project.build.directory}/copy-dependencies.xml" inheritRefs="true">
+         <target name="copy-dependencies" />
+      </ant>
+
+      <!-- Copy jetty -->
+      <copy todir="${maven.project.build.directory}/jetty8">
+         <fileset dir="${jetty.dir}">
+           <!--<exclude name="webapps/*.war"/>-->
+         </fileset>
+      </copy>
+
+      <!-- Copy configuration -->
+      <copy todir="${maven.project.build.directory}/jetty8" overwrite="true">
+         <fileset dir="${maven.project.basedir}/src/main/resources/jetty8" />
+      </copy>
+
+      <!-- Copy configuration -->
+      <copy tofile="${maven.project.build.directory}/jetty8/gatein/conf/configuration.properties">
+         <fileset dir="${maven.project.basedir}/../../component/common/src/main/java/conf" includes="configuration-jetty.properties" />
+      </copy>
+
+      <!-- Extract common config from packaging.common artifact to gatein/conf -->
+      <unzip src="${org.gatein.portal:exo.portal.packaging.common:jar}" dest="${maven.project.build.directory}/jetty8/gatein/conf">
+        <patternset>
+          <exclude name="META-INF/"/>
+        </patternset>
+      </unzip>
+
+      <!-- File permissions -->
+      <!--chmod perm="0644" type="file" dir="${maven.project.build.directory}/jetty/bin" excludes="**/*.sh" /-->
+      <chmod perm="0755" type="file" dir="${maven.project.build.directory}/jetty8/bin" includes="**/*.sh" />
+
+   </target>
+</project>
