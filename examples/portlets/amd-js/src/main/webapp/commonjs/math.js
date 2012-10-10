@@ -1,4 +1,6 @@
-exports.add = function (a, b)
-{
-	return a + b;
-};
+(function() {    
+    exports.add = function (a, b)
+    {
+    	return a + b;
+    };
+})();

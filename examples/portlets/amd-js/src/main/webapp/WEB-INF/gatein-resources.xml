@@ -131,12 +131,8 @@
    <module>
       <name>math</name>
       <script>
-        <adapter>
-        	define(["require", "exports"], function(require, exports) {
-         	<include>/commonjs/math.js</include>        		
-        	});
-        </adapter>
-       </script>
+         <path>/commonjs/math.js</path>        		
+      </script>
       <depends>
         <module>require</module>
       </depends>
@@ -148,11 +144,7 @@
    <module>
       <name>increment</name>
       <script>
-        <adapter>
-        	define(["require", "exports", "math"], function(require, exports) {
-         	<include>/commonjs/increment.js</include>        		
-        	});
-        </adapter>
+         <path>/commonjs/increment.js</path>        		
       </script>
       <depends>
         <module>require</module>
