@@ -45,6 +45,22 @@
          <short-title>RequireJS</short-title>
       </portlet-info>
    </portlet>
+   
+   <portlet>
+      <description xml:lang="EN">Todo Portlet</description>
+      <portlet-name>TodoPortlet</portlet-name>
+      <display-name xml:lang="EN">Todo Portlet</display-name>
+      <portlet-class>org.gatein.portlet.amd.TodoPortlet</portlet-class>
+
+      <supports>
+         <mime-type>text/html</mime-type>
+      </supports>
+
+      <portlet-info>
+         <title>Todo Portlet</title>
+         <short-title>Todo</short-title>
+      </portlet-info>
+   </portlet>
 
    <portlet>
       <description>CommonJS Sample Portlet</description>
