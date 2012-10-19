@@ -33,7 +33,6 @@ import org.exoplatform.test.mocks.servlet.MockServletRequest;
 import org.exoplatform.web.ControllerContext;
 import org.exoplatform.web.controller.QualifiedName;
 import org.exoplatform.web.controller.router.Router;
-
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -41,7 +40,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-
 import javax.servlet.ServletContext;
 
 @ConfiguredBy({@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/test-configuration.xml")})
@@ -49,11 +47,11 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
 {
    // The value must be the same with the version property in META-INF/maven/org.gatein.portal/exo.portal.component.web.resources/pom.properties
    protected final static String ASSETS_VERSION = "PORTAL-VERSION";
-   
+
    protected SkinService skinService;
 
    protected ControllerContext controllerCtx;
-   
+
    private static ServletContext mockServletContext;
 
    protected static MockResourceResolver resResolver;
@@ -65,7 +63,7 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
    abstract boolean setUpTestEnvironment();
 
    abstract void touchSetUp();
-   
+
    @Override
    protected void setUp() throws Exception
    {
@@ -147,7 +145,7 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
       String contextPath = mockServletContext.getContextPath();
       assertNotNull(portletSkin);
       assertEquals(contextPath + "/skin/FirstPortlet.css", portletSkin.getCSSPath());
-      
+
       portletSkin = skinService.getSkin("mockwebapp/SecondPortlet", "TestSkin");
       assertNotNull(portletSkin);
       assertEquals(contextPath + "/skin/SecondPortlet.css", portletSkin.getCSSPath());
@@ -181,7 +179,7 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
       SkinURL skinURL = newSimpleSkin("/non/existing/file.css").createURL(controllerCtx);
       String css = skinService.getCSS(newControllerContext(getRouter(), skinURL.toString()), false);
       assertNull(css);
-      
+
       skinURL.setOrientation(Orientation.RT);
       String uri = skinURL.toString();
       css = skinService.getCSS(newControllerContext(getRouter(), uri), false);
@@ -196,9 +194,9 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
          "/* Block comment\n" +
          "   background:url(bar.gif);\n" +
          "   End of block comment */";
-      
+
       resResolver.addResource(resource, css);
-      
+
       //TODO: It should only ignore the comment instead of removing it
       //assertEquals(
       //   "foo; /*background:url(bar.gif); Inline comment*/" +
@@ -220,7 +218,7 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
          " aaa; /* orientation=lt */ bbb; /* orientation=rt */ \n" +
          "{aaa;bbb;/*orientation=lt*/ccc;ddd;/*orientation=rt*/}\n" +
          "{aaa;/*orientation=lt*/bbb;}{ccc;/*orientation=rt*/ddd;}";
-      
+
       resResolver.addResource(resource, css);
 
       assertEquals(
@@ -229,7 +227,7 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
          "{aaa;bbb;/*orientation=lt*/ccc;}\n" +
          "{aaa;/*orientation=lt*/bbb;}{ddd;}",
          skinService.getCSS(newControllerContext(getRouter(), uri), false));
-      
+
       skinURL.setOrientation(Orientation.RT);
       uri = skinURL.toString();
       assertEquals(
@@ -247,12 +245,12 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
          "background:url(images/foo.gif);\n" +
          "background:url('/images/foo.gif');\n" +
          "aaa; background: #fff url('images/foo.gif') no-repeat center -614px; ccc;";
-      
+
       resResolver.addResource(resource, css);
-      
+
       SkinURL skinURL = newSimpleSkin(resource).createURL(controllerCtx);
       assertEquals(
-         "background:url(/background/url/images/foo.gif);\n" + 
+         "background:url(/background/url/images/foo.gif);\n" +
          "background:url('/images/foo.gif');\n" +
          "aaa; background: #fff url('/background/url/images/foo.gif') no-repeat center -614px; ccc;",
          skinService.getCSS(newControllerContext(getRouter(), skinURL.toString()), false));
@@ -289,7 +287,7 @@ public abstract class AbstractSkinServiceTest extends AbstractKernelTest
          {
             parameters = matcher.next();
          }
-         return new ControllerContext(null, router, request, null, parameters);
+         return new ControllerContext(router, parameters);
       }
       catch (MalformedURLException e)
       {

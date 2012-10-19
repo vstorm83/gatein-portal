@@ -26,6 +26,7 @@ import org.exoplatform.commons.utils.ByteArrayOutput;
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.commons.utils.Safe;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.management.annotations.Impact;
 import org.exoplatform.management.annotations.ImpactType;
 import org.exoplatform.management.annotations.Managed;
@@ -914,7 +915,7 @@ public class SkinService extends AbstractResourceService implements Startable
                   params.put(ResourceRequestHandler.COMPRESS_QN, merge ? "min" : "");
                   params.put(WebAppController.HANDLER_PARAM, "skin");
                   params.put(ResourceRequestHandler.RESOURCE_QN, resource);
-                  StringBuilder embeddedPath = new StringBuilder();
+                  StringBuilder embeddedPath = new StringBuilder(PortalContainer.getInstance().getPortalContext().getContextPath());
                   context.renderURL(params, new URIWriter(embeddedPath, MimeType.PLAIN));
 
                   //
