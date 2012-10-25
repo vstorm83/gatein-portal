@@ -137,7 +137,7 @@
       	<as>underscore</as>
       </depends>
       <depends>
-      	<module>JSON</module>
+      	<module>json2</module>
       </depends>
       <depends>
       	<module>jquery</module>
@@ -147,7 +147,7 @@
    <module>
       <name>localStorage</name>     
       <script>
-         <path>/todos/backbone-localstorage.js</path>         	
+         <path>/todos/vendor/backbone-localstorage.js</path>         	
       </script>
       <depends>
       	<module>underscore</module>
@@ -156,7 +156,7 @@
       	<module>backbone</module>
       </depends>
       <depends>
-      	<module>JSON</module>
+      	<module>json2</module>
       </depends>
    </module>
 

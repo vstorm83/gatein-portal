@@ -9,9 +9,10 @@
 	
 	var Router = Backbone.Router.extend({
 		routes : {
-			"*filter" : "filter",
+			"*filter" : "filter"
 		},
 		
+		/** @expose */
 		filter : function(param) {
 			todos.filterTodo(param);
 		}		

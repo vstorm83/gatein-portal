@@ -23,19 +23,23 @@
     	    return this;
         },
     
+        /** @expose */
         toggle : function() {
     	    this.model.toggle();
         },
     
+        /** @expose */
         edit : function() {
     	    this.model.tryEdit();
     	    this.$('.Edit').focus();
         },
     
+        /** @expose */
         cancel : function() {
     	    this.model.finishEdit(this.model.get('job'));
         },
     
+        /** @expose */
         finish : function(e) {
     	    if (e.keyCode == 13) {
     		    var job = this.$('.Edit').val();
@@ -49,6 +53,7 @@
     	    }
         },
     
+        /** @expose */
         removeTodo : function() {
     	    this.model.destroy();
         }
@@ -95,6 +100,7 @@
             this.$('.TodoList').append(view.render().el);
         },
     
+        /** @expose */
         createTodo : function(e) {
             if (e.keyCode != 13)
                 return;
@@ -105,10 +111,12 @@
             this.input.val('');
         },
     
+        /** @expose */
         clearCompleted : function() {
             this.model.clearCompleted();
         },
     
+        /** @expose */
         toggleAll : function() {
             var completed = this.allCheckbox.attr("checked");
             this.model.toggleAll(completed === "checked");

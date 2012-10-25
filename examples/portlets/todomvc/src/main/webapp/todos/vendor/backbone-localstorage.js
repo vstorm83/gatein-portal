@@ -39,7 +39,9 @@ _.extend(Backbone.LocalStorage.prototype, {
   create: function(model) {
     if (!model.id) {
         model.id = guid();
-        model.set(model.idAttribute, model.id);
+        var tmp = {};
+        tmp[model.idAttribute] = model.id;
+        model.set(tmp);
     }
     this.localStorage().setItem(this.name+"-"+model.id, JSON.stringify(model));
     this.records.push(model.id.toString());

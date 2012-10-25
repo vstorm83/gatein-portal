@@ -1,12 +1,13 @@
 (function(Backbone, _) {	
     var Todo = Backbone.Model.extend({
     	defaults : {
-    		job : '',
-    		completed : false,
-    		editing : false,
-    		display : true
+    		'job' : '',
+    		'completed' : false,
+    		'editing' : false,
+    		'display' : true
     	},		
     	
+    	/** @expose */
     	toggle : function(options) {			
     		var opt = {'completed' : !this.get('completed')};
     		_.extend(opt, options);
@@ -18,11 +19,12 @@
     	},
     	
     	tryEdit : function() {
-    		this.save('editing', true);
+    		this.save({'editing' : true});
     	},		
     	
+    	/** @expose */
     	setDisplay : function(display) {
-    		this.set('display', display);
+    		this.set({'display' : display});
     	}
     });
     
@@ -55,6 +57,7 @@
     		return this.without.apply(this, this.completed());
     	},
     	
+    	/** @expose */
     	filterTodo : function(param) {
     		if (param === 'active') {
     			_.invoke(this.completed(), 'setDisplay', false);
