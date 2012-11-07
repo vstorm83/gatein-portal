@@ -262,7 +262,7 @@ public class JavascriptConfigParser
             ScriptResourceDescriptor desc = scripts.get(id);
             if (desc == null)
             {
-               desc = new ScriptResourceDescriptor(id, fetchMode, parseOptString(element, AS_TAG), group);
+               desc = new ScriptResourceDescriptor(id, fetchMode, parseOptString(element, AS_TAG), group, contextPath);
             }
             else
             {
@@ -295,7 +295,7 @@ public class JavascriptConfigParser
          ScriptResourceDescriptor desc = scripts.get(id);
          if (desc == null)
          {
-            desc = new ScriptResourceDescriptor(id, fetchMode, parseOptString(element, AS_TAG), group);
+            desc = new ScriptResourceDescriptor(id, fetchMode, parseOptString(element, AS_TAG), group, contextPath);
          }
          parseDesc(element, desc);
          scripts.put(id, desc);

@@ -104,7 +104,7 @@ public class JavascriptConfigService extends AbstractResourceService implements 
    {
       if (ResourceScope.GROUP.equals(resourceId.getScope()))
       {
-         ScriptGroup loadGroup = scripts.getLoadGroup(resourceId.getName());
+         ScriptGroup loadGroup = getLoadGroup(resourceId.getName());
          if (loadGroup != null)
          {
             List<Reader> readers = new ArrayList<Reader>(loadGroup.getDependencies().size());
@@ -236,7 +236,7 @@ public class JavascriptConfigService extends AbstractResourceService implements 
       BaseScriptResource resource = null;
       if (ResourceScope.GROUP.equals(id.getScope()))
       {
-         resource = scripts.getLoadGroup(id.getName());
+         resource = getLoadGroup(id.getName());
       }
       else
       {
@@ -291,7 +291,11 @@ public class JavascriptConfigService extends AbstractResourceService implements 
                JSONArray deps = new JSONArray();
                for (ResourceId id : resource.getDependencies())
                {
-                  deps.put(getResource(id).getId());
+                  ScriptResource dep = getResource(id);
+                  if (dep != null)
+                  {
+                     deps.put(dep.getId());                     
+                  }
                }
                if (deps.length() > 0)
                {
@@ -326,9 +330,27 @@ public class JavascriptConfigService extends AbstractResourceService implements 
       return config;
    }  
    
+   @Override
+   public void unregisterServletContext(WebApp app)
+   {
+      super.unregisterServletContext(app);
+      for (ScriptResource resource : getAllResources())
+      {
+         if (app.getContextPath().equals(resource.getContextPath()))
+         {
+            scripts.removeResource(resource.getId());
+         }
+      }
+   }
+
    public ScriptResource getResource(ResourceId resource)
    {
       return scripts.getResource(resource);
+   }
+   
+   public ScriptGroup getLoadGroup(String groupName)
+   {
+      return scripts.getLoadGroup(groupName);
    }
 
    /**

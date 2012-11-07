@@ -29,27 +29,32 @@ import org.gatein.portal.controller.resource.ResourceId;
  */
 public class ScriptGroup extends BaseScriptResource<ScriptGroup>
 {
-   final Set<ResourceId> scripts;
-   final String contextPath;
+   final Set<ResourceId> scripts;   
 
    ScriptGroup(ScriptGraph graph, ResourceId id, String contextPath)
    {
-      super(graph, id);
+      super(graph, id, contextPath);
 
       //
       this.scripts = new HashSet<ResourceId>();
-      this.contextPath = contextPath;
    }
    
    void addDependency(ResourceId id)
    {
       scripts.add(id);
+      refresh();
+   }
+   
+   void removeDependency(ResourceId id)
+   {
+      scripts.remove(id);
+      refresh();
    }
 
    @Override
    public Set<ResourceId> getDependencies()
    {
-      return scripts;
+      return new HashSet<ResourceId>(scripts);
    }
 
    @Override

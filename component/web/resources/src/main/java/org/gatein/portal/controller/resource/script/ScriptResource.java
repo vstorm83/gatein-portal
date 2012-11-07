@@ -60,16 +60,16 @@ public class ScriptResource extends BaseScriptResource<ScriptResource> implement
    final String alias;
    
    /** . */
-   final ScriptGroup group;
+   ScriptGroup group;
 
    ScriptResource(ScriptGraph graph, ResourceId id, FetchMode fetchMode)
    {
-      this(graph, id, fetchMode, null, null);
+      this(graph, id, fetchMode, null, null, null);
    }
 
-   ScriptResource(ScriptGraph graph, ResourceId id, FetchMode fetchMode, String alias, ScriptGroup group)
+   ScriptResource(ScriptGraph graph, ResourceId id, FetchMode fetchMode, String alias, ScriptGroup group, String contextPath)
    {
-      super(graph, id);
+      super(graph, id, contextPath);
 
       this.modules = new ArrayList<Module>();
       this.closure = new HashSet<ResourceId>();

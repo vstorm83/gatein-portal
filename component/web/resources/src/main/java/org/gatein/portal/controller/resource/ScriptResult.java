@@ -19,8 +19,6 @@
 
 package org.gatein.portal.controller.resource;
 
-import java.util.Date;
-
 import org.exoplatform.commons.utils.PropertyManager;
 
 /**
@@ -28,25 +26,29 @@ import org.exoplatform.commons.utils.PropertyManager;
  */
 class ScriptResult
 {
+   final long lastModified;
 
-   private ScriptResult() {
+   private ScriptResult()
+   {
+      this(0);
+   }
+   
+   private ScriptResult(long lastModified) 
+   {
+      this.lastModified = lastModified;
    }
 
    static class Resolved extends ScriptResult
    {
 
       /** . */
-      final byte[] bytes;
-      
-      final long lastModified;
+      final byte[] bytes;           
 
-      Resolved(byte[] bytes)
+      Resolved(byte[] bytes, long lastModified)
       {
-         this.bytes = bytes;
-         //  string of date retrieve from Http header doesn't have miliseconds
-         //  we need to remove miliseconds
-         lastModified = (new Date().getTime() / 1000) * 1000;         
-      }
+         super(lastModified);
+         this.bytes = bytes;         
+      }            
       
       boolean isModified(long ifModifiedSince) 
       {

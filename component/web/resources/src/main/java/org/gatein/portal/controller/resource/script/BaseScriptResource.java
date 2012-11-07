@@ -40,6 +40,9 @@ public class BaseScriptResource<R extends Resource<R>> extends Resource<R>
    ScriptGraph graph;
 
    /** . */
+   final String contextPath;
+   
+   /** . */
    private final Map<QualifiedName, String> parameters;
 
    /** . */
@@ -50,12 +53,14 @@ public class BaseScriptResource<R extends Resource<R>> extends Resource<R>
 
    /** . */
    private final  Map<Locale, Map<QualifiedName, String>> minParametersMap;
+   
+   /** . */
+   private long lastModified;
 
-
-   BaseScriptResource(ScriptGraph graph, ResourceId id)
+   BaseScriptResource(ScriptGraph graph, ResourceId id, String contextPath)
    {
-      super(id);
-
+      super(id);      
+      
       //
       Map<QualifiedName, String> parameters = new HashMap<QualifiedName, String>();
       parameters.put(WebAppController.HANDLER_PARAM, "script");
@@ -70,11 +75,13 @@ public class BaseScriptResource<R extends Resource<R>> extends Resource<R>
       minifiedParameters.put(ResourceRequestHandler.COMPRESS_QN, "min");
 
       //
+      this.contextPath = contextPath;      
       this.parameters = parameters;
       this.minParameters = minifiedParameters;
       this.graph = graph;
       this.parametersMap = new HashMap<Locale, Map<QualifiedName, String>>();
       this.minParametersMap = new HashMap<Locale, Map<QualifiedName, String>>();
+      refresh();
    }
 
    public Map<QualifiedName, String> getParameters(boolean minified, Locale locale)
@@ -102,5 +109,22 @@ public class BaseScriptResource<R extends Resource<R>> extends Resource<R>
          localizedMinParameters.put(ResourceRequestHandler.LANG_QN, I18N.toTagIdentifier(locale));
          minParametersMap.put(locale, localizedMinParameters);
       }
+   }
+   
+   public String getContextPath()
+   {
+      return contextPath;
+   }
+   
+   public long getLastModified() 
+   {
+      return lastModified;
+   }
+   
+   public void refresh()
+   {
+      //  string of date retrieve from Http header doesn't have miliseconds
+      //  we need to remove miliseconds
+      this.lastModified = (System.currentTimeMillis() / 1000) * 1000; 
    }
 }

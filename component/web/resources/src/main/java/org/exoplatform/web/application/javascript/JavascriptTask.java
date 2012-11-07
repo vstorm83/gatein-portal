@@ -44,14 +44,8 @@ public class JavascriptTask
    public void execute(JavascriptConfigService service, ServletContext scontext)
    {
       for (ScriptResourceDescriptor desc : descriptors)
-      {
-         String contextPath = null;
-         if (desc.modules.size() > 0)
-         {
-            contextPath = desc.modules.get(0).getContextPath();
-         }
-         
-         ScriptResource resource = service.scripts.addResource(desc.id, desc.fetchMode, desc.alias, desc.group, contextPath);
+      {         
+         ScriptResource resource = service.scripts.addResource(desc.id, desc.fetchMode, desc.alias, desc.group, desc.contextPath);
          if (resource != null)
          {
             for (Javascript module : desc.modules)

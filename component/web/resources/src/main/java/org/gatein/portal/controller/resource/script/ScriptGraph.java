@@ -258,7 +258,7 @@ public class ScriptGraph
             }
          }
          
-         map.put(name, resource = new ScriptResource(this, id, fetchMode, alias, group));         
+         map.put(name, resource = new ScriptResource(this, id, fetchMode, alias, group, contextPath));         
       }
       else if (!(id.getScope().equals(ResourceScope.SHARED) && JavascriptConfigParser.LEGACY_JAVA_SCRIPT.equals(name)))
       {
@@ -274,6 +274,17 @@ public class ScriptGraph
       if (removed != null)
       {
          removed.graph = null;
+         ScriptGroup group = removed.group;
+         if (group != null)
+         {
+            group.removeDependency(id);
+            if (group.scripts.isEmpty())
+            {
+               loadGroups.remove(group.getId().getName());
+            }
+            
+            removed.group = null;
+         }
       }
       return removed;
    }

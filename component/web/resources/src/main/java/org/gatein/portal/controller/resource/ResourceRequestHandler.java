@@ -26,11 +26,13 @@ import org.exoplatform.commons.utils.Safe;
 import org.exoplatform.portal.application.ResourceRequestFilter;
 import org.exoplatform.web.ControllerContext;
 import org.exoplatform.web.WebRequestHandler;
+import org.exoplatform.web.application.javascript.JavascriptConfigService;
 import org.exoplatform.web.controller.QualifiedName;
 import org.gatein.common.io.IOTools;
 
 import org.gatein.common.logging.Logger;
 import org.gatein.common.logging.LoggerFactory;
+import org.gatein.portal.controller.resource.script.BaseScriptResource;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
@@ -138,11 +140,15 @@ public class ResourceRequestHandler extends WebRequestHandler
    public static final QualifiedName LANG_QN = QualifiedName.create("gtn", "lang");
 
    /** . */
+   private JavascriptConfigService service;
+   
+   /** . */
    private final FutureMap<ScriptKey, ScriptResult, ControllerContext> cache;
 
-   public ResourceRequestHandler()
+   public ResourceRequestHandler(JavascriptConfigService service)
    {
       this.cache = new FutureMap<ScriptKey, ScriptResult, ControllerContext>(new ScriptLoader());
+      this.service = service;
    }
 
    @Override
@@ -186,24 +192,43 @@ public class ResourceRequestHandler extends WebRequestHandler
          }
          
          //
-         ResourceId resource = new ResourceId(scope, resourceParam);
+         ResourceId resourceId = new ResourceId(scope, resourceParam);         
          
          ScriptKey key = new ScriptKey(
-            resource,
+            resourceId,
             "min".equals(compressParam),
             locale
          );
 
          //
-         ScriptResult result = cache.get(context, key);
+         ScriptResult result = cache.get(context, key);         
          HttpServletResponse response = context.getResponse();
          HttpServletRequest request = context.getRequest();                  
+         
+         //
+         @SuppressWarnings("rawtypes")
+         BaseScriptResource resource = null;
+         if (ResourceScope.GROUP.equals(key.id.getScope()))
+         {
+            resource = service.getLoadGroup(key.id.getName());
+         }
+         else
+         {
+            resource = service.getResource(key.id);
+         }
+         if (resource == null || resource.getLastModified() != result.lastModified)
+         {
+            //clear stale data in the cache
+            cache.remove(key);
+            //refresh
+            result = cache.get(context, key);
+         }
                   
          //
          if (result instanceof ScriptResult.Resolved)
          {
-            ScriptResult.Resolved resolved = (ScriptResult.Resolved)result;
-
+            ScriptResult.Resolved resolved = (ScriptResult.Resolved)result;                        
+            
             // Content type + charset
             response.setContentType("text/javascript");
             response.setCharacterEncoding("UTF-8");

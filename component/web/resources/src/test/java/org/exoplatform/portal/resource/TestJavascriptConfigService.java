@@ -44,7 +44,9 @@ import org.gatein.common.io.IOTools;
 import org.gatein.portal.controller.resource.ResourceId;
 import org.gatein.portal.controller.resource.ResourceScope;
 import org.gatein.portal.controller.resource.script.FetchMode;
+import org.gatein.portal.controller.resource.script.ScriptGroup;
 import org.gatein.portal.controller.resource.script.ScriptResource;
+import org.gatein.wci.WebApp;
 import org.json.JSONObject;
 
 /**
@@ -59,7 +61,7 @@ public class TestJavascriptConfigService extends AbstractWebResourceTest
 
    private static ServletContext mockServletContext;
    
-   private static boolean isFirstStartup = true;   
+   private WebApp mockWebApp;
    
    @Override
    protected void setUp() throws Exception
@@ -67,25 +69,68 @@ public class TestJavascriptConfigService extends AbstractWebResourceTest
       final PortalContainer portalContainer = getContainer();
       jsService = (JavascriptConfigService)portalContainer.getComponentInstanceOfType(JavascriptConfigService.class);
       
-      if (isFirstStartup)
-      {
-         Map<String, String> resources = new HashMap<String, String>(6);
-         resources.put("/js/script1.js", "aaa;");
-         resources.put("/js/script2.js", "bbb;");
-         resources.put("/js/module1.js", "ccc;");
-         resources.put("/js/module2.js", "ddd;");
-         resources.put("/js/common.js", "kkk;");
-         resources.put("/js/pluginTest.js", "iii;");
-         resources.put("/js/normalize_test.js", " \n /* // */  //  /* \n  /* /*  */  \n  ggg; // /* */ \n");
-         mockServletContext = new MockJSServletContext("mockwebapp", resources);
-         jsService.registerContext(new WebAppImpl(mockServletContext, Thread.currentThread().getContextClassLoader()));
+      Map<String, String> resources = new HashMap<String, String>(6);
+      resources.put("/js/script1.js", "aaa;");
+      resources.put("/js/script2.js", "bbb;");
+      resources.put("/js/module1.js", "ccc;");
+      resources.put("/js/module2.js", "ddd;");
+      resources.put("/js/common.js", "kkk;");
+      resources.put("/js/pluginTest.js", "iii;");
+      resources.put("/js/normalize_test.js", " \n /* // */  //  /* \n  /* /*  */  \n  ggg; // /* */ \n");
+      mockServletContext = new MockJSServletContext("mockwebapp", resources);
+      mockWebApp = new WebAppImpl(mockServletContext, Thread.currentThread().getContextClassLoader());
 
-         URL url = portalContainer.getPortalClassLoader().getResource("mockwebapp/gatein-resources.xml");
-         JavascriptConfigParser.processConfigResource(url.openStream(), jsService, mockServletContext);
-
-         isFirstStartup = false;
-      }     
+      deploy();
    }
+
+   @Override
+   protected void tearDown() throws Exception
+   {
+      super.tearDown();      
+      undeploy();
+   }
+
+   private void deploy() throws Exception 
+   {      
+      jsService.registerContext(mockWebApp);
+      
+      URL url = getContainer().getPortalClassLoader().getResource("mockwebapp/gatein-resources.xml");
+      JavascriptConfigParser.processConfigResource(url.openStream(), jsService, mockServletContext);
+   }
+   
+   private void undeploy() 
+   {
+      jsService.unregisterServletContext(mockWebApp);
+   }
+   
+   public void testUndeploy() throws Exception
+   {  
+      ResourceId m1 = new ResourceId(ResourceScope.SHARED, "module1");
+      String grpName = "fooGroup";
+      String contextPath = "/mockwebapp";
+      
+      //Before undeploy
+      WebApp webapp = jsService.contexts.get(contextPath);
+      assertNotNull(webapp);      
+      ScriptGroup fooGroup = jsService.getLoadGroup(grpName);
+      assertNotNull(fooGroup);
+      ScriptResource module1 = jsService.getResource(m1);
+      assertSame(fooGroup, module1.getGroup());
+
+      //The timestamp must be changed after undeploy
+      long groupTime = fooGroup.getLastModified();
+      long moduleTime = module1.getLastModified();
+      
+      jsService.unregisterServletContext(webapp);
+      assertNull(jsService.contexts.get(contextPath));
+      assertNull(jsService.getResource(m1));
+      assertNull(jsService.getLoadGroup(grpName));
+      
+      Thread.sleep(1000);
+      deploy();
+      assertTrue(jsService.getResource(m1).getLastModified() != moduleTime);
+      assertTrue(jsService.getLoadGroup(grpName).getLastModified() != groupTime);
+   }   
    
    public void testGetScript() throws Exception
    {      

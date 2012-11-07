@@ -29,6 +29,7 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.web.ControllerContext;
 import org.exoplatform.web.application.javascript.JavascriptConfigService;
 import org.gatein.common.io.IOTools;
+import org.gatein.portal.controller.resource.script.BaseScriptResource;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Reader;
@@ -46,55 +47,69 @@ class ScriptLoader implements Loader<ScriptKey, ScriptResult, ControllerContext>
       JavascriptConfigService service = (JavascriptConfigService) PortalContainer.getComponent(JavascriptConfigService.class);
 
       //
-      Reader script = service.getScript(key.id, key.locale);
-      String sourceName = key.id.getScope() + "/" + key.id.getName() + ".js";
-
-      //
-      if (script != null)
+      @SuppressWarnings("rawtypes")
+      BaseScriptResource resource = null;
+      if (ResourceScope.GROUP.equals(key.id.getScope()))
       {
-         if (key.minified)
+         resource = service.getLoadGroup(key.id.getName());
+      }
+      else
+      {
+         resource = service.getResource(key.id);
+      }
+      
+      if (resource != null)
+      {         
+         Reader script = service.getScript(key.id, key.locale);
+         String sourceName = key.id.getScope() + "/" + key.id.getName() + ".js";
+   
+         //
+         if (script != null)
          {
-            CompilationLevel level = CompilationLevel.SIMPLE_OPTIMIZATIONS;
-            CompilerOptions options = new CompilerOptions();
-            level.setOptionsForCompilationLevel(options);
-            com.google.javascript.jscomp.Compiler compiler = new Compiler();
-            compiler.setErrorManager(new LoggerErrorManager(java.util.logging.Logger.getLogger(ResourceRequestHandler.class.getName())));
-            StringWriter code = new StringWriter();
-            IOTools.copy(script, code);
-            JSSourceFile[] inputs = new JSSourceFile[]{
-               JSSourceFile.fromCode(sourceName, code.toString())
-            };
-            Result res = compiler.compile(new JSSourceFile[0], inputs, options);
-            if (res.success)
+            if (key.minified)
             {
-               script = new StringReader(compiler.toSource());
-            }
-            else
-            {
-               StringBuilder msg = new StringBuilder("Handle me gracefully JS errors\n");
-               for (JSError error : res.errors)
+               CompilationLevel level = CompilationLevel.SIMPLE_OPTIMIZATIONS;
+               CompilerOptions options = new CompilerOptions();
+               level.setOptionsForCompilationLevel(options);
+               com.google.javascript.jscomp.Compiler compiler = new Compiler();
+               compiler.setErrorManager(new LoggerErrorManager(java.util.logging.Logger.getLogger(ResourceRequestHandler.class.getName())));
+               StringWriter code = new StringWriter();
+               IOTools.copy(script, code);
+               JSSourceFile[] inputs = new JSSourceFile[]{
+                  JSSourceFile.fromCode(sourceName, code.toString())
+               };
+               Result res = compiler.compile(new JSSourceFile[0], inputs, options);
+               if (res.success)
                {
-                  msg.append(error.sourceName).append(":").append(error.lineNumber).append(" ").append(error.description).append("\n");
+                  script = new StringReader(compiler.toSource());
                }
-               return new ScriptResult.Error(msg.toString());
+               else
+               {
+                  StringBuilder msg = new StringBuilder("Handle me gracefully JS errors\n");
+                  for (JSError error : res.errors)
+                  {
+                     msg.append(error.sourceName).append(":").append(error.lineNumber).append(" ").append(error.description).append("\n");
+                  }
+                  return new ScriptResult.Error(msg.toString());
+               }
             }
-         }
-
-         // Encode data
-         try
-         {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            TextEncoder encoder = CharsetTextEncoder.getUTF8();
-            char[] buffer = new char[256];
-            for (int l = script.read(buffer);l != -1;l = script.read(buffer))
+   
+            // Encode data
+            try
             {
-               encoder.encode(buffer, 0, l, out);
+               ByteArrayOutputStream out = new ByteArrayOutputStream();
+               TextEncoder encoder = CharsetTextEncoder.getUTF8();
+               char[] buffer = new char[256];
+               for (int l = script.read(buffer);l != -1;l = script.read(buffer))
+               {
+                  encoder.encode(buffer, 0, l, out);
+               }
+               return new ScriptResult.Resolved(out.toByteArray(), resource.getLastModified());
             }
-            return new ScriptResult.Resolved(out.toByteArray());
-         }
-         finally
-         {
-            Safe.close(script);
+            finally
+            {
+               Safe.close(script);
+            }
          }
       }
 

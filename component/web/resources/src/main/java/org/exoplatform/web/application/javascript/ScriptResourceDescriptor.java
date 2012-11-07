@@ -36,6 +36,9 @@ public class ScriptResourceDescriptor
    final ResourceId id;
    
    /** . */
+   final String contextPath;
+   
+   /** . */
    final String group;
    
    /** . */
@@ -55,12 +58,13 @@ public class ScriptResourceDescriptor
 
    public ScriptResourceDescriptor(ResourceId id, FetchMode fetchMode)
    {
-      this(id, fetchMode, null, null);
+      this(id, fetchMode, null, null, null);
    }
    
-   public ScriptResourceDescriptor(ResourceId id, FetchMode fetchMode, String alias, String group)
+   public ScriptResourceDescriptor(ResourceId id, FetchMode fetchMode, String alias, String group, String contextPath)
    {
       this.id = id;
+      this.contextPath = contextPath;
       this.modules = new ArrayList<Javascript>();
       this.dependencies = new ArrayList<DependencyDescriptor>();
       this.supportedLocales = new ArrayList<Locale>();
@@ -72,6 +76,11 @@ public class ScriptResourceDescriptor
    public ResourceId getId()
    {
       return id;
+   }
+   
+   public String getContextPath()
+   {
+      return contextPath;
    }
 
    public List<Locale> getSupportedLocales()
