@@ -29,6 +29,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -230,6 +231,10 @@ public class UIPortalApplication extends UIApplication {
             return null;
         }
         return this.all_UIPortals.get(key);
+    }
+
+    public List<UIPortal> getCachedUIPortal() {
+       return new LinkedList<UIPortal>(this.all_UIPortals.values());
     }
 
     /**
