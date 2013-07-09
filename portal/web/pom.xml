@@ -477,6 +477,7 @@
                 </goals>
                 <phase>package</phase>
                 <configuration>
+                  <mainClass>org.gatein.tomcat.maven.runner.ExoTomcat7RunnerCli</mainClass>                  
                   <warRunDependencies>
                     <warRunDependency>
                       <dependency>
@@ -512,6 +513,11 @@
                       <groupId>javax.portlet</groupId>
                       <artifactId>portlet-api</artifactId>
                       <version>2.0</version>
+                    </extraDependency>
+                    <extraDependency>
+                      <groupId>org.gatein</groupId>
+                      <artifactId>build-config</artifactId>
+                      <version>${project.version}</version>
                     </extraDependency>
                   </extraDependencies>
                   <tomcatConfigurationFilesDirectory>src/main/tomcatconf</tomcatConfigurationFilesDirectory>
