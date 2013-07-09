@@ -24,13 +24,13 @@ import org.apache.tomcat.maven.runner.Tomcat7RunnerCli;
 public class ExoTomcat7RunnerCli extends Tomcat7RunnerCli {
     
     public static String JAAS_KEY="java.security.auth.login.config";
-    
-    public static String JAAS_DEFAULT_PATH="../web/src/main/tomcatconf/jaas.conf";
+
     
     public static void main( String[] args ) throws Exception {
         if (System.getProperty(JAAS_KEY) == null) {
-            System.setProperty(JAAS_KEY, JAAS_DEFAULT_PATH);
+            System.setProperty(JAAS_KEY, Thread.currentThread().getContextClassLoader().getResource("conf/jaas.conf").toString());
         }
+        
         Tomcat7RunnerCli.main(args);
     }
 }
