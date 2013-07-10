@@ -20,7 +20,7 @@
 -->
 
 <Context privileged="true">
-  <Realm className='org.apache.catalina.realm.JAASRealm'
+  <Realm className='org.gatein.realm.GateInRealm'
          appName='gatein-domain'
          userClassNames='org.exoplatform.services.security.jaas.UserPrincipal'
          roleClassNames='org.exoplatform.services.security.jaas.RolePrincipal'/>

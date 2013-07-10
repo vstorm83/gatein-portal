@@ -34,6 +34,14 @@
     </dependencySet>
     <dependencySet>
       <includes>
+        <include>org.gatein:build-config</include>
+      </includes>
+      <useTransitiveDependencies>false</useTransitiveDependencies>
+      <useProjectArtifact>false</useProjectArtifact>
+      <outputDirectory>apache-tomcat-${org.apache.tomcat.version}/lib/</outputDirectory>
+    </dependencySet>
+    <dependencySet>
+      <includes>
         <include>org.gatein.portal:portal.root:war</include>
       </includes>
       <useTransitiveDependencies>false</useTransitiveDependencies>
@@ -57,14 +65,6 @@
       <source>${project.build.directory}/${project.build.finalName}-tomcat-portal.war</source>
       <destName>portal.war</destName>
       <outputDirectory>apache-tomcat-${org.apache.tomcat.version}/webapps/</outputDirectory>
-    </file>
-    <file>
-      <source>${project.basedir}/src/main/tomcatconf/jaas.conf</source>
-      <outputDirectory>apache-tomcat-${org.apache.tomcat.version}/conf</outputDirectory>
-    </file>
-    <file>
-      <source>${project.basedir}/src/main/tomcatconf/tomcat-users.xml</source>
-      <outputDirectory>apache-tomcat-${org.apache.tomcat.version}/conf</outputDirectory>
     </file>
   </files>
 
