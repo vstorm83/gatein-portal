@@ -40,7 +40,7 @@ public class JavascriptUnregisterTask {
 
     public void execute(JavascriptConfigService service, ServletContext scontext) {
         for (ScriptResourceDescriptor desc : descriptors) {
-            service.scripts.removeResource(desc.id);
+            service.scripts.removeResource(desc.id, scontext.getContextPath());
         }
     }
 

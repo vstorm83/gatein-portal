@@ -227,16 +227,25 @@ public class ScriptGraph {
     }
 
     public ScriptResource removeResource(ResourceId id) {
-        if (ResourceScope.SHARED.equals(id.getScope()) && JavascriptConfigParser.LEGACY_JAVA_SCRIPT.equals(id.getName())) {
-            log.debug("SHARED/merged is legacy JS resource, it will not be unregistered during undeploying portlet");
-            return null;
-        } else {
-            ScriptResource removed = resources.get(id.getScope()).remove(id.getName());
-            if (removed != null) {
-                removed.graph = null;
+        return removeResource(id, null);
+    }
+
+    public ScriptResource removeResource(ResourceId id, String contextPath) {
+        ScriptResource toRemove = resources.get(id.getScope()).get(id.getName());
+
+        if (toRemove != null) {
+            if (ResourceScope.SHARED.equals(id.getScope()) && JavascriptConfigParser.LEGACY_JAVA_SCRIPT.equals(id.getName())) {
+                toRemove.removeModuleByContextPath(contextPath);
+
+                if (toRemove.getModules().size() > 0)
+                    return toRemove;
             }
-            return removed;
+
+            resources.get(id.getScope()).remove(id.getName());
+            toRemove.graph = null;
         }
+
+        return toRemove;
     }
 
     public ScriptGroup getLoadGroup(String groupName) {
