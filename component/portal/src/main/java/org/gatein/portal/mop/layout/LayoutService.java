@@ -58,4 +58,11 @@ public interface LayoutService {
             NodeContext<N, ElementState> context,
             NodeChangeListener<NodeContext<N, ElementState>, ElementState> listener) throws NullPointerException,
             LayoutServiceException, HierarchyException;
+
+    <N> void rebaseLayout(
+            ModelAdapter<N, ElementState> adapter,
+            N node,
+            NodeContext<N, ElementState> context,
+            NodeChangeListener<NodeContext<N, ElementState>, ElementState> listener) throws NullPointerException,
+            LayoutServiceException, HierarchyException;
 }

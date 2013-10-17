@@ -53,4 +53,9 @@ public class LayoutServiceWrapper implements LayoutService {
     public <N> void saveLayout(NodeContext<N, ElementState> context, NodeChangeListener<NodeContext<N, ElementState>, ElementState> listener) throws NullPointerException {
         service.saveLayout(context, listener);
     }
+    
+    @Override
+    public <N> void rebaseLayout(ModelAdapter<N, ElementState> adapter, N node, NodeContext<N, ElementState> context, NodeChangeListener<NodeContext<N, ElementState>, ElementState> listener) throws NullPointerException, LayoutServiceException, HierarchyException {
+        service.rebaseLayout(adapter, node, context, listener);
+    }
 }

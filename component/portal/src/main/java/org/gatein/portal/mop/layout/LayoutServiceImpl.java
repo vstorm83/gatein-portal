@@ -68,6 +68,19 @@ public class LayoutServiceImpl implements LayoutService {
             persistence.end(nodeManager.getStore());
         }
     }
+    
+    @Override
+    public <N> void rebaseLayout(ModelAdapter<N, ElementState> adapter, N node, NodeContext<N, ElementState> context, NodeChangeListener<NodeContext<N, ElementState>, ElementState> listener) throws NullPointerException, LayoutServiceException, HierarchyException {
+        NodeManager<ElementState> nodeManager = getManager(context, true);
+        try {
+            // Make a diff
+            nodeManager.diff(adapter, node, context);
+            // Perform rebase
+            nodeManager.rebaseNode(context, ALL, listener);
+        } finally {
+            persistence.end(nodeManager.getStore());
+        }
+    }
 
     @Override
     public <N> NodeContext<N, ElementState> loadLayout(NodeModel<N, ElementState> model, String layoutId, NodeChangeListener<NodeContext<N, ElementState>, ElementState> listener) {
