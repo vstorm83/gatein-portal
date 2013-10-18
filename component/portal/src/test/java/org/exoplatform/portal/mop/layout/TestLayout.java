@@ -213,7 +213,7 @@ public class TestLayout extends AbstractMopServiceTest {
         //Expect to have listener called with moved event: app2 has been moved to 0 index
         //                                                      added event: a new container has beend added
         layoutService.rebaseLayout(new ContainerAdapter(rootData2), rootData2, pageStruct, listener);
-        assertTrue(!listener.hasChanges());
+        assertTrue(listener.hasChanges());
     }
     
     static class ChangeListener implements NodeChangeListener {
