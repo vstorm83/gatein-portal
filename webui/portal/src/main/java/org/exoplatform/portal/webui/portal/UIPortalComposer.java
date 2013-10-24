@@ -43,7 +43,6 @@ import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.page.PageState;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.resource.SkinService;
-import org.exoplatform.portal.webui.application.UIPortlet;
 import org.exoplatform.portal.webui.page.UIPage;
 import org.exoplatform.portal.webui.page.UIPageForm;
 import org.exoplatform.portal.webui.page.UISiteBody;
@@ -174,7 +173,7 @@ public class UIPortalComposer extends UIContainer {
      *
      * @throws Exception if there is anything wrong in saving process
      */
-    private void save() throws Exception {
+    public void saveSite() throws Exception {
         PortalRequestContext prContext = Util.getPortalRequestContext();
         UIPortalApplication uiPortalApp = (UIPortalApplication) prContext.getUIApplication();
         UIWorkingWorkspace uiWorkingWS = uiPortalApp.findFirstComponentOfType(UIWorkingWorkspace.class);
@@ -185,53 +184,111 @@ public class UIPortalComposer extends UIContainer {
         String portalName = prContext.getPortalOwner();
 
         PortalConfig portalConfig = (PortalConfig) PortalDataMapper.buildModelObject(editPortal);
-        DataStorage dataStorage = getApplicationComponent(DataStorage.class);
         UserACL acl = getApplicationComponent(UserACL.class);
+        DataStorage dataStorage = getApplicationComponent(DataStorage.class);
 
-        if (!isPortalExist(editPortal)) {
-            return;
-        }
-
-        SkinService skinService = getApplicationComponent(SkinService.class);
-        skinService.invalidatePortalSkinCache(editPortal.getName(), editPortal.getSkin());
-        try {
-            dataStorage.save(portalConfig);
-        } catch (StaleModelException ex) {
-            // Temporary solution for concurrency-related issue. The StaleModelException should be
-            // caught in the ApplicationLifecycle
-            rebuildUIPortal(uiPortalApp, editPortal, dataStorage);
-        }
-        prContext.getUserPortalConfig().setPortalConfig(portalConfig);
-        PortalConfig pConfig = dataStorage.getPortalConfig(portalName);
-        if (pConfig != null) {
-            editPortal.setModifiable(acl.hasEditPermission(pConfig));
-        } else {
-            editPortal.setModifiable(false);
-        }
-        LocaleConfigService localeConfigService = uiPortalApp.getApplicationComponent(LocaleConfigService.class);
-        LocaleConfig localeConfig = localeConfigService.getLocaleConfig(portalConfig.getLocale());
-        if (localeConfig == null) {
-            localeConfig = localeConfigService.getDefaultLocaleConfig();
-        }
-        // TODO dang.tung - change layout when portal get language from UIPortal
-        // (user and browser not support)
-        // ----------------------------------------------------------------------------------------------------
-        String portalAppLanguage = prContext.getLocale().getLanguage();
-        OrganizationService orgService = getApplicationComponent(OrganizationService.class);
-        UserProfile userProfile = orgService.getUserProfileHandler().findUserProfileByName(remoteUser);
-        String userLanguage = userProfile.getUserInfoMap().get(Constants.USER_LANGUAGE);
-        String browserLanguage = prContext.getRequest().getLocale().getLanguage();
-
-        // in case: edit current portal, set skin and language for uiPortalApp
-        if (uiPortal == null) {
-            if (!portalAppLanguage.equals(userLanguage) && !portalAppLanguage.equals(browserLanguage)) {
-                prContext.setLocale(localeConfig.getLocale());
-                // editPortal.refreshNavigation(localeConfig.getLocale());
-                // uiPortalApp.localizeNavigations();
+        if (isPortalExist(editPortal)) {
+            SkinService skinService = getApplicationComponent(SkinService.class);
+            skinService.invalidatePortalSkinCache(editPortal.getName(), editPortal.getSkin());
+            try {
+                dataStorage.save(portalConfig);
+            } catch (StaleModelException ex) {
+                // Temporary solution for concurrency-related issue. The StaleModelException should be
+                // caught in the ApplicationLifecycle
+                rebuildUIPortal(uiPortalApp, editPortal, dataStorage);
             }
-            uiPortalApp.setSkin(editPortal.getSkin());
+            prContext.getUserPortalConfig().setPortalConfig(portalConfig);
+            PortalConfig pConfig = dataStorage.getPortalConfig(portalName);
+            if (pConfig != null) {
+                editPortal.setModifiable(acl.hasEditPermission(pConfig));
+            } else {
+                editPortal.setModifiable(false);
+            }
+            LocaleConfigService localeConfigService = uiPortalApp.getApplicationComponent(LocaleConfigService.class);
+            LocaleConfig localeConfig = localeConfigService.getLocaleConfig(portalConfig.getLocale());
+            if (localeConfig == null) {
+                localeConfig = localeConfigService.getDefaultLocaleConfig();
+            }
+            // TODO dang.tung - change layout when portal get language from UIPortal
+            // (user and browser not support)
+            // ----------------------------------------------------------------------------------------------------
+            String portalAppLanguage = prContext.getLocale().getLanguage();
+            OrganizationService orgService = getApplicationComponent(OrganizationService.class);
+            UserProfile userProfile = orgService.getUserProfileHandler().findUserProfileByName(remoteUser);
+            String userLanguage = userProfile.getUserInfoMap().get(Constants.USER_LANGUAGE);
+            String browserLanguage = prContext.getRequest().getLocale().getLanguage();
+
+            // in case: edit current portal, set skin and language for uiPortalApp
+            if (uiPortal == null) {
+                if (!portalAppLanguage.equals(userLanguage) && !portalAppLanguage.equals(browserLanguage)) {
+                    prContext.setLocale(localeConfig.getLocale());
+                    // editPortal.refreshNavigation(localeConfig.getLocale());
+                    // uiPortalApp.localizeNavigations();
+                }
+                uiPortalApp.setSkin(editPortal.getSkin());
+            }
+            prContext.refreshResourceBundle();
+
+            this.setEditted(false);
+
+
+            UISiteBody siteBody = uiWorkingWS.findFirstComponentOfType(UISiteBody.class);
+            uiPortal = (UIPortal) siteBody.getUIComponent();
+
+            if (uiPortal == null) {
+                siteBody.setUIComponent(editPortal);
+            }
+            uiEditWS.setRendered(false);
+            uiPortal = (UIPortal) siteBody.getUIComponent();
+
+            uiPortalApp.setSessionOpen(PortalProperties.SESSION_ALWAYS.equals(uiPortal.getSessionAlive()));
+            uiPortalApp.setModeState(UIPortalApplication.NORMAL_MODE);
+            uiWorkingWS.setRenderedChild(UIPortalApplication.UI_VIEWING_WS_ID);
+            prContext.ignoreAJAXUpdateOnPortlets(true);
+
+            if (this.isPortalExist(editPortal)) {
+                DataStorage storage = uiPortalApp.getApplicationComponent(DataStorage.class);
+                pConfig = storage.getPortalConfig(uiPortal.getSiteKey().getTypeName(), uiPortal.getSiteKey()
+                        .getName());
+                if (pConfig != null) {
+                    prContext.getUserPortalConfig().setPortalConfig(pConfig);
+                }
+                uiPortal.getChildren().clear();
+                PortalDataMapper.toUIPortal(uiPortal, prContext.getUserPortalConfig().getPortalConfig());
+
+                // Update the cache of UIPortal from UIPortalApplication
+                uiPortalApp.putCachedUIPortal(uiPortal);
+                uiPortalApp.setCurrentSite(uiPortal);
+
+                // To init the UIPage, that fixed a bug on AdminToolbarPortlet when edit the layout. Here is only a
+                // temporal solution. Complete solution is to avoid mapping UIPortal -- model, that requires
+                // multiple UIPortal (already available) and concept of SiteConfig
+                uiPortal.refreshUIPage();
+
+                UserNode currentNode = uiPortal.getSelectedUserNode();
+                SiteKey siteKey = currentNode.getNavigation().getKey();
+                PageNodeEvent<UIPortalApplication> pnevent = new PageNodeEvent<UIPortalApplication>(uiPortalApp,
+                        PageNodeEvent.CHANGE_NODE, siteKey, currentNode.getURI());
+                uiPortalApp.broadcast(pnevent, Event.Phase.PROCESS);
+
+                prContext.addUIComponentToUpdateByAjax(uiWorkingWS);
+                JavascriptManager jsManager = prContext.getJavascriptManager();
+                jsManager.require("SHARED/portal", "portal").addScripts(
+                        "eXo.portal.portalMode=" + UIPortalApplication.NORMAL_MODE + ";");
+            } else {
+                if (editPortal.getName().equals(prContext.getPortalOwner())) {
+                    HttpServletRequest request = prContext.getRequest();
+                    LogoutControl.wantLogout();
+                    prContext.setResponseComplete(true);
+                    prContext.getResponse().sendRedirect(request.getContextPath());
+                    return;
+                } else {
+                    UIApplication uiApp = prContext.getUIApplication();
+                    uiApp.addMessage(new ApplicationMessage("UIPortalForm.msg.notExistAnymore", null));
+                    prContext.addUIComponentToUpdateByAjax(uiWorkingWS);
+                }
+            }
         }
-        prContext.refreshResourceBundle();
     }
 
     private void rebuildUIPortal(UIPortalApplication uiPortalApp, UIPortal uiPortal, DataStorage storage) throws Exception {
@@ -308,20 +365,8 @@ public class UIPortalComposer extends UIContainer {
             UIComponent uiComponent = uiTabPane.getChildById(uiTabPane.getSelectedTabId());
             if (uiComponent instanceof UIApplicationList) {
                 uiPortalApp.setDefaultEditMode(ComponentTab.APPLICATIONS);
-//                if (portalMode == UIPortalApplication.APP_VIEW_EDIT_MODE) {
-//                    Util.showComponentEditInViewMode(UIPortlet.class);
-//                } else {
-//                    uiPortalApp.setModeState(UIPortalApplication.APP_BLOCK_EDIT_MODE);
-//                    Util.showComponentLayoutMode(UIPortlet.class);
-//                }
             } else if (uiComponent instanceof UIContainerList) {
                 uiPortalApp.setDefaultEditMode(ComponentTab.CONTAINERS);
-//                if (portalMode == UIPortalApplication.CONTAINER_VIEW_EDIT_MODE) {
-//                    Util.showComponentEditInViewMode(org.exoplatform.portal.webui.container.UIContainer.class);
-//                } else {
-//                    uiPortalApp.setModeState(UIPortalApplication.CONTAINER_BLOCK_EDIT_MODE);
-//                    Util.showComponentLayoutMode(org.exoplatform.portal.webui.container.UIContainer.class);
-//                }
             }
             switch (uiPortalApp.getDefaultEditMode()) {
                 case PREVIEW:
@@ -410,74 +455,20 @@ public class UIPortalComposer extends UIContainer {
 
         public void execute(Event<UIPortalComposer> event) throws Exception {
             UIPortalComposer uiComposer = event.getSource();
-            uiComposer.save();
-            uiComposer.setEditted(false);
-
             PortalRequestContext prContext = Util.getPortalRequestContext();
-
             UIPortalApplication uiPortalApp = (UIPortalApplication) prContext.getUIApplication();
-            UIWorkingWorkspace uiWorkingWS = uiPortalApp.getChildById(UIPortalApplication.UI_WORKING_WS_ID);
+            UIWorkingWorkspace uiWorkingWS = uiPortalApp.findFirstComponentOfType(UIWorkingWorkspace.class);
             UIEditInlineWorkspace uiEditWS = uiWorkingWS.getChild(UIEditInlineWorkspace.class);
             UIPortal editPortal = (UIPortal) uiEditWS.getUIComponent();
 
-            UISiteBody siteBody = uiWorkingWS.findFirstComponentOfType(UISiteBody.class);
-            UIPortal uiPortal = (UIPortal) siteBody.getUIComponent();
-
-            if (uiPortal == null) {
-                siteBody.setUIComponent(editPortal);
-            }
-            uiEditWS.setRendered(false);
-            uiPortal = (UIPortal) siteBody.getUIComponent();
-
-            uiPortalApp.setSessionOpen(PortalProperties.SESSION_ALWAYS.equals(uiPortal.getSessionAlive()));
-            uiPortalApp.setModeState(UIPortalApplication.NORMAL_MODE);
-            uiWorkingWS.setRenderedChild(UIPortalApplication.UI_VIEWING_WS_ID);
-            prContext.ignoreAJAXUpdateOnPortlets(true);
-
-            if (uiComposer.isPortalExist(editPortal)) {
-                DataStorage storage = uiPortalApp.getApplicationComponent(DataStorage.class);
-                PortalConfig pConfig = storage.getPortalConfig(uiPortal.getSiteKey().getTypeName(), uiPortal.getSiteKey()
-                        .getName());
-                if (pConfig != null) {
-                    prContext.getUserPortalConfig().setPortalConfig(pConfig);
-                }
-                uiPortal.getChildren().clear();
-                PortalDataMapper.toUIPortal(uiPortal, prContext.getUserPortalConfig().getPortalConfig());
-
-                // Update the cache of UIPortal from UIPortalApplication
-                uiPortalApp.putCachedUIPortal(uiPortal);
-                uiPortalApp.setCurrentSite(uiPortal);
-
-                // To init the UIPage, that fixed a bug on AdminToolbarPortlet when edit the layout. Here is only a
-                // temporal solution. Complete solution is to avoid mapping UIPortal -- model, that requires
-                // multiple UIPortal (already available) and concept of SiteConfig
-                uiPortal.refreshUIPage();
-
-                UserNode currentNode = uiPortal.getSelectedUserNode();
-                SiteKey siteKey = currentNode.getNavigation().getKey();
-                PageNodeEvent<UIPortalApplication> pnevent = new PageNodeEvent<UIPortalApplication>(uiPortalApp,
-                        PageNodeEvent.CHANGE_NODE, siteKey, currentNode.getURI());
-                uiPortalApp.broadcast(pnevent, Event.Phase.PROCESS);
-
-                prContext.addUIComponentToUpdateByAjax(uiWorkingWS);
-                JavascriptManager jsManager = prContext.getJavascriptManager();
-                jsManager.require("SHARED/portal", "portal").addScripts(
-                        "eXo.portal.portalMode=" + UIPortalApplication.NORMAL_MODE + ";");
+            PortalConfig portalConfig = (PortalConfig) PortalDataMapper.buildModelObject(editPortal);
+            UserACL acl = uiComposer.getApplicationComponent(UserACL.class);
+            if (!acl.hasPermission(portalConfig)) {
+                uiEditWS.createActionConfirm("UIEditInlineWorkspace.confirm.finish.site", "ConfirmFinish", "AbortClose");
             } else {
-                if (editPortal.getName().equals(prContext.getPortalOwner())) {
-                    HttpServletRequest request = prContext.getRequest();
-                    LogoutControl.wantLogout();
-                    prContext.setResponseComplete(true);
-                    prContext.getResponse().sendRedirect(request.getContextPath());
-                    return;
-                } else {
-                    UIApplication uiApp = prContext.getUIApplication();
-                    uiApp.addMessage(new ApplicationMessage("UIPortalForm.msg.notExistAnymore", null));
-                    prContext.addUIComponentToUpdateByAjax(uiWorkingWS);
-                }
+                uiComposer.saveSite();
             }
         }
-
     }
 
     public static class SelectTabActionListener extends UITabPane.SelectTabActionListener {
@@ -613,6 +604,62 @@ public class UIPortalComposer extends UIContainer {
         }
     }
 
+    public void savePage(UIEditInlineWorkspace editInlineWS, Event<?> event) throws Exception{
+        UIWorkingWorkspace uiWorkingWS = editInlineWS.getParent();
+        UIPortalToolPanel uiToolPanel = uiWorkingWS.findFirstComponentOfType(UIPortalToolPanel.class);
+        UIPortalComposer composer = uiWorkingWS.findFirstComponentOfType(UIPortalComposer.class);
+        UIPortalApplication uiPortalApp = Util.getUIPortalApplication();
+        UIPortal uiPortal = uiPortalApp.getCurrentSite();
+
+        DataStorage dataService = uiWorkingWS.getApplicationComponent(DataStorage.class);
+        PageService pageService = uiWorkingWS.getApplicationComponent(PageService.class);
+        UIPage uiPage = uiToolPanel.findFirstComponentOfType(UIPage.class);
+
+        Page page = (Page) PortalDataMapper.buildModelObject(uiPage);
+        String pageId = page.getPageId();
+        PageKey pageKey = PageKey.parse(pageId);
+        PageState pageState = new PageState(page.getTitle(), page.getDescription(), page.isShowMaxWindow(),
+                page.getFactoryId(), page.getAccessPermissions() != null ? Arrays.asList(page.getAccessPermissions())
+                        : null, page.getEditPermission());
+        PageContext pageContext = new PageContext(pageKey, pageState);
+
+        pageService.savePage(pageContext);
+        dataService.save(page);
+
+        composer.setEditted(false);
+        uiToolPanel.setUIComponent(null);
+
+        // Synchronize model object with UIPage object, that seems redundant but in fact
+        // mandatory to have consequent edit actions (on the same page) work properly
+        uiPage.getChildren().clear();
+        page = dataService.getPage(page.getPageId());
+        pageContext.update(page);
+        PortalDataMapper.toUIPage(uiPage, page);
+
+        // Invalidate UIPage cache on UIPortal
+        uiPortalApp.invalidateUIPage(pageId);
+
+        if (PortalProperties.SESSION_ALWAYS.equals(uiPortal.getSessionAlive())) {
+            uiPortalApp.setSessionOpen(true);
+        } else {
+            uiPortalApp.setSessionOpen(false);
+        }
+        uiPortalApp.setModeState(UIPortalApplication.NORMAL_MODE);
+        uiWorkingWS.setRenderedChild(UIPortalApplication.UI_VIEWING_WS_ID);
+        Util.getPortalRequestContext().ignoreAJAXUpdateOnPortlets(true);
+
+        UserNode currentNode = uiPortal.getSelectedUserNode();
+        SiteKey siteKey = currentNode.getNavigation().getKey();
+        PageNodeEvent<UIPortalApplication> pnevent = new PageNodeEvent<UIPortalApplication>(uiPortalApp,
+                PageNodeEvent.CHANGE_NODE, siteKey, currentNode.getURI());
+        uiPortalApp.broadcast(pnevent, Event.Phase.PROCESS);
+
+        JavascriptManager jsManager = event.getRequestContext().getJavascriptManager();
+        jsManager.require("SHARED/portal", "portal").addScripts(
+                "eXo.portal.portalMode=" + UIPortalApplication.NORMAL_MODE + ";");
+        Util.getPortalRequestContext().addUIComponentToUpdateByAjax(uiWorkingWS);
+    }
+
     /**
      * This action listener is for the page edition
      *
@@ -626,7 +673,6 @@ public class UIPortalComposer extends UIContainer {
             UIEditInlineWorkspace editInlineWS = event.getSource().getParent();
             UIWorkingWorkspace uiWorkingWS = editInlineWS.getParent();
             UIPortalToolPanel uiToolPanel = uiWorkingWS.findFirstComponentOfType(UIPortalToolPanel.class);
-            Util.getPortalRequestContext().addUIComponentToUpdateByAjax(uiWorkingWS);
 
             UIPage uiPage = uiToolPanel.findFirstComponentOfType(UIPage.class);
             Page page = (Page) PortalDataMapper.buildModelObject(uiPage);
@@ -639,7 +685,6 @@ public class UIPortalComposer extends UIContainer {
             /*
              * if it is a edition of the current page and it is not available to current remote user anymore.
              */
-            PortalRequestContext pContext = Util.getPortalRequestContext();
             PageKey pageKey = PageKey.parse(pageId);
             if (page.getStorageId() != null && portalConfigService.getPageService().loadPage(pageKey) == null) {
                 uiPortalApp.addMessage(new ApplicationMessage("UIPageBrowser.msg.PageNotExist", new String[] { pageId },
@@ -661,7 +706,6 @@ public class UIPortalComposer extends UIContainer {
                 return;
             }
             UIPortalComposer composer = uiWorkingWS.findFirstComponentOfType(UIPortalComposer.class).setRendered(false);
-            composer.setEditted(false);
 
             // If it is a page creation wizard
             if (composer.isUsedInWizard()) {
@@ -674,50 +718,21 @@ public class UIPortalComposer extends UIContainer {
             }
 
             // Perform model update
-            UserPortalConfigService configService = uiWorkingWS.getApplicationComponent(UserPortalConfigService.class);
-            DataStorage dataService = uiWorkingWS.getApplicationComponent(DataStorage.class);
-            PageService pageService = uiWorkingWS.getApplicationComponent(PageService.class);
+            PageState pageState = new PageState(page.getTitle(), page.getDescription(), page.isShowMaxWindow(),
+                    page.getFactoryId(), page.getAccessPermissions() != null ? Arrays.asList(page.getAccessPermissions())
+                            : null, page.getEditPermission());
+            PageContext pageContext = new PageContext(pageKey, pageState);
             try {
-                PageState pageState = new PageState(page.getTitle(), page.getDescription(), page.isShowMaxWindow(),
-                        page.getFactoryId(), page.getAccessPermissions() != null ? Arrays.asList(page.getAccessPermissions())
-                                : null, page.getEditPermission());
-                pageService.savePage(new PageContext(pageKey, pageState));
-                dataService.save(page);
+                if (!portalConfigService.getUserACL().hasPermission(pageContext)) {
+                    editInlineWS.createActionConfirm("UIEditInlineWorkspace.confirm.finish.page", "ConfirmFinish", "AbortClose");
+                    return;
+                } else {
+                    composer.savePage(editInlineWS, event);
+                }
             } catch (StaleModelException ex) {
                 // Temporary solution to concurrency-related issue
                 // This catch block should be put in an appropriate ApplicationLifecyclec
             }
-            uiToolPanel.setUIComponent(null);
-
-            // Synchronize model object with UIPage object, that seems redundant but in fact
-            // mandatory to have consequent edit actions (on the same page) work properly
-            uiPage.getChildren().clear();
-            page = dataService.getPage(page.getPageId());
-            PageContext pageContext = configService.getPage(pageKey);
-            pageContext.update(page);
-            PortalDataMapper.toUIPage(uiPage, page);
-
-            // Invalidate UIPage cache on UIPortal
-            uiPortalApp.invalidateUIPage(pageId);
-
-            if (PortalProperties.SESSION_ALWAYS.equals(uiPortal.getSessionAlive())) {
-                uiPortalApp.setSessionOpen(true);
-            } else {
-                uiPortalApp.setSessionOpen(false);
-            }
-            uiPortalApp.setModeState(UIPortalApplication.NORMAL_MODE);
-            uiWorkingWS.setRenderedChild(UIPortalApplication.UI_VIEWING_WS_ID);
-            Util.getPortalRequestContext().ignoreAJAXUpdateOnPortlets(true);
-
-            UserNode currentNode = uiPortal.getSelectedUserNode();
-            SiteKey siteKey = currentNode.getNavigation().getKey();
-            PageNodeEvent<UIPortalApplication> pnevent = new PageNodeEvent<UIPortalApplication>(uiPortalApp,
-                    PageNodeEvent.CHANGE_NODE, siteKey, currentNode.getURI());
-            uiPortalApp.broadcast(pnevent, Event.Phase.PROCESS);
-
-            JavascriptManager jsManager = event.getRequestContext().getJavascriptManager();
-            jsManager.require("SHARED/portal", "portal").addScripts(
-                    "eXo.portal.portalMode=" + UIPortalApplication.NORMAL_MODE + ";");
         }
     }
 
