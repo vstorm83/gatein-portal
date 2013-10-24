@@ -23,8 +23,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.exoplatform.portal.Constants;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.DataStorage;
@@ -60,7 +58,6 @@ import org.exoplatform.services.resources.LocaleConfig;
 import org.exoplatform.services.resources.LocaleConfigService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.JavascriptManager;
-import org.exoplatform.web.login.LogoutControl;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
@@ -98,6 +95,8 @@ public class UIPortalComposer extends UIContainer {
     public static final String UIPORTAL_COMPOSER = "UIPortalComposer";
 
     public static final String UIPAGE_EDITOR = "UIPageEditor";
+
+    public static final String LOGOUT_ONLY = "eXo.logoutOnly";
 
     private boolean isEditted = false;
 
@@ -183,6 +182,10 @@ public class UIPortalComposer extends UIContainer {
         String remoteUser = prContext.getRemoteUser();
         String portalName = prContext.getPortalOwner();
 
+        this.setEditted(false);
+        uiPortalApp.setModeState(UIPortalApplication.NORMAL_MODE);
+        prContext.ignoreAJAXUpdateOnPortlets(true);
+
         PortalConfig portalConfig = (PortalConfig) PortalDataMapper.buildModelObject(editPortal);
         UserACL acl = getApplicationComponent(UserACL.class);
         DataStorage dataStorage = getApplicationComponent(DataStorage.class);
@@ -229,9 +232,6 @@ public class UIPortalComposer extends UIContainer {
             }
             prContext.refreshResourceBundle();
 
-            this.setEditted(false);
-
-
             UISiteBody siteBody = uiWorkingWS.findFirstComponentOfType(UISiteBody.class);
             uiPortal = (UIPortal) siteBody.getUIComponent();
 
@@ -242,53 +242,59 @@ public class UIPortalComposer extends UIContainer {
             uiPortal = (UIPortal) siteBody.getUIComponent();
 
             uiPortalApp.setSessionOpen(PortalProperties.SESSION_ALWAYS.equals(uiPortal.getSessionAlive()));
-            uiPortalApp.setModeState(UIPortalApplication.NORMAL_MODE);
-            uiWorkingWS.setRenderedChild(UIPortalApplication.UI_VIEWING_WS_ID);
-            prContext.ignoreAJAXUpdateOnPortlets(true);
+            DataStorage storage = uiPortalApp.getApplicationComponent(DataStorage.class);
+            pConfig = storage.getPortalConfig(uiPortal.getSiteKey().getTypeName(), uiPortal.getSiteKey()
+                    .getName());
+            if (pConfig != null) {
+                prContext.getUserPortalConfig().setPortalConfig(pConfig);
+            }
+            uiPortal.getChildren().clear();
+            PortalDataMapper.toUIPortal(uiPortal, prContext.getUserPortalConfig().getPortalConfig());
 
-            if (this.isPortalExist(editPortal)) {
-                DataStorage storage = uiPortalApp.getApplicationComponent(DataStorage.class);
-                pConfig = storage.getPortalConfig(uiPortal.getSiteKey().getTypeName(), uiPortal.getSiteKey()
-                        .getName());
-                if (pConfig != null) {
-                    prContext.getUserPortalConfig().setPortalConfig(pConfig);
-                }
-                uiPortal.getChildren().clear();
-                PortalDataMapper.toUIPortal(uiPortal, prContext.getUserPortalConfig().getPortalConfig());
+            // Update the cache of UIPortal from UIPortalApplication
+            uiPortalApp.putCachedUIPortal(uiPortal);
+            uiPortalApp.setCurrentSite(uiPortal);
 
-                // Update the cache of UIPortal from UIPortalApplication
-                uiPortalApp.putCachedUIPortal(uiPortal);
-                uiPortalApp.setCurrentSite(uiPortal);
+            // To init the UIPage, that fixed a bug on AdminToolbarPortlet when edit the layout. Here is only a
+            // temporal solution. Complete solution is to avoid mapping UIPortal -- model, that requires
+            // multiple UIPortal (already available) and concept of SiteConfig
+            uiPortal.refreshUIPage();
 
-                // To init the UIPage, that fixed a bug on AdminToolbarPortlet when edit the layout. Here is only a
-                // temporal solution. Complete solution is to avoid mapping UIPortal -- model, that requires
-                // multiple UIPortal (already available) and concept of SiteConfig
-                uiPortal.refreshUIPage();
+            UserNode currentNode = uiPortal.getSelectedUserNode();
+            SiteKey siteKey = currentNode.getNavigation().getKey();
+            PageNodeEvent<UIPortalApplication> pnevent = new PageNodeEvent<UIPortalApplication>(uiPortalApp,
+                    PageNodeEvent.CHANGE_NODE, siteKey, currentNode.getURI());
+            uiPortalApp.broadcast(pnevent, Event.Phase.PROCESS);
 
-                UserNode currentNode = uiPortal.getSelectedUserNode();
-                SiteKey siteKey = currentNode.getNavigation().getKey();
-                PageNodeEvent<UIPortalApplication> pnevent = new PageNodeEvent<UIPortalApplication>(uiPortalApp,
-                        PageNodeEvent.CHANGE_NODE, siteKey, currentNode.getURI());
-                uiPortalApp.broadcast(pnevent, Event.Phase.PROCESS);
-
+            if (!acl.hasPermission(portalConfig) && editPortal.getName().equals(prContext.getPortalOwner())) {
+                logout(prContext);
+            } else {
                 prContext.addUIComponentToUpdateByAjax(uiWorkingWS);
+                uiWorkingWS.setRenderedChild(UIPortalApplication.UI_VIEWING_WS_ID);
+                //
                 JavascriptManager jsManager = prContext.getJavascriptManager();
                 jsManager.require("SHARED/portal", "portal").addScripts(
                         "eXo.portal.portalMode=" + UIPortalApplication.NORMAL_MODE + ";");
+            }
+        }  else {
+            if (editPortal.getName().equals(prContext.getPortalOwner())) {
+                logout(prContext);
             } else {
-                if (editPortal.getName().equals(prContext.getPortalOwner())) {
-                    HttpServletRequest request = prContext.getRequest();
-                    LogoutControl.wantLogout();
-                    prContext.setResponseComplete(true);
-                    prContext.getResponse().sendRedirect(request.getContextPath());
-                    return;
-                } else {
-                    UIApplication uiApp = prContext.getUIApplication();
-                    uiApp.addMessage(new ApplicationMessage("UIPortalForm.msg.notExistAnymore", null));
-                    prContext.addUIComponentToUpdateByAjax(uiWorkingWS);
-                }
+                UIApplication uiApp = prContext.getUIApplication();
+                uiApp.addMessage(new ApplicationMessage("UIPortalForm.msg.notExistAnymore", null));
+                prContext.addUIComponentToUpdateByAjax(uiWorkingWS);
             }
         }
+    }
+
+    private void logout(PortalRequestContext prContext) throws Exception {
+        UIPortal uiPortal = Util.getUIPortal();
+        Event<UIComponent> event = uiPortal.createEvent("Logout", Phase.PROCESS, prContext);
+        prContext.setAttribute(LOGOUT_ONLY, true);
+        event.broadcast();
+
+        JavascriptManager jsManager = prContext.getJavascriptManager();
+        jsManager.addJavascript("window.location.reload();");
     }
 
     private void rebuildUIPortal(UIPortalApplication uiPortalApp, UIPortal uiPortal, DataStorage storage) throws Exception {
