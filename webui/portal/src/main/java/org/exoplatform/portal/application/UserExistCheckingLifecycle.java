@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2009 eXo Platform SAS.
+ * Copyright (C) 2013 eXo Platform SAS.
  *
  * This is free software; you can redistribute it and/or modify it
  * under the terms of the GNU Lesser General Public License as
@@ -20,37 +20,61 @@
 package org.exoplatform.portal.application;
 
 import org.exoplatform.container.ExoContainer;
+import org.exoplatform.portal.mop.SiteType;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.organization.UserProfile;
+import org.exoplatform.services.organization.User;
 import org.exoplatform.web.application.Application;
 import org.exoplatform.web.application.ApplicationLifecycle;
 import org.exoplatform.web.application.RequestFailure;
+import org.exoplatform.web.login.LogoutControl;
+import org.exoplatform.web.url.navigation.NavigationResource;
+import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 
-public class UserProfileLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
-    public static final String USER_PROFILE_ATTRIBUTE_NAME = "PortalUserProfile";
+/**
+ * This app lifecycle must be set after PortalLogoutLifecycle
+ *
+ */
+public class UserExistCheckingLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
+
+    private final Log log = ExoLogger.getLogger(UserExistCheckingLifecycle.class);
 
     public void onInit(Application app) {
         // do nothing for now
     }
 
     public void onStartRequest(final Application app, final WebuiRequestContext context) throws Exception {
-        String user = context.getRemoteUser();
-        UserProfile userProfile = null;
-        if (user != null) {
+        String uid = context.getRemoteUser();
+        User user = null;
+        if (uid != null) {
             ExoContainer exoContainer = app.getApplicationServiceContainer();
             if (exoContainer != null) {
                 OrganizationService organizationService = (OrganizationService) exoContainer
                         .getComponentInstanceOfType(OrganizationService.class);
-                userProfile = organizationService.getUserProfileHandler().findUserProfileByName(user);
+                user = organizationService.getUserHandler().findUserByName(uid, false);
+            }
+
+            if (user == null) {
+                log.info("user {} not found. Logging out", uid);
+                logout(context);
+            } else if (!user.isEnabled()) {
+                log.info("user {} is disabled. Logging out", uid);
+                logout(context);
             }
         }
+    }
 
-        context.setAttribute(UserProfileLifecycle.USER_PROFILE_ATTRIBUTE_NAME, userProfile);
+    private void logout(WebuiRequestContext context) throws Exception {
+        LogoutControl.wantLogout();
+        PortalRequestContext prContext = (PortalRequestContext) context;
+        NodeURL createURL = prContext.createURL(NodeURL.TYPE);
+        createURL.setResource(new NavigationResource(SiteType.PORTAL, prContext.getPortalOwner(), null));
+        prContext.sendRedirect(createURL.toString());
     }
 
     public void onFailRequest(Application app, WebuiRequestContext context, RequestFailure failureType) {
-
     }
 
     public void onEndRequest(Application app, WebuiRequestContext context) throws Exception {
@@ -59,5 +83,4 @@ public class UserProfileLifecycle implements ApplicationLifecycle<WebuiRequestCo
     public void onDestroy(Application app) {
         // do nothing for now
     }
-
 }
