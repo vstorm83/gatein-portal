@@ -22,9 +22,12 @@ package org.exoplatform.portal.mop.layout;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
 import org.exoplatform.portal.config.model.ApplicationState;
 import org.exoplatform.portal.config.model.PersistentApplicationState;
 import org.exoplatform.portal.mop.AbstractMopServiceTest;
@@ -37,6 +40,7 @@ import org.gatein.mop.core.util.Tools;
 import org.gatein.portal.mop.Properties;
 import org.gatein.portal.mop.customization.CustomizationContext;
 import org.gatein.portal.mop.customization.CustomizationService;
+import org.gatein.portal.mop.hierarchy.NodeChangeListener;
 import org.gatein.portal.mop.hierarchy.NodeContext;
 import org.gatein.portal.mop.hierarchy.NodeData;
 import org.gatein.portal.mop.hierarchy.NodeStore;
@@ -172,6 +176,65 @@ public class TestLayout extends AbstractMopServiceTest {
         testAll(layoutId);
         context.getPageService().destroyPage(page.key);
         assertEmptyLayout(layoutId);
+    }
+    
+    public void testLayoutUpdateEvents() throws JSONException {
+        PageData page = createPage(createSite(SiteType.PORTAL, "test_layout_page"), "page", new PageState.Builder().build());
+        NodeData<ElementState>[] containers = createElements(page, Element.container());
+
+        //Create portlet on container
+        NodeStore<ElementState> store = context.getLayoutStore().begin(page.layoutId, true);
+        createElements(store, containers[0], FOO_PORTLET);
+        context.getLayoutStore().end(store);
+
+        String layoutId = page.layoutId;
+        NodeContext<JSONObject, ElementState> pageStruct = (NodeContext<JSONObject, ElementState>) layoutService
+                .loadLayout(ElementState.model(), layoutId, null);
+
+        JSONObject root = buildComponent(pageStruct, null);
+        JSONArray jsonContainers = root.getJSONArray("children");
+        JSONObject container0 = jsonContainers.getJSONObject(0);
+        
+        //Delete app0
+        JSONObject app0 = container0.getJSONArray("children").getJSONObject(0);
+        app0.remove("id");//app0 is now transient
+        container0.put("children", new JSONArray());
+        
+        LayoutListener listener = new LayoutListener();
+        JSONContainerAdapter adapter = new JSONContainerAdapter(root, pageStruct);
+        layoutService.saveLayout(adapter, root, pageStruct, listener);
+        
+        //Now the listener should show that an element has been delete
+        //assert lisener here
+        
+        //User A add container1
+        pageStruct = (NodeContext<JSONObject, ElementState>) layoutService
+                .loadLayout(ElementState.model(), layoutId, null);
+        root = buildComponent(pageStruct, null);
+        
+        JSONObject container1 = new JSONObject();
+        container1.put("id", "container1");
+        container1.put("type", "container");
+        container1.put("children", new JSONArray());
+        root.put("children", new JSONArray().put(container0).put(container1));        
+        adapter = new JSONContainerAdapter(root, pageStruct);
+        layoutService.saveLayout(adapter, root, pageStruct, listener);
+        
+        //Now the listener should show that container1 has been added
+        //assert lisener here
+
+        //Concurrent update --> User B add app0
+        //We don't reload the pageStruct here to show the concurrent update
+        root = buildComponent(pageStruct, null);
+        jsonContainers = root.getJSONArray("children");
+        container0 = jsonContainers.getJSONObject(0);
+        container0.put("children", new JSONArray().put(app0));
+        
+        adapter = new JSONContainerAdapter(root, pageStruct);
+        layoutService.saveLayout(adapter, root, pageStruct, listener);
+        
+        //Created event should be dispatched, and allow us to map with the model
+        //assert listener
     }
 
     public void testSwitchLayoutWithJson() throws JSONException {
@@ -457,4 +520,57 @@ public class TestLayout extends AbstractMopServiceTest {
             assertEquals(0, context.getSize());
         }
     }
+    
+    public class LayoutListener implements NodeChangeListener<NodeContext<JSONObject, ElementState>, ElementState> {
+
+        public Map<String, Integer> events = new HashMap<String, Integer>();
+        
+        @Override
+        public void onAdd(NodeContext<JSONObject, ElementState> target, NodeContext<JSONObject, ElementState> parent,
+                NodeContext<JSONObject, ElementState> previous) {
+            event("add");
+        }
+
+        @Override
+        public void onCreate(NodeContext<JSONObject, ElementState> target, NodeContext<JSONObject, ElementState> parent,
+                NodeContext<JSONObject, ElementState> previous, String name, ElementState state) {
+            event("created");
+        }
+
+        @Override
+        public void onRemove(NodeContext<JSONObject, ElementState> target, NodeContext<JSONObject, ElementState> parent) {
+            event("remove");
+        }
+
+        @Override
+        public void onDestroy(NodeContext<JSONObject, ElementState> target, NodeContext<JSONObject, ElementState> parent) {
+            event("destroy");
+        }
+
+        @Override
+        public void onRename(NodeContext<JSONObject, ElementState> target, NodeContext<JSONObject, ElementState> parent,
+                String name) {
+            event("rename");
+        }
+
+        @Override
+        public void onUpdate(NodeContext<JSONObject, ElementState> target, ElementState state) {
+            event("update");
+        }
+
+        @Override
+        public void onMove(NodeContext<JSONObject, ElementState> target, NodeContext<JSONObject, ElementState> from,
+                NodeContext<JSONObject, ElementState> to, NodeContext<JSONObject, ElementState> previous) {
+            event("move");
+        }
+        
+        private void event(String name) {
+            if (events.get(name) == null) {
+                events.put(name, 1);
+            } else {
+                events.put(name, events.get(name) + 1);   
+            }
+            System.out.println(name);
+        }
+    };
 }
