@@ -381,30 +381,6 @@
   <build>
     <plugins>
 
-      <!-- Precompile the template class in maven (this is optional) -->
-      <plugin>
-        <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>gmaven-plugin</artifactId>
-        <version>1.5</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <sources>
-                <fileset>
-                  <directory>${project.build.outputDirectory}</directory>
-                  <includes>
-                    <include>**/*.groovy</include>
-                  </includes>
-                </fileset>
-              </sources>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Use always for redeploying a new portal for each TestCase -->
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
