@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.exoplatform.commons.utils.EmptySerializablePageList;
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.services.organization.DisabledUserException;
@@ -140,19 +139,30 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserHandler {
             session.getPersistenceManager().createUser(user.getUserName());
         } catch (Exception e) {
             handleException("Identity operation error: ", e);
-
+            throw e;
         }
 
         if (getIntegrationCache() != null) {
             getIntegrationCache().invalidateAll();
         }
 
-        persistUserInfo(user, session, true);
+        try {
+            persistUserInfo(user, session, true);
+        } catch (Exception e) {
+            //Workaround due to issues in Picketlink
+            //1. it has not support transaction for LDAP yet
+            //2. it use internal cache (infinispan) but this cache is not clear when there is exception occurred
+            try {
+                session.getPersistenceManager().removeUser(user.getUserName(),true);
+            } catch (Exception e2) {
+                handleException("Can't remove user", e2);
+            }
+            throw e;
+        }
 
         if (broadcast) {
             postSave(user, true);
         }
-
     }
 
     public void saveUser(User user, boolean broadcast) throws Exception {
@@ -610,7 +620,7 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserHandler {
             listener.postSetEnabled(user);
     }
 
-    public void persistUserInfo(User user, IdentitySession session, boolean isNew) {
+    public void persistUserInfo(User user, IdentitySession session, boolean isNew) throws Exception {
         orgService.flush();
 
         AttributesManager am = session.getAttributesManager();
@@ -660,7 +670,7 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserHandler {
                     am.updatePassword(session.getPersistenceManager().findUser(user.getUserName()), user.getPassword());
                 } catch (Exception e) {
                     handleException("Cannot update password: " + user.getUserName() + "; ", e);
-
+                    throw e;
                 }
             }
         }
@@ -672,9 +682,8 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserHandler {
             am.updateAttributes(user.getUserName(), attrs);
         } catch (Exception e) {
             handleException("Cannot update attributes for user: " + user.getUserName() + "; ", e);
-
+            throw e;
         }
-
     }
 
     public User getPopulatedUser(String userName, IdentitySession session, boolean enabledOnly) throws Exception {
