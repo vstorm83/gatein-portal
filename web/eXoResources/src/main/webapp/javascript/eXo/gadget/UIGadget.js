@@ -32,9 +32,11 @@
 	   */
 	  createGadget : function(url, id, metadata, userPref, view, hostName, debug, nocache)
 	  {
-        var ampPlain = "&";
-        var ampXhtml = "&amp;";
-        var amp = eXo.env.portal.urlEncoded ? ampXhtml : ampPlain;
+		  //we don't need to encode & here
+//        var ampPlain = "&";
+//        var ampXhtml = "&amp;";
+//        var amp = eXo.env.portal.urlEncoded ? ampXhtml : ampPlain;
+        var amp = "&";
 	    window.gadgets = window.gadgets || {};
 	    eXo.gadgets = window.gadgets;
 	    gadgets.pubsubURL = hostName + '/js/gatein-container.js?c=1' + (debug ? amp + "debug=1": "") + (nocache ? amp +"nocache=1" : amp + "nocache=0");

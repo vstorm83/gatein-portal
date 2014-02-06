@@ -42,6 +42,7 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.CompositeReader;
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.resource.AbstractResourceService;
 import org.exoplatform.portal.resource.compressor.ResourceCompressor;
 import org.exoplatform.services.log.ExoLogger;
@@ -75,6 +76,8 @@ public class JavascriptConfigService extends AbstractResourceService implements 
     /** . */
     private final WebAppListener deployer;
 
+    private int loadTimeout = 15;
+
     /** . */
     public static final List<String> RESERVED_MODULE = Arrays.asList("require", "exports", "module");
 
@@ -90,8 +93,12 @@ public class JavascriptConfigService extends AbstractResourceService implements 
         }
     };
 
-    public JavascriptConfigService(ExoContainerContext context, ResourceCompressor compressor) {
+    public JavascriptConfigService(ExoContainerContext context, ResourceCompressor compressor, InitParams params) {
         super(compressor);
+
+        if (params != null && params.getValueParam("js.load.timeout") != null) {
+            loadTimeout = Integer.parseInt(params.getValueParam("js.load.timeout").getValue());
+        }
 
         //
         this.scripts = new ScriptGraph();
@@ -273,6 +280,7 @@ public class JavascriptConfigService extends AbstractResourceService implements 
         JSONObject config = new JSONObject();
         config.put("paths", paths);
         config.put("shim", shim);
+        config.put("waitSeconds", loadTimeout);
         return config;
     }
 
