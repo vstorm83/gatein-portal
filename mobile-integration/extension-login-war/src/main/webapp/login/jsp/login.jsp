@@ -22,6 +22,7 @@
 
 <%@ page import="java.net.URLEncoder"%>
 <%@ page import="javax.servlet.http.Cookie"%>
+<%@ page import="org.exoplatform.web.login.ErrorData"%>
 <%@ page import="org.exoplatform.container.PortalContainer"%>
 <%@ page import="org.exoplatform.services.resources.ResourceBundleService"%>
 <%@ page import="org.gatein.security.oauth.spi.OAuthProviderType"%>
@@ -54,8 +55,12 @@
   //
   String uri = (String)request.getAttribute("org.gatein.portal.login.initial_uri");
   boolean error = request.getAttribute("org.gatein.portal.login.error") != null;
-  String disabledUser = (String)request.getAttribute(org.exoplatform.web.login.FilterDisabledLoginModule.DISABLED_USER_NAME);
-  
+  String errorParam = (String)request.getParameter(org.exoplatform.web.login.ErrorData.ERROR_PARAM);
+  ErrorData errorData = null;
+  if (errorParam != null) {
+      errorData = ErrorData.parse(errorParam);
+  }
+
   response.setCharacterEncoding("UTF-8"); 
   response.setContentType("text/html; charset=UTF-8");
 %>
@@ -79,13 +84,17 @@
     <body>
         <h1><a href="#login-form" title="Gate In"><%=res.getString("UILoginForm.label.mobile.Login")%></a></h1>
         <%/*Begin form*/%>
-        <% if (error) {%>
+        <% if (error || errorData != null) {%>
         <div id="error-pane"><p>
-        <%    if (disabledUser != null) {%>
-        <span><%=disabledUser%> <%=res.getString("UILoginForm.label.DisabledUserSignin")%></span>
-        <%	 } else {%>
+        <%    if (errorData != null) {
+						if (org.exoplatform.web.login.ErrorData.DISABLED_USER_ERROR == errorData.getCode()) {
+        %>
+        <span><%=errorData.getData()%> <%=res.getString("UILoginForm.label.DisabledUserSignin")%></span>        
+        <%
+        				}
+        		  } else {%>
         <span><%=res.getString("UILoginForm.label.SigninFail")%></span>
-        <%   }%>
+        <%    }%>
         <button id="button-close-alert" type="button"><%=res.getString("UILoginForm.label.mobile.login.Close")%></button></p></div>
         <% }%>
         <form id="login-form" name="login-form" action="<%= contextPath + "/login"%>" method="post">

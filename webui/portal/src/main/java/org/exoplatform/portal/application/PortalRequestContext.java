@@ -19,6 +19,10 @@
 
 package org.exoplatform.portal.application;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -32,10 +36,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.exoplatform.Constants;
 import org.exoplatform.commons.utils.ExpressionUtil;
@@ -66,6 +66,9 @@ import org.exoplatform.services.resources.ResourceBundleManager;
 import org.exoplatform.web.ControllerContext;
 import org.exoplatform.web.application.JavascriptManager;
 import org.exoplatform.web.application.URLBuilder;
+import org.exoplatform.web.login.ErrorData;
+import org.exoplatform.web.login.FilterDisabledLoginModule;
+import org.exoplatform.web.login.LoginServlet;
 import org.exoplatform.web.url.PortalURL;
 import org.exoplatform.web.url.ResourceType;
 import org.exoplatform.web.url.URLFactory;
@@ -313,6 +316,10 @@ public class PortalRequestContext extends WebuiRequestContext {
     }
 
     public void requestAuthenticationLogin() throws Exception {
+        requestAuthenticationLogin(null);
+    }
+
+    public void requestAuthenticationLogin(Map<String, String> params) throws Exception {
         StringBuilder initialURI = new StringBuilder();
         initialURI.append(request_.getRequestURI());
         if (request_.getQueryString() != null) {
@@ -322,6 +329,12 @@ public class PortalRequestContext extends WebuiRequestContext {
         StringBuilder loginPath = new StringBuilder();
         loginPath.append(request_.getContextPath()).append("/").append(DO_LOGIN_PATTERN);
         loginPath.append("?initialURI=").append(URLEncoder.encode(initialURI.toString(), "UTF-8"));
+        if (params != null) {
+            for (Map.Entry<String, String> param : params.entrySet()) {
+                loginPath.append("&").append(URLEncoder.encode(param.getKey(), "UTF-8"));
+                loginPath.append("=").append(URLEncoder.encode(param.getValue(), "UTF-8"));
+            }
+        }
 
         sendRedirect(loginPath.toString());
     }
