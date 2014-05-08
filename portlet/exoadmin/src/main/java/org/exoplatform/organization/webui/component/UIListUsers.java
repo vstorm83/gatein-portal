@@ -84,8 +84,8 @@ public class UIListUsers extends UISearch {
             new SelectItemOption<String>(FIRST_NAME, FIRST_NAME), new SelectItemOption<String>(EMAIL, EMAIL)));
 
     private static final List<SelectItemOption<String>> USER_STATUS_OPTIONS = Collections.unmodifiableList(Arrays.asList(
-                new SelectItemOption<String>("Enabled", UserStatus.ENABLED.name()),
-                new SelectItemOption<String>("Disabled", UserStatus.DISABLED.name()),
+                new SelectItemOption<String>("Enable", UserStatus.ENABLED.name()),
+                new SelectItemOption<String>("Disable", UserStatus.DISABLED.name()),
                 new SelectItemOption<String>("All", UserStatus.ANY.name())
             ));
 
